@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_margin="3dp"
+    android:background="#fff"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_id"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_num"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_type"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_intime"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_outtime"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_parkingtime"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@mipmap/ic_text_bg"
+        android:gravity="center"
+        android:id="@+id/item_free_money"
+        android:textSize="18sp" />
+</LinearLayout>

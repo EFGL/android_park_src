@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GZCar</string>
+    <string name="title_activity_user_add">UserAddActivity</string>
+
+</resources>

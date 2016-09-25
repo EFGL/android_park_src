@@ -1,0 +1,104 @@
+
+FragmentPagerAdapter
+    用与ViewPager的item少的情况.
+FragmentStatePagerAdapter
+    用与ViewPager的item多的情况,里面的Fragment会被动态销毁,来节省内存.
+-------------------------
+      mCarNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String carNum = mCarNumber.getText().toString().trim();
+//                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
+                if (carNum.length() == 0) {
+                    try {
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).findAll();
+                        allData.clear();
+                        allData.addAll(all);
+//                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
+
+                        myAdapter.notifyDataSetChanged();
+                    } catch (DbException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+// Date -> String
+String date = dateFormat.format(start_date);
+// String -> Date
+dateFormat.parse("2016-2-4 15:15")
+
+// 添加数据
+private void addData() {
+        try {
+            TrafficInfoTable trafficInfoTable = new TrafficInfoTable();
+            trafficInfoTable.setCar_no("晋A1234");
+            trafficInfoTable.setCard_type("临时车");
+
+            trafficInfoTable.setIn_time(dateFormat.parse("2011-2-2 15:12"));
+            trafficInfoTable.setOut_time(dateFormat.parse("2011-2-3 15:12"));
+
+            db.save(trafficInfoTable);
+
+            TrafficInfoTable trafficInfoTable1 = new TrafficInfoTable();
+            trafficInfoTable.setCar_no("晋A1412");
+            trafficInfoTable.setCard_type("临时车");
+            trafficInfoTable.setIn_time(dateFormat.parse("2015-2-2 15:12"));
+            trafficInfoTable.setOut_time(dateFormat.parse("2015-2-3 15:12"));
+
+            db.save(trafficInfoTable1);
+
+            TrafficInfoTable trafficInfoTable2 = new TrafficInfoTable();
+            trafficInfoTable.setCar_no("晋A1114");
+            trafficInfoTable.setCard_type("临时车");
+            trafficInfoTable.setIn_time(dateFormat.parse("2012-2-2 15:12"));
+            trafficInfoTable.setOut_time(dateFormat.parse("2012-2-3 15:12"));
+
+            db.save(trafficInfoTable2);
+
+
+        } catch (DbException e) {
+            T.showShort(getActivity(), "增加异常");
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+// 查询全部数据
+     private void initdata() {
+    //        addData();
+            try {
+                allData = db.selector(FreeInfoTable.class).findAll();
+            } catch (DbException e) {
+                T.showShort(getContext(), "全部查询异常");
+                e.printStackTrace();
+            }
+
+    }
+// 条件查询
+     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                                    .where("in_time", ">", dateFormat.parse(start))
+                                    .and("out_time", "<", dateFormat.parse(end))
+    //                            .and("car_no","=",carNum)
+                                    .findAll();
+// 删除数据(不会删除表)
+    try {
+            db.delete(TrafficInfoTable.class);
+        } catch (Exception e) {
+            T.showShort(getActivity(), "删除异常");
+            e.printStackTrace();
+        }
