@@ -27,16 +27,6 @@
             android:text="新增"
             android:textSize="18sp" />
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1"
-            android:id="@+id/parking_delete"
-            android:background="@drawable/tab_text_seletor"
-            android:text="删除"
-            android:textSize="18sp" />
-
     </LinearLayout>
 
     <View
@@ -66,13 +56,12 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/tv_info"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
-                android:text="车库"
+                android:text="车库编号"
                 android:textSize="18sp" />
         </LinearLayout>
 

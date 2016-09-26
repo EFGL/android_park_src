@@ -1,9 +1,11 @@
 package com.gz.gzcar.settingfragment;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -47,7 +49,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     EditText mCarType;
     @Bind(R.id.setting_carmanager_recyclerview)
     RecyclerView rcy;
-
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
@@ -235,41 +236,33 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     private void initData() {
 
         try {
-//            CarInfoTable mInfo = new CarInfoTable();
-//            mInfo.setCar_color("白色");
-//            mInfo.setCar_no("晋A1438");
-//            mInfo.setCar_type("探亲车");
-//
-//            db.save(mInfo);
 
-            allData = db.selector(CarInfoTable.class).findAll();
+            if (allData != null) {
+                allData.clear();
+                allData.addAll(db.selector(CarInfoTable.class).findAll());
+            } else {
+
+                allData = db.selector(CarInfoTable.class).findAll();
+            }
         } catch (DbException e) {
             e.printStackTrace();
         }
     }
 
-    @OnClick({R.id.car_add, R.id.car_update, R.id.car_delete})
+    @OnClick({R.id.car_add})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.car_add:
-                startActivity(new Intent(getActivity(), CarAdd.class));
-                break;
-            case R.id.car_update:
-                startActivity(new Intent(getActivity(), CarUpdate.class));
-                break;
-            case R.id.car_delete:
-                delete();
-                break;
-
-        }
+        startActivity(new Intent(getActivity(), CarAdd.class));
     }
+
 
     private void delete() {
     }
 
-    private boolean isVisible = false;
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
+
+        private String start = "";
+        private String end = "";
 
         @Override
         public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -282,25 +275,52 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
-            CarInfoTable carInfo = allData.get(position);
+            final CarInfoTable carInfo = allData.get(position);
             holder.mId.setText(position + 1 + "");
             holder.mCarNumber.setText(carInfo.getCar_no());
             holder.mType.setText(carInfo.getCar_type());
-            holder.mCarWei.setText(carInfo.getPerson_address());
+            holder.mCarWei.setText(carInfo.getCarWei());
             holder.mPerson.setText(carInfo.getPerson_name());
             holder.mPhone.setText(carInfo.getPerson_tel());
             holder.mAddress.setText(carInfo.getPerson_address());
 
-            Date start_date = allData.get(position).getStart_date();
+            final Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
             if (start_date != null) {
-
-                holder.mStartDate.setText(dateFormat.format(start_date));
+                start = dateFormat.format(start_date);
+                holder.mStartDate.setText(start);
             }
             if (stop_date != null) {
-
-                holder.mEndDate.setText(dateFormat.format(stop_date));
+                end = dateFormat.format(stop_date);
+                holder.mEndDate.setText(end);
             }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getContext(), CarUpdate.class);
+                    i.putExtra("carNumber", carInfo.getCar_no());
+                    i.putExtra("carType", carInfo.getCar_type());
+                    i.putExtra("carWei", carInfo.getCarWei());
+                    i.putExtra("person", carInfo.getPerson_name());
+                    i.putExtra("phone", carInfo.getPerson_tel());
+                    i.putExtra("address", carInfo.getPerson_address());
+                    i.putExtra("startTime", start);
+                    i.putExtra("endTime", end);
+                    i.putExtra("id", carInfo.getId());
+
+                    startActivity(i);
+
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    showDelete(carInfo.getId());
+                    return true;
+                }
+            });
 
         }
 
@@ -309,6 +329,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             return allData.size();
         }
     }
+
 
     class MyHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.item_setting_carmanager_id)
@@ -343,4 +364,27 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+    public  void showDelete(final int id) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("确认删除该条信息?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+                            db.deleteById(CarInfoTable.class, id);
+                            allData.clear();
+                            allData.addAll(db.findAll(CarInfoTable.class));
+                            myAdapter.notifyDataSetChanged();
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                })
+                .setNegativeButton("取消", null);
+        builder.show();
+    }
+
 }

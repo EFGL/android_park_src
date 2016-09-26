@@ -403,6 +403,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/main_setting"
                     android:onClick="setting"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -412,6 +413,7 @@
                     android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/main_query"
                     android:onClick="query"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

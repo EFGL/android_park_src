@@ -17,6 +17,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -73,6 +74,12 @@ public class UserAddActivity extends BaseActivity {
 
         DbManager db = x.getDb(MyApplication.daoConfig);
         try {
+            List<UserTable> user = db.selector(UserTable.class).where("userName", "=", name).findAll();
+            if (user.size()>0){
+                T.showShort(this,"用户名已存在,请重新输入");
+                return;
+            }
+
             UserTable userTable = new UserTable();
             userTable.setUserName(name);
             userTable.setPassword(pwd);

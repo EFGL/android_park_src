@@ -48,6 +48,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/up_et_carnum"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -129,6 +130,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/up_et_person"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -156,6 +158,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/up_et_phone"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -183,6 +186,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/up_et_address"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -198,45 +202,52 @@
             android:layout_marginTop="10dp"
             android:background="#e4e4e4" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:text="有效期:"
+            android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="有效期:"
-                android:textSize="20sp" />
+        <TextView
+            android:gravity="center"
+            android:hint="起始时间"
+            android:id="@+id/up_et_start"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/shape_white" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/shape_white"
-                android:text="2015年12月1日"
-                android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="        至:"
+            android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="至"
-                android:textSize="20sp" />
+        <TextView
+            android:id="@+id/up_et_end"
+            android:hint="结束时间"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/shape_white" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/shape_white"
-                android:text="2016年12月1日"
-                android:textSize="15sp" />
-        </LinearLayout>
-
+    </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -251,6 +262,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/up_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginRight="10dp"
@@ -259,11 +271,12 @@
                 android:textSize="17sp" />
 
             <Button
+                android:id="@+id/up_update"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/btn_login"
-                android:text="增加"
+                android:text="修改"
                 android:textSize="17sp" />
         </LinearLayout>
 

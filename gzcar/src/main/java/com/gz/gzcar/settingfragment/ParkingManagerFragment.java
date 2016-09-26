@@ -1,8 +1,10 @@
 package com.gz.gzcar.settingfragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,12 +38,9 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
     @Bind(R.id.parking_add)
     Button mAdd;
-    @Bind(R.id.parking_delete)
-    Button mDelete;
     @Bind(R.id.recyclerview)
     RecyclerView rcy;
-    @Bind(R.id.tv_info)
-    TextView tvInfo;
+
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<CarWeiTable> allData;
@@ -64,7 +63,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
         myAdapter = new MyAdapter();
         rcy.setAdapter(myAdapter);
 
-        tvInfo.setText(allData.get(0).getInfo());
+
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyViewHoldder> {
@@ -78,9 +77,18 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
         }
 
         @Override
-        public void onBindViewHolder(MyViewHoldder holder, int position) {
+        public void onBindViewHolder(MyViewHoldder holder, final int position) {
             holder.mId.setText(position + 1 + "");
             holder.mInfo.setText(allData.get(position).getInfo() + allData.get(position).getId());
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    showDelete(allData.get(position).getId());
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -156,16 +164,34 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.parking_add, R.id.parking_delete})
+    @OnClick({R.id.parking_add})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.parking_add:
 
-                startActivity(new Intent(getActivity(), ParkingAddActivity.class));
-                break;
-            case R.id.parking_delete:
+        startActivity(new Intent(getActivity(), ParkingAddActivity.class));
 
-                break;
-        }
     }
+
+    public void showDelete(final int id) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("确认删除该条信息?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+                            db.deleteById(CarWeiTable.class, id);
+                            allData.clear();
+                            allData.addAll(db.findAll(CarWeiTable.class));
+                            myAdapter.notifyDataSetChanged();
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                })
+                .setNegativeButton("取消", null);
+        builder.show();
+    }
+
 }

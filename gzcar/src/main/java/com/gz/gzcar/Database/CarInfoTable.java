@@ -20,6 +20,9 @@ public class CarInfoTable {
     @Column(name = "car_no")
     private String car_no;
 
+    @Column(name = "car_wei")
+    private String carWei;
+
     @Column(name = "updated_at")
     private String updated_at;
 
@@ -86,6 +89,14 @@ public class CarInfoTable {
 
     public void setCar_no(String car_no) {
         this.car_no = car_no;
+    }
+
+    public String getCarWei() {
+        return carWei;
+    }
+
+    public void setCarWei(String carWei) {
+        this.carWei = carWei;
     }
 
     public String getUpdated_at() {
@@ -221,6 +232,7 @@ public class CarInfoTable {
         return "CarInfoTable{" +
                 "id=" + id +
                 ", car_no='" + car_no + '\'' +
+                ", carWei='" + carWei + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", car_type='" + car_type + '\'' +
                 ", card_no='" + card_no + '\'' +

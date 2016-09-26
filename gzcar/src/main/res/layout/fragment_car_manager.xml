@@ -55,26 +55,6 @@
             android:text="新增"
             android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/car_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:background="@drawable/tab_text_seletor"
-            android:text="修改"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/car_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:background="@drawable/tab_text_seletor"
-            android:text="删除"
-            android:textSize="18sp" />
-
-
-
     </LinearLayout>
 
     <View

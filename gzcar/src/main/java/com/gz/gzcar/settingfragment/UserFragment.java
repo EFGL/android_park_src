@@ -1,8 +1,10 @@
 package com.gz.gzcar.settingfragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,12 +40,9 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     @Bind(R.id.user_add)
     Button mBtnAdd;
-    @Bind(R.id.user_update)
-    Button mbtnUpdate;
     @Bind(R.id.recyclerview)
     RecyclerView rcy;
-    @Bind(R.id.btn_delete)
-    Button mDelete;
+
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<UserTable> allData;
@@ -100,11 +99,32 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
 
             holder.mName.setText(allData.get(position).getUserName());
             holder.mType.setText(allData.get(position).getType());
 
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    showDelete(allData.get(position).getId());
+                    return true;
+
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), UserUpdateActivity.class);
+                    intent.putExtra("userName", allData.get(position).getUserName());
+                    intent.putExtra("type", allData.get(position).getType());
+                    intent.putExtra("password", allData.get(position).getPassword());
+                    intent.putExtra("id", allData.get(position).getId());
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -112,6 +132,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             return allData.size();
         }
     }
+
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -165,23 +186,32 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.user_add, R.id.user_update, R.id.btn_delete})
+    @OnClick({R.id.user_add})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.user_add:
-
-                startActivity(new Intent(getActivity(), UserAddActivity.class));
-                break;
-            case R.id.user_update:
-
-                startActivity(new Intent(getActivity(), UserUpdateActivity.class));
-                break;
-
-            case R.id.user_deleted:
-
-                break;
-        }
+        startActivity(new Intent(getActivity(), UserAddActivity.class));
     }
 
+    public void showDelete(final int id) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("确认删除该条信息?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+                            db.deleteById(UserTable.class, id);
+                            allData.clear();
+                            allData.addAll(db.findAll(UserTable.class));
+                            myAdapter.notifyDataSetChanged();
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                })
+                .setNegativeButton("取消", null);
+        builder.show();
+    }
 
 }

@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="新增用户"
+            android:text="修改用户"
             android:textSize="25sp" />
 
         <View
@@ -48,6 +48,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/user_up_name"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -105,6 +106,7 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:id="@+id/user_up_pwd"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
@@ -129,6 +131,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/user_up_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginRight="10dp"
@@ -137,11 +140,12 @@
                 android:textSize="17sp" />
 
             <Button
+                android:id="@+id/user_up_update"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/btn_login"
-                android:text="增加"
+                android:text="修改"
                 android:textSize="17sp" />
         </LinearLayout>
 
