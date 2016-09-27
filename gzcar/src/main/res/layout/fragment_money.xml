@@ -109,7 +109,7 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="选择条目"
+                android:text="请选择条目"
                 android:textSize="20sp" />
 
             <LinearLayout
