@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#e4e4e4"
     android:orientation="horizontal">
 
@@ -53,7 +54,7 @@
                     android:layout_weight="1"
                     android:background="@mipmap/ic_text_bg"
                     android:gravity="center"
-                    android:text="地下车库-2001"
+                    android:text="停车时长"
                     android:textSize="18sp" />
 
                 <TextView
@@ -62,12 +63,12 @@
                     android:layout_weight="1"
                     android:background="@mipmap/ic_text_bg"
                     android:gravity="center"
-                    android:text="地下车库-2001"
+                    android:text="收费金额"
                     android:textSize="18sp" />
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview"
+                android:id="@+id/moneyrcy_rcy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#fff" />
@@ -102,13 +103,13 @@
             android:padding="5dp">
 
             <TextView
-                android:id="@+id/tv_time"
+                android:id="@+id/money_tv_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="30-60分钟"
+                android:text="选择条目"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -119,8 +120,8 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_new_money"
+                <EditText
+                    android:id="@+id/money_new_money"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
@@ -135,9 +136,9 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/save_new_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_new_money"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/shape_white"
                 android:padding="5dp"
@@ -215,20 +216,29 @@
                     android:gravity="center"
                     android:text="核减免费时间:"
                     android:textSize="18sp" />
+                <com.nightonke.jellytogglebutton.JellyToggleButton
+                    android:id="@+id/tb_free"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    app:jtbJelly="itself"
+                    app:jtbLeftBackgroundColor="@android:color/white"
+                    app:jtbLeftText="否"
+                    app:jtbLeftTextColor="@android:color/black"
+                    app:jtbLeftTextSize="16sp"
+                    app:jtbLeftThumbColor="#f00"
+                    app:jtbRightBackgroundColor="@android:color/white"
+                    app:jtbRightText="是"
+                    app:jtbRightTextColor="@android:color/black"
+                    app:jtbRightTextSize="16sp"
+                    app:jtbRightThumbColor="#0f0"
+                    app:jtbTextMarginBottom="2dp"
+                    app:jtbTextMarginCenter="4dp"
+                    app:jtbTextMarginLeft="2dp"
+                    app:jtbTextMarginRight="2dp"
+                    app:jtbTextMarginTop="2dp" />
 
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"
-                    android:text="否"
-                    android:textSize="15sp"
-                    android:background="@drawable/shape_white"/>
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:text="是"
-                    android:textSize="15sp"
-                    android:background="@drawable/shape_white"/>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_marginTop="5dp"
@@ -244,26 +254,35 @@
                     android:text="24小时累加:"
                     android:textSize="18sp" />
 
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"
-                    android:text="否"
-                    android:textSize="15sp"
-                    android:background="@drawable/shape_white"/>
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:text="是"
-                    android:textSize="15sp"
-                    android:background="@drawable/shape_white"/>
+                <com.nightonke.jellytogglebutton.JellyToggleButton
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/tb_hour_add"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    app:jtbJelly="itself"
+                    app:jtbLeftBackgroundColor="@android:color/white"
+                    app:jtbLeftText="否"
+                    app:jtbLeftTextColor="@android:color/black"
+                    app:jtbLeftTextSize="16sp"
+                    app:jtbLeftThumbColor="#f00"
+                    app:jtbRightBackgroundColor="@android:color/white"
+                    app:jtbRightText="是"
+                    app:jtbRightTextColor="@android:color/black"
+                    app:jtbRightTextSize="16sp"
+                    app:jtbRightThumbColor="#0f0"
+                    app:jtbTextMarginBottom="2dp"
+                    app:jtbTextMarginCenter="4dp"
+                    app:jtbTextMarginLeft="2dp"
+                    app:jtbTextMarginRight="2dp"
+                    app:jtbTextMarginTop="2dp" />
+
             </LinearLayout>
 
             <Button
+                android:id="@+id/money_save_update"
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_new_money"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/shape_white"
                 android:padding="5dp"
