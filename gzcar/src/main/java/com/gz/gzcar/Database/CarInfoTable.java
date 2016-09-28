@@ -12,7 +12,7 @@ import java.util.Date;
  */
 
 @Table(name = "record_stall_vehicle")
-public class CarInfoTable {
+public class CarInfoTable implements Comparable{
 
     @Column(name = "id", isId = true)
     private int id;
@@ -250,5 +250,11 @@ public class CarInfoTable {
                 ", status='" + status + '\'' +
                 ", park_code='" + park_code + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        return 0;
     }
 }

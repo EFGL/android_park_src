@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#e4e4e4"
     android:orientation="horizontal">
 
@@ -78,8 +78,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_marginLeft="10dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -116,15 +116,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <EditText
                     android:id="@+id/money_new_money"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
+                    android:inputType="number"
                     android:textSize="20sp" />
 
                 <TextView
@@ -149,9 +150,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_margin="10dp"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:layout_margin="10dp"
             android:text="其它规则"
             android:textSize="25sp" />
 
@@ -163,11 +164,11 @@
             android:padding="5dp">
 
             <LinearLayout
-                android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -180,15 +181,15 @@
                     android:id="@+id/money_temp"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginLeft="5dp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -201,14 +202,15 @@
                     android:id="@+id/money_friends"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginLeft="5dp" />
             </LinearLayout>
+
             <LinearLayout
-                android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -216,11 +218,12 @@
                     android:gravity="center"
                     android:text="核减免费时间:"
                     android:textSize="18sp" />
+
                 <com.nightonke.jellytogglebutton.JellyToggleButton
                     android:id="@+id/tb_free"
-                    android:layout_marginLeft="20dp"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     app:jtbJelly="itself"
                     app:jtbLeftBackgroundColor="@android:color/white"
                     app:jtbLeftText="否"
@@ -240,12 +243,13 @@
 
 
             </LinearLayout>
+
             <LinearLayout
-                android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -255,10 +259,10 @@
                     android:textSize="18sp" />
 
                 <com.nightonke.jellytogglebutton.JellyToggleButton
-                    android:layout_marginLeft="20dp"
                     android:id="@+id/tb_hour_add"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     app:jtbJelly="itself"
                     app:jtbLeftBackgroundColor="@android:color/white"
                     app:jtbLeftText="否"
@@ -280,9 +284,9 @@
 
             <Button
                 android:id="@+id/money_save_update"
-                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/shape_white"
                 android:padding="5dp"

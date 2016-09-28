@@ -17,9 +17,11 @@ import android.widget.TextView;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.SPUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
+import com.nightonke.jellytogglebutton.State;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
@@ -56,6 +58,9 @@ public class MoneyFragment extends Fragment {
     private List<MoneyTable> allData;
     private MyAdapter myAdapter;
     private static int id = -1;
+    private SPUtils spUtils;
+    private boolean isFreeTemp = false;
+    private boolean isHourAddTemp = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,6 +86,67 @@ public class MoneyFragment extends Fragment {
 
         return v;
     }
+
+    private void saveConfig() {
+        String temp = mTemp.getText();
+        String friend = mFriends.getText().toString().trim();
+        if (spUtils == null) {
+
+            spUtils = new SPUtils(getContext(), "config");
+        }
+
+        //                    spUtils.putBoolean(IS_USE_CARD_HELP, false);
+        spUtils.putString("tempFree", temp + "");
+        spUtils.putString("friendsFree", friend + "");
+        spUtils.putBoolean("isFree", isFreeTemp);
+        spUtils.putBoolean("isHourAdd", isHourAddTemp);
+        T.showShort(getContext(), "保存成功");
+    }
+
+    private void readConfiig() {
+        if (spUtils == null) {
+
+            spUtils = new SPUtils(getContext(), "config");
+        }
+        String tempFree = spUtils.getString("tempFree", "");// 临时车免费时长
+        String friendsFree = spUtils.getString("friendsFree", "");// 探亲车免费时长
+        boolean isFree = spUtils.getBoolean("isFree");// 核减免费
+        final boolean isHourAdd = spUtils.getBoolean("isHourAdd");// 24h累加
+
+        mTemp.setText(tempFree);
+        mFriends.setText(friendsFree);
+        tbFree.setChecked(isFree);
+        tbHourAdd.setChecked(isHourAdd);
+
+        tbFree.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
+            @Override
+            public void onStateChange(float process, State state, JellyToggleButton jtb) {
+                // 否
+                if (state.equals(State.LEFT)) {
+                    isFreeTemp = false;
+                }
+                // 是
+                if (state.equals(State.RIGHT)) {
+                    isFreeTemp = true;
+                }
+            }
+        });
+
+        tbHourAdd.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
+            @Override
+            public void onStateChange(float process, State state, JellyToggleButton jtb) {
+                // 否
+                if (state.equals(State.LEFT)) {
+                    isHourAddTemp = false;
+                }
+                // 是
+                if (state.equals(State.RIGHT)) {
+                    isHourAddTemp = true;
+                }
+            }
+        });
+    }
+
 
     private void initViews() {
 
@@ -154,8 +220,10 @@ public class MoneyFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        readConfiig();
         initData();
     }
+
 
     private void initData() {
 
@@ -224,9 +292,11 @@ public class MoneyFragment extends Fragment {
                 upMoneyData();
                 break;
             case R.id.money_save_update:
+                saveConfig();
                 break;
         }
     }
+
 
     private void upMoneyData() {
 
