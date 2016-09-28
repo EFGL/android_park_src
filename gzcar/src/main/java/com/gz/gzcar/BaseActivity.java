@@ -1,8 +1,8 @@
 package com.gz.gzcar;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ public class BaseActivity extends AppCompatActivity {
     protected BaseAnimatorSet mBasOut;
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

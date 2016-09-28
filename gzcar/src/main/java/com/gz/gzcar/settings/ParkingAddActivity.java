@@ -65,6 +65,7 @@ public class ParkingAddActivity extends BaseActivity {
                 cw.setInfo(info);
                 db.save(cw);
                 T.showShort(this, "增加成功");
+                finish();
             } catch (DbException e) {
                 T.showShort(this, "增加异常");
                 e.printStackTrace();

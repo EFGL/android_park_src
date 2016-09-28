@@ -280,7 +280,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="软件版本：V1.0.15"
+                android:text="软件版本：1.0"
                 android:textSize="20sp" />
 
             <TextView

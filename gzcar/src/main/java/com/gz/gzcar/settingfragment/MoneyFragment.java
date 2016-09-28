@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.MoneyTable;
@@ -61,6 +62,8 @@ public class MoneyFragment extends Fragment {
     private SPUtils spUtils;
     private boolean isFreeTemp = false;
     private boolean isHourAddTemp = false;
+
+    private int clickItem = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,6 +159,7 @@ public class MoneyFragment extends Fragment {
         mRcy.setAdapter(myAdapter);
     }
 
+
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
 
@@ -171,6 +175,14 @@ public class MoneyFragment extends Fragment {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
+            if(clickItem!=-1){
+                if(clickItem==position){
+                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }else{
+                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                }
+            }
+
             holder.mId.setText(position + 1 + "");
             holder.mMoney.setText(allData.get(position).getMoney() + "元");
             double start = allData.get(position).getPartTime() - 0.5;
@@ -181,8 +193,10 @@ public class MoneyFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    id = allData.get(position).getId();
+                    clickItem=position;
+                    myAdapter.notifyDataSetChanged();
 
+                    id = allData.get(position).getId();
                     mNewMoney.requestFocus();
                     InputMethodManager imm = (InputMethodManager) mNewMoney.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
@@ -208,6 +222,8 @@ public class MoneyFragment extends Fragment {
         TextView mTime;
         @Bind(R.id.item_money_free)
         TextView mMoney;
+        @Bind(R.id.item_root)
+        LinearLayout mRoot;
 
         public MyViewHolder(View itemView) {
             super(itemView);

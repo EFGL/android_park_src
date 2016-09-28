@@ -105,17 +105,22 @@ public class SettingsFragment extends Fragment {
         initViews();
     }
 
+    private boolean isTempCarIn;
+    private boolean isFree;
+    private boolean isPrint;
+    private boolean isCardRead;
+
     private void initViews() {
         mTogglebutton1.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
             @Override
             public void onStateChange(float process, State state, JellyToggleButton jtb) {
                 // 关
                 if (state.equals(State.LEFT)) {
-                    spUtils.putBoolean(TEMP_CAR_IN, false);
+                    isTempCarIn = false;
                 }
                 //开
                 if (state.equals(State.RIGHT)) {
-                    spUtils.putBoolean(TEMP_CAR_IN, true);
+                    isTempCarIn = true;
 
                 }
             }
@@ -125,11 +130,11 @@ public class SettingsFragment extends Fragment {
             public void onStateChange(float process, State state, JellyToggleButton jtb) {
                 // 关
                 if (state.equals(State.LEFT)) {
-                    spUtils.putBoolean(TEMP_CAR_FREE, false);
+                    isFree = false;
                 }
                 //开
                 if (state.equals(State.RIGHT)) {
-                    spUtils.putBoolean(TEMP_CAR_FREE, true);
+                    isFree = true;
 
                 }
             }
@@ -139,12 +144,11 @@ public class SettingsFragment extends Fragment {
             public void onStateChange(float process, State state, JellyToggleButton jtb) {
                 // 关
                 if (state.equals(State.LEFT)) {
-                    spUtils.putBoolean(IS_PRINT_CARD, false);
+                    isPrint = false;
                 }
                 //开
                 if (state.equals(State.RIGHT)) {
-                    spUtils.putBoolean(IS_PRINT_CARD, true);
-
+                    isPrint = true;
                 }
             }
         });
@@ -153,12 +157,11 @@ public class SettingsFragment extends Fragment {
             public void onStateChange(float process, State state, JellyToggleButton jtb) {
                 // 关
                 if (state.equals(State.LEFT)) {
-                    spUtils.putBoolean(IS_USE_CARD_HELP, false);
+                    isCardRead = false;
                 }
                 //开
                 if (state.equals(State.RIGHT)) {
-                    spUtils.putBoolean(IS_USE_CARD_HELP, true);
-
+                    isCardRead = true;
                 }
             }
         });
@@ -173,6 +176,12 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.btn_save_update)
     public void onClick() {
+
+        spUtils.putBoolean(TEMP_CAR_IN, isTempCarIn);
+        spUtils.putBoolean(TEMP_CAR_FREE, isFree);
+        spUtils.putBoolean(IS_PRINT_CARD, isPrint);
+        spUtils.putBoolean(IS_USE_CARD_HELP, isCardRead);
+
         String serverAddress = mServerAddress.getText().toString().trim();
         String serverPort = mServerPort.getText().toString().trim();
         String serverMode = mServerMode.getText().toString().trim();
@@ -190,6 +199,6 @@ public class SettingsFragment extends Fragment {
             spUtils.putString("serverMode", serverMode);
         }
 
-        T.showShort(getContext(),"保存成功");
+        T.showShort(getContext(), "保存成功");
     }
 }

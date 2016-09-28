@@ -28,6 +28,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -240,9 +241,14 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             if (allData != null) {
                 allData.clear();
                 allData.addAll(db.selector(CarInfoTable.class).findAll());
+                Collections.sort(allData);
             } else {
 
                 allData = db.selector(CarInfoTable.class).findAll();
+                if (allData!=null){
+
+                    Collections.sort(allData);
+                }
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -282,7 +288,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             holder.mCarWei.setText(carInfo.getCarWei());
             holder.mPerson.setText(carInfo.getPerson_name());
             holder.mPhone.setText(carInfo.getPerson_tel());
-            holder.mAddress.setText(carInfo.getPerson_address());
+//            holder.mAddress.setText(carInfo.getPerson_address());
 
             final Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
@@ -344,8 +350,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         TextView mPerson;
         @Bind(R.id.item_setting_carmanager_phone)
         TextView mPhone;
-        @Bind(R.id.item_setting_carmanager_address)
-        TextView mAddress;
         @Bind(R.id.item_setting_carmanager_startdate)
         TextView mStartDate;
         @Bind(R.id.item_setting_carmanager_enddate)

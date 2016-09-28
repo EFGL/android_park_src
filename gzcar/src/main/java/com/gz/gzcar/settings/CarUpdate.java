@@ -119,6 +119,7 @@ public class CarUpdate extends BaseActivity {
                 Log.i("ende","update");
 
                 T.showShort(this,"修改成功");
+                finish();
             } catch (DbException e) {
                 T.showShort(this,"修改异常");
                 e.printStackTrace();

@@ -113,7 +113,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:text="100"
+                android:text="10"
                 android:background="@drawable/shape_white" />
         </LinearLayout>
 
