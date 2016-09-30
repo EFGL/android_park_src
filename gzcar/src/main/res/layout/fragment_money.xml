@@ -121,11 +121,13 @@
                 android:padding="5dp">
 
                 <EditText
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
                     android:id="@+id/money_new_money"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:textSize="20sp" />
 
                 <TextView

@@ -17,6 +17,18 @@ public class CarInfoTable implements Comparable {
     @Column(name = "id", isId = true)
     private int id;
 
+    @Column(name = "carId")
+    private String carId;
+
+    @Column(name = "fee_flag")
+    private String fee_flag;
+
+    @Column(name = "garage_code")
+    private String garage_code;
+
+    @Column(name = "note")
+    private String note;
+
     @Column(name = "car_no")
     private String car_no;
 
@@ -75,12 +87,50 @@ public class CarInfoTable implements Comparable {
     @Column(name = "park_code")
     private String park_code;
 
+    @Override
+    public int compareTo(Object andother) {
+
+        return ((CarInfoTable) andother).getId() - this.id;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCarId() {
+        return carId;
+    }
+
+    public void setCarId(String carId) {
+        this.carId = carId;
+    }
+
+    public String getFee_flag() {
+        return fee_flag;
+    }
+
+    public void setFee_flag(String fee_flag) {
+        this.fee_flag = fee_flag;
+    }
+
+    public String getGarage_code() {
+        return garage_code;
+    }
+
+    public void setGarage_code(String garage_code) {
+        this.garage_code = garage_code;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getCar_no() {
@@ -225,36 +275,5 @@ public class CarInfoTable implements Comparable {
 
     public void setPark_code(String park_code) {
         this.park_code = park_code;
-    }
-
-    @Override
-    public String toString() {
-        return "CarInfoTable{" +
-                "id=" + id +
-                ", car_no='" + car_no + '\'' +
-                ", carWei='" + carWei + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", car_type='" + car_type + '\'' +
-                ", card_no='" + card_no + '\'' +
-                ", label_no='" + label_no + '\'' +
-                ", person_name='" + person_name + '\'' +
-                ", person_sex='" + person_sex + '\'' +
-                ", person_tel='" + person_tel + '\'' +
-                ", person_address='" + person_address + '\'' +
-                ", person_idcard='" + person_idcard + '\'' +
-                ", car_color='" + car_color + '\'' +
-                ", stop_date=" + stop_date +
-                ", start_date=" + start_date +
-                ", car_image='" + car_image + '\'' +
-                ", created_at=" + created_at +
-                ", status='" + status + '\'' +
-                ", park_code='" + park_code + '\'' +
-                '}';
-    }
-
-    @Override
-    public int compareTo(Object andother) {
-
-        return ((CarInfoTable) andother).getId() - this.id;
     }
 }

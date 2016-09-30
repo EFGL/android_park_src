@@ -4,14 +4,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.bigkoo.pickerview.view.WheelTime.dateFormat;
-
 /**
  * Created by Endeavor on 2016/9/25 0025.
  */
 
 public class DateUtils {
-    public static SimpleDateFormat dateF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static String change(String date) {
+        // +8:00 -> String
+        try {
+
+            String time = date.split("M")[0].replace("T", " ").substring(0, 11);
+            return time;
+        }catch (Exception e){
+            e.toString();
+            return date;
+        }
+    }
 
     public static String date2String(Date date) {
         // Date -> String

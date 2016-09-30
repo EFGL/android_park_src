@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.gz.gzcar.BaseActivity;
 import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
@@ -19,6 +20,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,10 +61,20 @@ public class CarUpdate extends BaseActivity {
         mType.setPopList(typelist);
         mType.setText("固定车");
 
-        ArrayList<String> orderlist = new ArrayList<>();
-        orderlist.add("地库101");
-        mOrder.setPopList(orderlist);
-        mOrder.setText("地库101");
+        ArrayList<String> carweiList = new ArrayList<>();
+        try {
+            List<CarWeiTable> all = db.findAll(CarWeiTable.class);
+            if (all != null) {
+
+                for (int i = 0; i < all.size(); i++) {
+
+                    carweiList.add(all.get(i).getInfo() + all.get(i).getId());
+                }
+                mOrder.setPopList(carweiList);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
 
         initTime(mStart, mEnd);
         receiveData();

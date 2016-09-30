@@ -66,6 +66,8 @@
                     android:textSize="20sp" />
 
                 <EditText
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionNext"
                     android:id="@+id/et_server_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -87,6 +89,8 @@
                     android:textSize="20sp" />
 
                 <EditText
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionNext"
                     android:id="@+id/et_server_port"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -107,6 +111,8 @@
                     android:textSize="20sp" />
 
                 <EditText
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
                     android:id="@+id/et_server_mode"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"

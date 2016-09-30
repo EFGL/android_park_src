@@ -20,13 +20,13 @@ import android.widget.Toast;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +50,6 @@ public class CarInfoFragment extends Fragment {
     private View view;
     private List<CarInfoTable> allData;
     private MyAdapter myAdapter;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -240,11 +239,11 @@ public class CarInfoFragment extends Fragment {
             Date stop_date = allData.get(position).getStop_date();
             if (start_date!=null){
 
-                holder.startTime.setText(dateFormat.format(start_date));
+                holder.startTime.setText(DateUtils.date2String(start_date));
             }
             if (stop_date!=null){
 
-                holder.endTime.setText(dateFormat.format(stop_date));
+                holder.endTime.setText(DateUtils.date2String(stop_date));
             }
 
         }

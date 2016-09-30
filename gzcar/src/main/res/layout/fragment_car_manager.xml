@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="#e4e4e4"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -20,6 +22,9 @@
             android:textSize="18sp" />
 
         <EditText
+
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:id="@+id/carnumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,6 +42,8 @@
             android:textSize="18sp" />
 
         <EditText
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:id="@+id/cartype"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -77,7 +84,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8"
+                android:layout_weight="0.5"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="序号"
@@ -104,7 +111,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
+                android:layout_weight="1"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="车位"
@@ -113,7 +120,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.7"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="联系人"
@@ -122,7 +129,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="电话"
@@ -131,7 +138,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="有效开始时间"
@@ -140,7 +147,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="有效结束时间"
@@ -152,7 +159,7 @@
             android:id="@+id/setting_carmanager_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 

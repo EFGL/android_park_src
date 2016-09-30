@@ -22,12 +22,12 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
+import com.gz.gzcar.utils.DateUtils;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +53,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private List<CarInfoTable> allData;
     private MyAdapter myAdapter;
 
@@ -261,8 +260,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private void delete() {
-    }
+
 
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
@@ -293,11 +291,11 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             final Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
             if (start_date != null) {
-                start = dateFormat.format(start_date);
+                start = DateUtils.date2String(start_date);
                 holder.mStartDate.setText(start);
             }
             if (stop_date != null) {
-                end = dateFormat.format(stop_date);
+                end =  DateUtils.date2String(stop_date);
                 holder.mEndDate.setText(end);
             }
 

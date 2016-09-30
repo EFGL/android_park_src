@@ -5,19 +5,20 @@ import android.widget.Toast;
 
 import org.xutils.DbManager;
 import org.xutils.db.table.TableEntity;
-import org.xutils.x;
 
 /**
  * Created by Endeavor on 2016/8/18.
  */
 public class MyApplication extends Application {
 
+    public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
     @Override
     public void onCreate() {
         super.onCreate();
-        x.Ext.init(this);
+        org.xutils.x.Ext.init(this);
+//        x.Ext.init(this);
 //        File file=new File(Environment.getExternalStorageDirectory().getPath());
         daoConfig = new DbManager.DaoConfig()
                 .setDbName(mDBName)

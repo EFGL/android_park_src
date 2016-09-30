@@ -44,9 +44,9 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void initTime(final TextView star, final TextView end){
         //时间选择器
-        pvTime = new TimePickerView(this, TimePickerView.Type.ALL);
+        pvTime = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
         pvTime.setTime(new Date());
-        pvTime.setCyclic(false);
+        pvTime.setCyclic(true);
         pvTime.setCancelable(true);
         //时间选择后回调
         pvTime.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
@@ -57,9 +57,9 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-        pvTime2 = new TimePickerView(this, TimePickerView.Type.ALL);
+        pvTime2 = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
         pvTime2.setTime(new Date());
-        pvTime2.setCyclic(false);
+        pvTime2.setCyclic(true);
         pvTime2.setCancelable(true);
         //时间选择后回调
         pvTime2.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {

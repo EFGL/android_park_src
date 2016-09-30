@@ -8,6 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".settings.CarAdd">
 
     <LinearLayout
@@ -48,13 +50,14 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:singleLine="true"
+                android:imeOptions="actionNext"
                 android:id="@+id/up_et_carnum"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/shape_white"
-                android:text="京A88888"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -79,7 +82,7 @@
 
             <com.gz.gzcar.weight.MyPullText
                 android:id="@+id/car_update_type"
-                android:layout_width="250dp"
+                android:layout_width="240dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp" />
         </LinearLayout>
@@ -105,7 +108,7 @@
 
             <com.gz.gzcar.weight.MyPullText
                 android:id="@+id/car_update_order"
-                android:layout_width="250dp"
+                android:layout_width="240dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp" />
         </LinearLayout>
@@ -130,6 +133,8 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:singleLine="true"
+                android:imeOptions="actionNext"
                 android:id="@+id/up_et_person"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
@@ -158,6 +163,9 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
                 android:id="@+id/up_et_phone"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
@@ -186,6 +194,8 @@
                 android:textSize="20sp" />
 
             <EditText
+                android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:id="@+id/up_et_address"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
