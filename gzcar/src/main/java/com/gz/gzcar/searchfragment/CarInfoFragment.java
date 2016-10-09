@@ -36,8 +36,8 @@ import butterknife.OnClick;
 
 /**
  * Created by Endeavor on 2016/8/8.
- * <p/>
- * 车辆管理
+ *
+ * 车辆信息查询
  */
 public class CarInfoFragment extends Fragment {
 
@@ -229,12 +229,13 @@ public class CarInfoFragment extends Fragment {
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
+            holder.id.setText(position+1+"");
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
-            holder.carwei.setText(allData.get(position).getPerson_address());
+            holder.carwei.setText(allData.get(position).getCarWei());
             holder.person.setText(allData.get(position).getPerson_name());
             holder.phone.setText(allData.get(position).getPerson_tel());
-            holder.address.setText(allData.get(position).getPerson_address());
+//            holder.address.setText(allData.get(position).getPerson_address());
             Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
             if (start_date!=null){
@@ -261,9 +262,10 @@ public class CarInfoFragment extends Fragment {
         private TextView carwei;
         private TextView person;
         private TextView phone;
-        private TextView address;
+//        private TextView address;
         private TextView startTime;
         private TextView endTime;
+        private TextView id;
 
         public MyHolder(View itemView) {
             super(itemView);
@@ -273,9 +275,10 @@ public class CarInfoFragment extends Fragment {
             carwei = (TextView) itemView.findViewById(R.id.search_carinfo_carwei);
             person = (TextView) itemView.findViewById(R.id.search_carinfo_person);
             phone = (TextView) itemView.findViewById(R.id.search_carinfo_phone);
-            address = (TextView) itemView.findViewById(R.id.search_carinfo_address);
+//            address = (TextView) itemView.findViewById(R.id.search_carinfo_address);
             startTime = (TextView) itemView.findViewById(R.id.search_carinfo_starttime);
             endTime = (TextView) itemView.findViewById(R.id.search_carinfo_endtime);
+            id = (TextView) itemView.findViewById(R.id.search_carinfo_id);
         }
     }
 }

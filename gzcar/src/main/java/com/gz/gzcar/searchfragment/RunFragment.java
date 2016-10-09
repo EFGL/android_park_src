@@ -2,7 +2,6 @@ package com.gz.gzcar.searchfragment;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -11,11 +10,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview.TimePickerView;
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
@@ -26,8 +24,6 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -39,7 +35,7 @@ import butterknife.OnClick;
  * <p>
  * 通行记录查询
  */
-public class RunFragment extends Fragment {
+public class RunFragment extends BaseFragment {
 
 
     @Bind(R.id.et_run_carnumber)
@@ -48,18 +44,14 @@ public class RunFragment extends Fragment {
     TextView mStartTime;
     @Bind(R.id.et_run_endtime)
     TextView mEndTime;
-    @Bind(R.id.btn_run_search)
-    Button mSearch;
     @Bind(R.id.run_recyclerview)
     RecyclerView rcy;
     private View view;
-    private TimePickerView pvTime;
-    private TimePickerView pvTime2;
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private MyAdapter myAdapter;
     private List<TrafficInfoTable> allData;
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,31 +79,7 @@ public class RunFragment extends Fragment {
     private void initViews() {
 
         //时间选择器
-        pvTime = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
-        pvTime.setTime(new Date());
-        pvTime.setCyclic(false);
-        pvTime.setCancelable(true);
-        //时间选择后回调
-        pvTime.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-
-            @Override
-            public void onTimeSelect(Date date) {
-                mStartTime.setText(getTime(date));
-            }
-        });
-
-        pvTime2 = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
-        pvTime2.setTime(new Date());
-        pvTime2.setCyclic(false);
-        pvTime2.setCancelable(true);
-        //时间选择后回调
-        pvTime2.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-
-            @Override
-            public void onTimeSelect(Date date) {
-                mEndTime.setText(getTime(date));
-            }
-        });
+        initTime(getContext(),mStartTime, mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,20 +124,8 @@ public class RunFragment extends Fragment {
         }
     }
 
-    public String getTime(Date date) {
-
-        return dateFormat.format(date);
-    }
-
     private void initData() {
 
-//        try {
-//            db.delete(TrafficInfoTable.class);
-//        } catch (Exception e) {
-//            T.showShort(getActivity(), "删除异常");
-//            e.printStackTrace();
-//        }
-//        addData();
 
         try {
             allData = db.selector(TrafficInfoTable.class).findAll();
@@ -179,64 +135,6 @@ public class RunFragment extends Fragment {
             e.printStackTrace();
         }
 
-    }
-
-    private void addData() {
-        try {
-            TrafficInfoTable trafficInfoTable = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A1234");
-            trafficInfoTable.setCard_type("临时车");
-
-            trafficInfoTable.setIn_time(dateFormat.parse("2011-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2011-2-3 15:12"));
-
-            db.save(trafficInfoTable);
-
-            TrafficInfoTable trafficInfoTable1 = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A1412");
-            trafficInfoTable.setCard_type("临时车");
-            trafficInfoTable.setIn_time(dateFormat.parse("2015-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2015-2-3 15:12"));
-
-            db.save(trafficInfoTable);
-
-            TrafficInfoTable trafficInfoTable2 = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A1114");
-            trafficInfoTable.setCard_type("临时车");
-            trafficInfoTable.setIn_time(dateFormat.parse("2012-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2012-2-3 15:12"));
-
-            db.save(trafficInfoTable);
-
-            TrafficInfoTable trafficInfoTable3 = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A1134");
-            trafficInfoTable.setCard_type("临时车");
-            trafficInfoTable.setIn_time(dateFormat.parse("2013-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2013-2-3 15:12"));
-
-            db.save(trafficInfoTable);
-
-            TrafficInfoTable trafficInfoTable4 = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A1110");
-            trafficInfoTable.setCard_type("临时车");
-            trafficInfoTable.setIn_time(dateFormat.parse("2014-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2014-2-3 15:12"));
-
-
-            TrafficInfoTable trafficInfoTable5 = new TrafficInfoTable();
-            trafficInfoTable.setCar_no("晋A8688");
-            trafficInfoTable.setCard_type("临时车");
-            trafficInfoTable.setIn_time(dateFormat.parse("2016-2-2 15:12"));
-            trafficInfoTable.setOut_time(dateFormat.parse("2016-2-3 15:12"));
-
-
-            db.save(trafficInfoTable);
-        } catch (DbException e) {
-            T.showShort(getActivity(), "增加异常");
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -250,11 +148,11 @@ public class RunFragment extends Fragment {
         switch (view.getId()) {
             case R.id.et_run_starttime:
 
-                pvTime.show();
+               startTimeShow();
                 break;
             case R.id.et_run_endtime:
 
-                pvTime2.show();
+                endTimeShow();
                 break;
             case R.id.btn_run_search:
 

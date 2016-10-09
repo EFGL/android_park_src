@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -42,7 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:text="2015-12-1 12:12"
+            android:text="2016-10-1"
             android:layout_weight="1.9"
             android:background="@drawable/tab_text_seletor"
             android:textSize="15sp" />
@@ -61,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.9"
             android:background="@drawable/tab_text_seletor"
-            android:text="2015-12-1 12:12"
+            android:text="2016-12-1"
             android:textSize="15sp" />
 
 

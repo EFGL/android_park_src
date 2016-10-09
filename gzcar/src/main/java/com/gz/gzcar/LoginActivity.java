@@ -80,16 +80,25 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!first) {
-            get_info_vehicles("1", "NULL", "first_down_car");
-        } else {
-            get_info_vehicles("1", "NULL", "info_vehicles");
-        }
+//
+       new Thread(){
+           @Override
+           public void run() {
+               super.run();
+               if (!first) {
+                   get_info_vehicles("1", "NULL", "first_down_car");
+               } else {
+                   get_info_vehicles("1", "NULL", "info_vehicles");
+               }
+           }
+       }.start();
+
     }
 
     /**

@@ -2,7 +2,6 @@ package com.gz.gzcar.searchfragment;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview.TimePickerView;
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.FreeInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
@@ -26,7 +25,6 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +37,7 @@ import butterknife.OnClick;
  * <p/>
  * 收费记录
  */
-public class PrizeFragment extends Fragment {
+public class PrizeFragment extends BaseFragment {
 
 
     @Bind(R.id.et_money_carnumber)
@@ -54,10 +52,7 @@ public class PrizeFragment extends Fragment {
     RecyclerView rcy;
     @Bind(R.id.tv_money)
     TextView mMoney;
-    private TimePickerView pvTime;
-    private TimePickerView pvTime2;
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private List<FreeInfoTable> allData;
     private MyAdapter myAdapter;
 
@@ -75,31 +70,7 @@ public class PrizeFragment extends Fragment {
     private void initViews() {
 
         //时间选择器
-        pvTime = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
-        pvTime.setTime(new Date());
-        pvTime.setCyclic(false);
-        pvTime.setCancelable(true);
-        //时间选择后回调
-        pvTime.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-
-            @Override
-            public void onTimeSelect(Date date) {
-                mStartTime.setText(getTime(date));
-            }
-        });
-
-        pvTime2 = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
-        pvTime2.setTime(new Date());
-        pvTime2.setCyclic(false);
-        pvTime2.setCancelable(true);
-        //时间选择后回调
-        pvTime2.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-
-            @Override
-            public void onTimeSelect(Date date) {
-                mEndTime.setText(getTime(date));
-            }
-        });
+     initTime(getContext(),mStartTime,mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -158,69 +129,16 @@ public class PrizeFragment extends Fragment {
 
     }
 
-    private void addData() {
-        try {
-            FreeInfoTable free = new FreeInfoTable();
-            free.setCarNumber("晋A1234");
-            free.setMoney(15.25);
-            free.setParkTime("75分钟");
-            free.setType("临时车");
-            free.setInTime(dateFormat.parse("2016-2-4 13:15"));
-            free.setOutTime(dateFormat.parse("2016-2-4 14:35"));
-            db.save(free);
 
-            FreeInfoTable free1 = new FreeInfoTable();
-            free1.setCarNumber("晋A6546");
-            free1.setMoney(10.25);
-            free1.setParkTime("15分钟");
-            free1.setType("临时车");
-            free1.setInTime(dateFormat.parse("2016-2-4 13:15"));
-            free1.setOutTime(dateFormat.parse("2016-2-4 13:35"));
-            db.save(free1);
-
-            FreeInfoTable free2 = new FreeInfoTable();
-            free2.setCarNumber("晋A8989");
-            free2.setMoney(15.05);
-            free2.setParkTime("11分钟");
-            free2.setType("临时车");
-            free2.setInTime(dateFormat.parse("2016-2-4 13:15"));
-            free2.setOutTime(dateFormat.parse("2016-2-4 13:25"));
-            db.save(free2);
-
-            FreeInfoTable free3 = new FreeInfoTable();
-            free3.setCarNumber("晋A6575");
-            free3.setMoney(15.00);
-            free3.setParkTime("20分钟");
-            free3.setType("临时车");
-            free3.setInTime(dateFormat.parse("2016-2-4 13:05"));
-            free3.setOutTime(dateFormat.parse("2016-2-4 13:25"));
-            db.save(free3);
-
-            FreeInfoTable free4 = new FreeInfoTable();
-            free4.setCarNumber("晋A1111");
-            free4.setMoney(5.00);
-            free4.setParkTime("5分钟");
-            free4.setType("临时车");
-            free4.setInTime(dateFormat.parse("2016-2-4 15:15"));
-            free4.setOutTime(dateFormat.parse("2016-2-4 15:20"));
-            db.save(free4);
-        } catch (ParseException e) {
-            T.showShort(getContext(), "时间转化异常");
-            e.printStackTrace();
-        } catch (DbException e) {
-            T.showShort(getContext(), "数据添加异常");
-            e.printStackTrace();
-        }
-    }
 
     @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_money_starttime:
-                pvTime.show();
+               startTimeShow();
                 break;
             case R.id.et_money_endtime:
-                pvTime2.show();
+               endTimeShow();
                 break;
 
             case R.id.btn_money_search:
