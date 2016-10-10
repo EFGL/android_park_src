@@ -55,18 +55,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.gz.gzcar.MyApplication.daoConfig;
+import static com.gz.gzcar.MyApplication.settingInfo;
 
 public class MainActivity extends BaseActivity {
 
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     //摄像机IP
-    static String inCameraIp = "192.168.10.202";
-    static String outCameraIp = "192.168.10.203";
-    //static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
-    // static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
-    static camera inCamera = new camera("in", inCameraIp);
-    static camera outCamera = new camera("out", outCameraIp);
+    //static String inCameraIp = "192.168.10.202";
+    //static String outCameraIp = "192.168.10.203";
+//    String in =  settingInfo.getString("inCameraIp");
+//    String out =  settingInfo.getString("outCameraIp");
+
+    static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
+     static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
+    //static camera inCamera = new camera("in", inCameraIp);
+    //static camera outCamera = new camera("out", outCameraIp);
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌
@@ -100,7 +104,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initLogin();
         context = MainActivity.this;
         //注册线程通讯
@@ -183,7 +186,10 @@ public class MainActivity extends BaseActivity {
     private void initLogin() {
 
         makeUser();
-
+        if (spUtils == null) {
+            spUtils = new SPUtils(MainActivity.this, "config");
+        }
+        first = spUtils.getBoolean("first");
         new Thread(){
             @Override
             public void run() {
@@ -203,10 +209,19 @@ public class MainActivity extends BaseActivity {
                 if (spUtils == null) {
                     spUtils = new SPUtils(MainActivity.this, "config");
                 }
-                first = spUtils.getBoolean("first");
-                spUtils.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
-                spUtils.putString("inCameraIp", "192.168.10.203");// 入口相机地址
-                spUtils.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+
+                if (spUtils.getString("serverIp")==null){
+
+                    spUtils.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
+                }
+                if (spUtils.getString("inCameraIp")==null){
+
+                    spUtils.putString("inCameraIp", "192.168.10.203");// 入口相机地址
+                }
+                if (spUtils.getString("outCameraIp")==null){
+
+                    spUtils.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+                }
             }
         }.start();
     }
