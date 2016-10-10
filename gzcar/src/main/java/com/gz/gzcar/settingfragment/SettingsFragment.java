@@ -28,10 +28,10 @@ public class SettingsFragment extends Fragment {
 
     @Bind(R.id.et_server_address)
     EditText mServerAddress;
-    @Bind(R.id.et_server_port)
-    EditText mServerPort;
-    @Bind(R.id.et_server_mode)
-    EditText mServerMode;
+    @Bind(R.id.et_in_ip)
+    EditText mInIp;
+    @Bind(R.id.et_out_ip)
+    EditText mOutIp;
     @Bind(R.id.tb_togglebutton1)
     JellyToggleButton mTogglebutton1;
     @Bind(R.id.tb_togglebutton2)
@@ -69,13 +69,13 @@ public class SettingsFragment extends Fragment {
 
             spUtils = new SPUtils(getContext(), "config");
         }
-        String serverAddress = spUtils.getString("serverAddress", "");
-        String serverPort = spUtils.getString("serverPort", "");
-        String serverMode = spUtils.getString("serverMode", "");
+        String serverIp = spUtils.getString("serverIp", "");// 服务器地址url
+        String inCameraIp = spUtils.getString("inCameraIp", "");// 入口相机地址
+        String outCameraIp = spUtils.getString("outCameraIp", "");// 出口相机地址
 
-        mServerAddress.setText(serverAddress);
-        mServerPort.setText(serverPort);
-        mServerMode.setText(serverMode);
+        mServerAddress.setText(serverIp);
+        mInIp.setText(inCameraIp);
+        mOutIp.setText(outCameraIp);
 
         boolean tempCarIn = spUtils.getBoolean(TEMP_CAR_IN);
         boolean tempCarFree = spUtils.getBoolean(TEMP_CAR_FREE);
@@ -91,17 +91,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-//        mTogglebutton.setBackgroundColor(Color.WHITE);
-//        mTogglebutton.setText("否", "是");
-//        mTogglebutton.setTextColor(Color.BLACK);
-//        mTogglebutton.setTextSize(20);
-//        mTogglebutton.setTextMarginLeft(3);
-//        mTogglebutton.setTextMarginRight(3);
-//        mTogglebutton.setRightThumbColor(Color.GREEN);
-//        mTogglebutton.setLeftThumbColor(Color.RED);
-//        mTogglebutton.setChecked(true);
-
         initViews();
     }
 
@@ -183,20 +172,20 @@ public class SettingsFragment extends Fragment {
         spUtils.putBoolean(IS_USE_CARD_HELP, isCardRead);
 
         String serverAddress = mServerAddress.getText().toString().trim();
-        String serverPort = mServerPort.getText().toString().trim();
-        String serverMode = mServerMode.getText().toString().trim();
+        String inCameraIp = mInIp.getText().toString().trim();
+        String outCameraIp = mOutIp.getText().toString().trim();
         if (spUtils == null) {
 
             spUtils = new SPUtils(getContext(), "config");
         }
         if (!TextUtils.isEmpty(serverAddress)) {
-            spUtils.putString("serverAddress", serverAddress);
+            spUtils.putString("serverIp", serverAddress);
         }
-        if (!TextUtils.isEmpty(serverPort)) {
-            spUtils.putString("serverPort", serverPort);
+        if (!TextUtils.isEmpty(inCameraIp)) {
+            spUtils.putString("inCameraIp", inCameraIp);
         }
-        if (!TextUtils.isEmpty(serverMode)) {
-            spUtils.putString("serverMode", serverMode);
+        if (!TextUtils.isEmpty(outCameraIp)) {
+            spUtils.putString("outCameraIp", outCameraIp);
         }
 
         T.showShort(getContext(), "保存成功");

@@ -51,8 +51,6 @@ public class RunFragment extends BaseFragment {
     private MyAdapter myAdapter;
     private List<TrafficInfoTable> allData;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -220,7 +218,6 @@ public class RunFragment extends BaseFragment {
                         e.printStackTrace();
                     }
                 }
-
 
                 break;
         }

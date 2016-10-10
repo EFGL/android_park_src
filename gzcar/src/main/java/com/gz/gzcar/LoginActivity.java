@@ -80,6 +80,19 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                if (spUtils == null) {
+
+                    spUtils = new SPUtils(LoginActivity.this, "config");
+                }
+                spUtils.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
+                spUtils.putString("inCameraIp", "192.168.10.203");// 入口相机地址
+                spUtils.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+            }
+        }.start();
 
     }
 

@@ -66,14 +66,16 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:inputType="numberDecimal"
-                    android:imeOptions="actionNext"
                     android:id="@+id/et_server_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/shape_white"
-                    android:textSize="20sp" />
+                    android:imeOptions="actionNext"
+                    android:inputType="textUri"
+                    android:padding="5dp"
+                    android:text="http://"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -85,17 +87,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="服务器端口："
+                    android:text="入口相机地址："
                     android:textSize="20sp" />
 
                 <EditText
-                    android:inputType="numberDecimal"
-                    android:imeOptions="actionNext"
-                    android:id="@+id/et_server_port"
-                    android:layout_width="150dp"
+                    android:id="@+id/et_in_ip"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
-                    android:textSize="20sp" />
+                    android:imeOptions="actionNext"
+                    android:padding="5dp"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,17 +109,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="通 行 模 式 ："
+                    android:text="出口相机地址："
                     android:textSize="20sp" />
 
                 <EditText
-                    android:singleLine="true"
-                    android:imeOptions="actionDone"
-                    android:id="@+id/et_server_mode"
-                    android:layout_width="150dp"
+                    android:id="@+id/et_out_ip"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
-                    android:textSize="20sp" />
+                    android:imeOptions="actionDone"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout

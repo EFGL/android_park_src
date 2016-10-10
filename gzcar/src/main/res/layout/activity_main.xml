@@ -213,29 +213,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.6"
-                android:background="@drawable/ic_bg_message"
-                android:orientation="vertical"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="车牌识别智能停车场管理系统山西刚正信息自动化有限公司"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="服务电话：xxxxxxx"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
                 android:layout_weight="0.9"
                 android:background="@drawable/ic_bg_message"
                 android:orientation="vertical"
@@ -246,41 +225,46 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="状态信息"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divid_line_gray"
+                    />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="总车位：200个"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="空闲车位：100个"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="当天入场：259辆"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="当天出场：198辆"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.9"
                 android:background="@drawable/ic_bg_message"
@@ -291,45 +275,55 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:text="当前信息"
-                    android:textSize="13sp"
+                    android:text="当班信息"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divid_line_gray"
+                    />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="登录时间：12月1日12时10分"
-                    android:textSize="13sp" />
-
+                    android:text="登录时间："
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff"
+                    android:text="12月1日12时10分"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="登录时长：5小时"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="收费车辆：50辆"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
                     android:text="收费金额：358.0元"
-                    android:textSize="13sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_weight="0.9"
                 android:background="@drawable/ic_bg_message"
+                android:layout_weight="0.9"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -337,86 +331,82 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:text="车辆信息"
-                    android:textSize="13sp"
+                    android:text="收费信息"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divid_line_gray"
+                    />
                 <TextView
+                    android:id="@+id/chargeCarType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="车辆类型：临时车"
-                    android:textSize="13sp" />
-
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
                 <TextView
+                    android:id="@+id/chargeCarNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="xxxxxxxx"
+                    android:textColor="#fff"
+                    android:background="#0000FF"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal"
+                    android:textSize="24sp" />
+                <TextView
+                    android:id="@+id/chargeParkTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="车号：京A88888"
-                    android:textSize="13sp" />
+                    android:text=""
+                    android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/chargeMoney"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
-                    android:text="停车时长：1小时30分"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#fff"
-                    android:text="入场时间：12月1日12时10分"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="0.35"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="收费:10元"
+                    android:paddingTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="待通行"
                     android:textColor="#f00"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/ic_bg_message"
-                    android:text="确认收费"
-                    android:textSize="14sp" />
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
-
-
+            <Button
+                android:id="@+id/enterCharge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_bg_message"
+                android:gravity="center"
+                android:text="确认收费"
+                android:backgroundTint="#00FF00"
+                android:textSize="16sp" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.4"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/main_setting"
-                    android:onClick="setting"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_weight="1"
                     android:background="@drawable/ic_bg_message"
                     android:text="设置"
                     android:textSize="15sp" />
 
                 <Button
-                    android:id="@+id/main_query"
-                    android:onClick="query"
+                    android:id="@+id/main_search"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/ic_bg_message"
@@ -424,9 +414,10 @@
                     android:textSize="15sp" />
 
                 <Button
-                    android:onClick="exchange"
+                    android:id="@+id/main_change"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/ic_bg_message"

@@ -1,1 +1,1 @@
-include ':gzcar', ':myapplication'
+include ':gzcar'
