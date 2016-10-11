@@ -31,7 +31,8 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".settings.SettingActivity" />
-        <activity android:name=".SrarchActivity" />
+        <activity android:name=".SrarchActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".settings.CarAdd" />
         <activity android:name=".settings.CarUpdate" />
         <activity android:name=".settings.ParkingAddActivity" />
@@ -40,7 +41,8 @@
             android:label="@string/title_activity_user_add"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".settings.UserUpdateActivity" />
-        <activity android:name=".SelectPassOut"></activity>
+        <activity android:name=".SelectPassOut"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
     </application>
 
 </manifest>

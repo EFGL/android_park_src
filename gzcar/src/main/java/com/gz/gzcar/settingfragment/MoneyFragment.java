@@ -162,7 +162,6 @@ public class MoneyFragment extends Fragment {
 
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
-
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
