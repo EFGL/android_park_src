@@ -41,10 +41,8 @@ public class MyApplication extends Application {
                 .setDbOpenListener(new DbManager.DbOpenListener() {
                     @Override
                     public void onDbOpened(DbManager db) {
-
                         // 开启WAL, 对写入加速提升巨大
                         db.getDatabase().enableWriteAheadLogging();
-
                         Toast.makeText(getApplicationContext(), "数据库打开了...", Toast.LENGTH_SHORT).show();
                     }
                 })

@@ -62,12 +62,8 @@ public class MainActivity extends BaseActivity {
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     //摄像机IP
-    static String inCameraIp = "192.168.10.202";
-    static String outCameraIp = "192.168.10.203";
-    //static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
-    // static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
-    static camera inCamera = new camera("in", inCameraIp);
-    static camera outCamera = new camera("out", outCameraIp);
+    static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
+     static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌
@@ -231,8 +227,8 @@ public class MainActivity extends BaseActivity {
             if (all == null || all.size() < 1) {
 
                 UserTable user = new UserTable();
-                user.setUserName("123");
-                user.setPassword("123");
+                user.setUserName("管理员");
+                user.setPassword("123456a");
                 user.setType("管理员");
                 db.save(user);
 
@@ -456,13 +452,14 @@ public class MainActivity extends BaseActivity {
 
     //确认收费
     private void enterChangeFunc() {
-
-        if (chargeCarNumber.getText().length() == 0) {
+        String carType = chargeCarType.getText().toString();
+        if (carType.contentEquals( "固定车") ||  carType.length() == 0) {
             T.showShort(context, "无可收费车辆");
             return;
         }
         if(carInfoProcess.saveOutTempCar(outPortPicBuffer))
         {
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
             T.showShort(context, "收费完成");
         }
         //更新出口收费信息

@@ -113,25 +113,30 @@ public class carInfoProcess {
         long userDate = (carInfo.getStop_date().getTime() - nowDate.getTime())/(24*60*60*1000);
         long startDate = (nowDate.getTime() - carInfo.getStart_date().getTime())/(24*60*60*1000);
         Log.i("log", "date" + userDate + " " + startDate);
-        if(userDate < 0)
+        if(userDate <= 0)
         {
             //过期车
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = carInfo.getCar_type();
+            dispInfo[0] = " " + carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
             dispInfo[2] =  "有效期0天";
             //欢迎观临
-            dispInfo[3] = " 请缴费";
+            dispInfo[3] = " 请续费";
             //显示
             outCamera.ledDisplay(dispInfo);
-            //语音
-            outCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    outCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
+                }}, 5000);
             return false;
         }
-        if (startDate >= 0 && userDate < 10 && userDate >=0) {
+        if (startDate >= 0 && userDate < 10 && userDate >0) {
             //续费提示
             StringBuffer buffer = new StringBuffer();
             buffer.append(camera.AudioList.get("此卡可用日期") + " ");
@@ -147,7 +152,7 @@ public class carInfoProcess {
             //有效日期
             dispInfo[2] = String.format("有效期:%d天", userDate);
             //欢迎观临
-            dispInfo[3] = "\\DH时\\DM分";
+            dispInfo[3] = "请尽快延期";
             //显示
             outCamera.ledDisplay(dispInfo);
             //延时播放语音
@@ -162,13 +167,13 @@ public class carInfoProcess {
         } else if (startDate >= 0 && userDate >= 10) {
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = carInfo.getCar_type();
+            dispInfo[0] = " " + carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
             dispInfo[2] = " 请通行";
             //欢迎观临
-            dispInfo[3] = "\\DH时\\DM分";
+            dispInfo[3] = "欢迎光临";
             //起杆
             outCamera.openGate();
             //显示
@@ -198,14 +203,19 @@ public class carInfoProcess {
         } catch (DbException e) {
             e.printStackTrace();
         }
-        //写收费记录表
+        //更新主窗口收费信息
         MainActivity.chargeInfo.setCarNumber(trafficInfo.getCar_no());
         MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
         MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
-        MainActivity.chargeInfo.setOutTime(trafficInfo.getOut_time());
+        MainActivity.chargeInfo.setOutTime(new Date());
+        String timeFormat;
+        if(MainActivity.chargeInfo.getInTime() != null) {
+            final long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime()) / 60 / 1000;
+            timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
+        }else{
+            timeFormat = "无入场记录";
+        }
         MainActivity.chargeInfo.setMoney(0);
-        long timeLong = (trafficInfo.getOut_time().getTime() - trafficInfo.getIn_time().getTime())/60/1000;
-        String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
         MainActivity.chargeInfo.setParkTime(timeFormat);
         return true;
     }
@@ -216,25 +226,30 @@ public class carInfoProcess {
         Date nowDate = new Date();
         long userDate = (carInfo.getStop_date().getTime() - nowDate.getTime())/(24*60*60*1000);
         long startDate = (nowDate.getTime() - carInfo.getStart_date().getTime())/(24*60*60*1000);
-        if(userDate < 0)
+        if(userDate <= 0)
         {
             //过期车
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = carInfo.getCar_type();
+            dispInfo[0] = " " + carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
             dispInfo[2] =  "有效期0天";
             //欢迎观临
-            dispInfo[3] = "请缴费";
+            dispInfo[3] = " 请续费";
             //显示
             inCamera.ledDisplay(dispInfo);
-            //语音
-            inCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    inCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
+                }}, 5000);
             return false;
         }
-        if (startDate >= 0 && userDate < 10 && userDate >=0) {
+        if (startDate >= 0 && userDate < 10 && userDate >0) {
             //续费提示
             StringBuffer buffer = new StringBuffer();
             buffer.append(camera.AudioList.get("此卡可用日期") + " ");
@@ -250,7 +265,7 @@ public class carInfoProcess {
             //有效日期
             dispInfo[2] = String.format("有效期:%d天", userDate);
             //欢迎观临
-            dispInfo[3] = "欢迎光临";
+            dispInfo[3] = "请尽快延期";
             //显示
             inCamera.ledDisplay(dispInfo);
             //延时播放语音
@@ -287,12 +302,10 @@ public class carInfoProcess {
             trafficInfo.setCar_no(carInfo.getCar_no());
             trafficInfo.setCard_type(carInfo.getCar_type());
             trafficInfo.setIn_time(new Date());
-            trafficInfo.setOut_time(null);
             trafficInfo.setIn_image(picPath);
+            trafficInfo.setOut_time(null);
             db.save(trafficInfo);
-        }
-        else
-        {
+        }else{
             trafficInfo.setIn_time(new Date());
             trafficInfo.setIn_image(picPath);
             db.update(trafficInfo,"in_time","in_image");
@@ -464,7 +477,7 @@ public class carInfoProcess {
                buffer.append(camera.AudioList.get("元"));
            }
            //十元以内
-           else if (money > 0) {
+           else {
                buffer.append(camera.AudioList.get(String.valueOf(money)) + " ");
                buffer.append(camera.AudioList.get("元"));
            }
@@ -542,16 +555,16 @@ public class carInfoProcess {
                 boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
                 if(money == 0) {
                     if (!tempCarFree) {
+                        saveOutTempCar(picBuffer);
                         //延时播放语音
                         Timer timer = new Timer();
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                saveOutTempCar(picBuffer);
-
+                                outCamera.playAudio(camera.AudioList.get("一路顺风"));
                             }
                         }, 5000);
-                        return true;
+                        return false;
                     }
                 }
                 //延时播放语音
@@ -570,7 +583,6 @@ public class carInfoProcess {
     public static boolean saveOutTempCar(byte[] picBuffer){
         TrafficInfoTable trafficInfo = null;
         outCamera.openGate();
-        outCamera.playAudio(camera.AudioList.get("一路顺风"));
         try {
             //更新通行记录
             FileUtils picFileManage = new FileUtils();

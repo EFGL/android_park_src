@@ -256,12 +256,14 @@ public class RunFragment extends BaseFragment {
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCard_type());
             if (traffic.getIn_time() != null) {
-
                 holder.Starttime.setText(dateFormat.format(traffic.getIn_time()));
+            }            else{
+                holder.Starttime.setText("无入场记录");
             }
             if (traffic.getOut_time() != null) {
-
                 holder.Endtime.setText(dateFormat.format(traffic.getOut_time()));
+            }else{
+                holder.Endtime.setText("无出场记录");
             }
         }
 
@@ -271,7 +273,6 @@ public class RunFragment extends BaseFragment {
         }
 
     }
-
     class MyHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.item_search_id)
         TextView Id;
