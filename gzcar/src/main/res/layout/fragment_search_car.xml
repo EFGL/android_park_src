@@ -22,6 +22,8 @@
             android:textSize="18sp" />
 
         <EditText
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:id="@+id/et_search_car"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
