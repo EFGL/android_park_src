@@ -293,28 +293,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="12月1日12时10分"
+                    android:text=""
                     android:gravity="center_horizontal"
                     android:textSize="16sp" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="登录时长：5小时"
+                    android:text="登录时长："
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="收费车辆：50辆"
+                    android:text="收费车辆："
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="收费金额：358.0元"
+                    android:text="收费金额："
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -351,7 +351,7 @@
                     android:id="@+id/chargeCarNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="xxxxxxxx"
+                    android:text=""
                     android:textColor="#fff"
                     android:background="#0000FF"
                     android:textStyle="bold"
