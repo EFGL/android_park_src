@@ -548,6 +548,7 @@ public class carInfoProcess {
                             @Override
                             public void run() {
                                 saveOutTempCar(picBuffer);
+
                             }
                         }, 5000);
                         return true;
