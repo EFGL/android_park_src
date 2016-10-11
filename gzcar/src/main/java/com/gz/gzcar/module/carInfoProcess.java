@@ -13,6 +13,9 @@ import com.gz.gzcar.MainActivity;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.device.camera;
+import com.gz.gzcar.utils.FileUtils;
+import com.gz.gzcar.utils.T;
+
 import org.xutils.*;
 import org.xutils.ex.DbException;
 import java.util.*;
@@ -39,7 +42,7 @@ public class carInfoProcess {
      * @param carNumber 车号
      * @return 执行状态
      */
-    public static  boolean processCarInFunc(String carNumber,String picPath){
+    public static  boolean processCarInFunc(String carNumber,byte[] picBuffer){
         Log.i("log","out process:"+carNumber);
         if(carNumber.length()<=4){
             //无牌车处理
@@ -51,19 +54,19 @@ public class carInfoProcess {
                 Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
                 //固定车
                 if (carInfo.getCar_type().equals("固定车")) {
-                    processInRegistCar(carInfo);
+                    processInRegistCar(carInfo,picBuffer);
                 }
                 return true;
             }else{
                 //处理临时车
-                processInTempCar(carNumber,picPath);
+                processInTempCar(carNumber,picBuffer);
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public static  boolean processCarOutFunc(String carNumber) {
+    public static  boolean processCarOutFunc(String carNumber,byte[] picBuffer) {
         Log.i("log","out process:"+carNumber);
         if(carNumber.length()<=4){
             //无牌车处理
@@ -75,12 +78,12 @@ public class carInfoProcess {
                 Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
                 //固定车
                 if (carInfo.getCar_type().equals("固定车")) {
-                    return(processOutRegistCar(carInfo));
+                    return(processOutRegistCar(carInfo,picBuffer));
                 }
                 return false;
             }else{
                 //处理临时车
-                return(processOutTempCar(carNumber));
+                return(processOutTempCar(carNumber,picBuffer));
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -102,8 +105,7 @@ public class carInfoProcess {
      * @param carInfo 车辆信息
      * @return 执行状态
      */
-    private static boolean processOutRegistCar(CarInfoTable carInfo){
-        String AudioString = null;
+    private static boolean processOutRegistCar(CarInfoTable carInfo,byte[] picBuffer){
         TrafficInfoTable trafficInfo = null;
         String[] dispInfo = new String[]{null, null,null,null};
         //判断有限期
@@ -114,7 +116,6 @@ public class carInfoProcess {
         if(userDate < 0)
         {
             //过期车
-            AudioString =camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费");
             //初始化显示屏内容
             //车类型
             dispInfo[0] = carInfo.getCar_type();
@@ -127,7 +128,7 @@ public class carInfoProcess {
             //显示
             outCamera.ledDisplay(dispInfo);
             //语音
-            outCamera.playAudio(AudioString);
+            outCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
             return false;
         }
         if (startDate >= 0 && userDate < 10 && userDate >=0) {
@@ -137,7 +138,7 @@ public class carInfoProcess {
             buffer.append(userDate + " ");
             buffer.append(camera.AudioList.get("天") + " ");
             buffer.append(camera.AudioList.get("请尽快延期"));
-            AudioString = buffer.toString();
+            final String AudioString = buffer.toString();
             //初始化显示屏内容
             //车类型
             dispInfo[0] = " " + carInfo.getCar_type();
@@ -149,15 +150,15 @@ public class carInfoProcess {
             dispInfo[3] = "\\DH时\\DM分";
             //显示
             outCamera.ledDisplay(dispInfo);
-            //语音
-            try {
-                outCamera.playAudio(AudioString);
-                Thread.sleep(3000);
-                //起杆
-                outCamera.openGate();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    outCamera.playAudio(AudioString);
+                    //起杆
+                    outCamera.openGate();
+                }}, 5000);
         } else if (startDate >= 0 && userDate >= 10) {
             //初始化显示屏内容
             //车类型
@@ -172,23 +173,26 @@ public class carInfoProcess {
             outCamera.openGate();
             //显示
             outCamera.ledDisplay(dispInfo);
-            //语音
-            AudioString  = camera.AudioList.get("欢迎光临");
-            outCamera.playAudio(AudioString);
         }
         //保存数据
         try {
+            FileUtils picFileManage = new FileUtils();
+            String picPath = picFileManage.savePicture(picBuffer);  //保存图片
             trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("out_time", "=", null).findFirst();
             if(trafficInfo == null) {
                 trafficInfo = new TrafficInfoTable();
                 trafficInfo.setCar_no(carInfo.getCar_no());
                 trafficInfo.setCard_type(carInfo.getCar_type());
+                trafficInfo.setIn_time(null);
+                trafficInfo.setIn_image(null);
                 trafficInfo.setOut_time(new Date());
+                trafficInfo.setOut_image(picPath);
                 db.save(trafficInfo);
             }
             else{
                 trafficInfo.setOut_time(new Date());
-                db.update(trafficInfo,"out_time");
+                trafficInfo.setOut_image(picPath);
+                db.update(trafficInfo,"out_time","out_image");
             }
             db.save(trafficInfo);
         } catch (DbException e) {
@@ -205,13 +209,31 @@ public class carInfoProcess {
         MainActivity.chargeInfo.setParkTime(timeFormat);
         return true;
     }
-    private static boolean processInRegistCar(CarInfoTable carInfo) throws DbException {
-        String AudioString = null;
+    //处理入口固定车
+    private static boolean processInRegistCar(CarInfoTable carInfo,byte[] picBuffer) throws DbException {
         String[] dispInfo = new String[]{null, null,null,null};
         //判断有限期
         Date nowDate = new Date();
         long userDate = (carInfo.getStop_date().getTime() - nowDate.getTime())/(24*60*60*1000);
         long startDate = (nowDate.getTime() - carInfo.getStart_date().getTime())/(24*60*60*1000);
+        if(userDate < 0)
+        {
+            //过期车
+            //初始化显示屏内容
+            //车类型
+            dispInfo[0] = carInfo.getCar_type();
+            //车号
+            dispInfo[1] = carInfo.getCar_no();
+            //有效日期
+            dispInfo[2] =  "有效期0天";
+            //欢迎观临
+            dispInfo[3] = "请缴费";
+            //显示
+            inCamera.ledDisplay(dispInfo);
+            //语音
+            inCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
+            return false;
+        }
         if (startDate >= 0 && userDate < 10 && userDate >=0) {
             //续费提示
             StringBuffer buffer = new StringBuffer();
@@ -219,7 +241,7 @@ public class carInfoProcess {
             buffer.append(userDate + " ");
             buffer.append(camera.AudioList.get("天") + " ");
             buffer.append(camera.AudioList.get("请尽快延期"));
-            AudioString = buffer.toString();
+            final String AudioString = buffer.toString();
             //初始化显示屏内容
             //车类型
             dispInfo[0] = " "+carInfo.getCar_type();
@@ -231,33 +253,17 @@ public class carInfoProcess {
             dispInfo[3] = "欢迎光临";
             //显示
             inCamera.ledDisplay(dispInfo);
-            //语音
-            try {
-                inCamera.playAudio(AudioString);
-                Thread.sleep(3000);
-                //起杆
-                inCamera.openGate();
-                //保存数据
-                TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("out_time", "=", null).findFirst();
-                if(trafficInfo == null) {
-                    trafficInfo = new TrafficInfoTable();
-                    trafficInfo.setCar_no(carInfo.getCar_no());
-                    trafficInfo.setCard_type(carInfo.getCar_type());
-                    trafficInfo.setIn_time(new Date());
-                    trafficInfo.setOut_time(null);
-                    db.save(trafficInfo);
-                }
-                else
-                {
-                    trafficInfo.setIn_time(new Date());
-                    db.update(trafficInfo,"in_time");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-        } else if (startDate >= 0 && userDate >= 10) {
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    inCamera.playAudio(AudioString);
+                    //起杆
+                    inCamera.openGate();
+                }}, 5000);
+        }
+        else if (startDate >= 0 && userDate >= 10)  {
             //初始化显示屏内容
             //车类型
             dispInfo[0] = carInfo.getCar_type();
@@ -271,42 +277,27 @@ public class carInfoProcess {
             inCamera.openGate();
             //显示
             inCamera.ledDisplay(dispInfo);
-            //语音
-            AudioString  = camera.AudioList.get("欢迎光临");
-            inCamera.playAudio(AudioString);
-            //保存数据
-            TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("out_time", "=", null).findFirst();
-            if(trafficInfo == null) {
-                trafficInfo = new TrafficInfoTable();
-                trafficInfo.setCar_no(carInfo.getCar_no());
-                trafficInfo.setCard_type(carInfo.getCar_type());
-                trafficInfo.setIn_time(new Date());
-                trafficInfo.setOut_time(null);
-                db.save(trafficInfo);
-            }
-            else
-            {
-                trafficInfo.setIn_time(new Date());
-                db.update(trafficInfo,"in_time");
-            }
-        } else {
-            //过期车
-            AudioString =camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费");
-            //初始化显示屏内容
-            //车类型
-            dispInfo[0] = carInfo.getCar_type();
-            //车号
-            dispInfo[1] = carInfo.getCar_no();
-            //有效日期
-            dispInfo[2] =  "有效期0天";
-            //欢迎观临
-            dispInfo[3] = "请缴费";
-            //显示
-            inCamera.ledDisplay(dispInfo);
-            //语音
-            inCamera.playAudio(AudioString);
         }
-        return false;
+        //保存数据
+        FileUtils picFileManage = new FileUtils();
+        String picPath = picFileManage.savePicture(picBuffer);  //保存图片
+        TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("out_time", "=", null).findFirst();
+        if(trafficInfo == null) {
+            trafficInfo = new TrafficInfoTable();
+            trafficInfo.setCar_no(carInfo.getCar_no());
+            trafficInfo.setCard_type(carInfo.getCar_type());
+            trafficInfo.setIn_time(new Date());
+            trafficInfo.setOut_time(null);
+            trafficInfo.setIn_image(picPath);
+            db.save(trafficInfo);
+        }
+        else
+        {
+            trafficInfo.setIn_time(new Date());
+            trafficInfo.setIn_image(picPath);
+            db.update(trafficInfo,"in_time","in_image");
+        }
+        return true;
     }
     //保存无牌车入场记录
     public static boolean saveInNoPlateCar(String picPath) throws DbException {
@@ -337,11 +328,14 @@ public class carInfoProcess {
         return true;
     }
     //保存手动起杆入场记录
-    public static boolean saveInTempCar(String carNumber,String picPath) throws DbException {
+    public static boolean saveInTempCar(String carNumber,byte[] picBuffer) throws DbException {
         //入口起杆
         inCamera.openGate();
         //语音
         inCamera.playAudio(camera.AudioList.get("欢迎光临"));
+        //保存图片
+        FileUtils picFileManage = new FileUtils();
+        String picPath = picFileManage.savePicture(picBuffer);
         //保存数据
         TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=",carNumber).and("out_time", "=", null).findFirst();
         if(trafficInfo == null) {
@@ -366,7 +360,7 @@ public class carInfoProcess {
      * @param carNumber 车号
      * @return
      */
-    private static boolean processInTempCar(String carNumber,String picPath) throws DbException {
+    private static boolean processInTempCar(String carNumber,byte[] picBuffer) throws DbException {
         String[] dispInfo = new String[]{null, null,null,null};
          //初始化显示屏内容
         //车类型
@@ -381,7 +375,7 @@ public class carInfoProcess {
         inCamera.ledDisplay(dispInfo);
         boolean tempFlag = MyApplication.settingInfo.getBoolean("tempCarIn");
         if(!tempFlag) {
-            saveInTempCar(carNumber, picPath);
+            saveInTempCar(carNumber, picBuffer);
         }
         return true;
     }
@@ -497,7 +491,7 @@ public class carInfoProcess {
      * @param carNumber 车号
      * @return
      */
-    private static boolean processOutTempCar(String carNumber){
+    private static boolean processOutTempCar(String carNumber, final byte[] picBuffer){
         String[] dispInfo = new String[]{null, null,null,null};
             //保存记录
             try {
@@ -510,7 +504,7 @@ public class carInfoProcess {
                     //车号
                     dispInfo[2] = carNumber;
                     //有效日期
-                    dispInfo[3] =  "无入场";
+                    dispInfo[3] =  "未入场";
                     //显示
                     outCamera.ledDisplay(dispInfo);
                     //延时播放语音
@@ -523,13 +517,15 @@ public class carInfoProcess {
                     }, 5000);
                     return false;
                 }
+                //判断收费为0时是否需要确认
                 //写收费记录表
                 MainActivity.chargeInfo.setCarNumber(carNumber);
                 MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
                 MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
                 MainActivity.chargeInfo.setOutTime(new Date());
                 final long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
-                MainActivity.chargeInfo.setMoney(moneyCount(timeLong));
+                Double money = moneyCount(timeLong);
+                MainActivity.chargeInfo.setMoney(money);
                 String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
                 MainActivity.chargeInfo.setParkTime(timeFormat);
                 //初始化显示屏内容
@@ -543,6 +539,20 @@ public class carInfoProcess {
                 dispInfo[3] =  String.format("请缴费: %.1f元",MainActivity.chargeInfo.getMoney());
                 //显示
                 outCamera.ledDisplay(dispInfo);
+                boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
+                if(money == 0) {
+                    if (!tempCarFree) {
+                        //延时播放语音
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                saveOutTempCar(picBuffer);
+                            }
+                        }, 5000);
+                        return true;
+                    }
+                }
                 //延时播放语音
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
@@ -555,5 +565,29 @@ public class carInfoProcess {
                 e.printStackTrace();
             }
         return true;
+    }
+    public static boolean saveOutTempCar(byte[] picBuffer){
+        TrafficInfoTable trafficInfo = null;
+        outCamera.openGate();
+        outCamera.playAudio(camera.AudioList.get("一路顺风"));
+        try {
+            //更新通行记录
+            FileUtils picFileManage = new FileUtils();
+            String picPath = picFileManage.savePicture(picBuffer); //保存图片
+            trafficInfo = MyApplication.db.selector(TrafficInfoTable.class).where("car_no", "=", MainActivity.chargeInfo.getCarNumber()).and("out_time", "=", null).findFirst();
+            if (trafficInfo == null) {
+                return false;
+            } else {
+                trafficInfo.setOut_time(MainActivity.chargeInfo.getOutTime());
+                trafficInfo.setOut_image(picPath);
+                MyApplication.db.update(trafficInfo, "out_time","out_image");
+            }
+            //保存收费信息
+            MyApplication.db.save(MainActivity.chargeInfo);
+            return true;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

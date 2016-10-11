@@ -230,6 +230,7 @@ public class camera {
     public  camera(String name, String ip){
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build());
+        Log.i("log","connect camera " + name +  " " + ip);
         sdk = new SDK();
         portName = name;
         cameraIp = ip;
