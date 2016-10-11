@@ -2,6 +2,7 @@ package com.gz.gzcar;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.TimePickerView;
@@ -39,6 +40,7 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 star.setText(DateUtils.date2String(date));
+                Log.e("a","--------");
             }
         });
 
