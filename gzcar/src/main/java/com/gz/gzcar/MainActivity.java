@@ -62,15 +62,12 @@ public class MainActivity extends BaseActivity {
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     //摄像机IP
-    //static String inCameraIp = "192.168.10.202";
-    //static String outCameraIp = "192.168.10.203";
-//    String in =  settingInfo.getString("inCameraIp");
-//    String out =  settingInfo.getString("outCameraIp");
-
-    static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
-     static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
-    //static camera inCamera = new camera("in", inCameraIp);
-    //static camera outCamera = new camera("out", outCameraIp);
+    static String inCameraIp = "192.168.10.202";
+    static String outCameraIp = "192.168.10.203";
+    //static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
+    // static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
+    static camera inCamera = new camera("in", inCameraIp);
+    static camera outCamera = new camera("out", outCameraIp);
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌
@@ -99,7 +96,8 @@ public class MainActivity extends BaseActivity {
     private SPUtils spUtils;
     private boolean first;
     private AlertDialog dialog;
-
+    private static byte[] inPortPicBuffer;
+    private static byte[] outPortPicBuffer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -458,29 +456,14 @@ public class MainActivity extends BaseActivity {
 
     //确认收费
     private void enterChangeFunc() {
-        TrafficInfoTable trafficInfo = null;
+
         if (chargeCarNumber.getText().length() == 0) {
             T.showShort(context, "无可收费车辆");
             return;
         }
-        outCamera.openGate();
-        outCamera.playAudio(camera.AudioList.get("一路顺风"));
-        try {
-            //更新通行记录
-            trafficInfo = MyApplication.db.selector(TrafficInfoTable.class).where("car_no", "=", chargeInfo.getCarNumber()).and("out_time", "=", null).findFirst();
-            if (trafficInfo == null) {
-                T.showShort(context, "该车无入场记录");
-                return;
-            } else {
-                trafficInfo.setOut_time(chargeInfo.getOutTime());
-                MyApplication.db.update(trafficInfo, "out_time");
-            }
-            MyApplication.db.update(trafficInfo, "out_time");
-            //保存收费信息
-            MyApplication.db.save(chargeInfo);
+        if(carInfoProcess.saveOutTempCar(outPortPicBuffer))
+        {
             T.showShort(context, "收费完成");
-        } catch (DbException e) {
-            e.printStackTrace();
         }
         //更新出口收费信息
         chargeCarNumber.setText("");
@@ -526,24 +509,13 @@ public class MainActivity extends BaseActivity {
         if (picBuffer == null) {
             T.showShort(context, "拍照失败，请重新操作");
         } else {
-            String picPath = picFileManage.savePicture(picBuffer);
             try {
-                carInfoProcess.saveInTempCar(plateTextIn.getText().toString(), picPath);
+                carInfoProcess.saveInTempCar(plateTextIn.getText().toString(),picBuffer);
             } catch (DbException e) {
                 e.printStackTrace();
             }
         }
-
-        //拍照
-        inCamera.CapturePic();
-        //起杆
-        inCamera.openGate();
-        inCamera.playAudio("45");   //欢迎观临
-        //显示
-        // String[] dispInfo = new String[]{"车牌识别  一车一杆  减速慢行", "\\DL月\\DD日", "\\DH时\\DM分", "智能停车场"};
-        String[] dispInfo = new String[]{"车牌识别  一车一杆  减速慢行", "手动通行", "欢迎观临", "智能停车场"};
-        inCamera.ledDisplay(dispInfo);
-        T.showShort(context, "入口手动起杆");
+        T.showShort(context, "已完成确认通行");
     }
 
     //出口手动起杆
@@ -615,7 +587,6 @@ public class MainActivity extends BaseActivity {
                     Log.i("log", "event:" + info.msgType + info.getPlateNumber());
                     //设置显示入口车号和图片
                     if (info.getName().equals("in")) {
-
                         plateTextIn.setText(info.getPlateNumber());
                         if (info.getPlateColor().equals("黄色")) {
                             plateTextIn.setBackgroundColor(Color.YELLOW);
@@ -624,8 +595,10 @@ public class MainActivity extends BaseActivity {
                         }
                         plateImageIn.setImageBitmap(bmp);
                         plateImageIn.invalidate();
+                        //缓存入口图片
+                        inPortPicBuffer = info.getCarPicdata();
                         //入口处理
-                        carProcess.processCarInFunc(info.getPlateNumber(), null);
+                        carProcess.processCarInFunc(info.getPlateNumber(), info.getCarPicdata());
                     }
                     //设置显示出口车号和图片
                     if (info.getName().equals("out")) {
@@ -637,8 +610,10 @@ public class MainActivity extends BaseActivity {
                         }
                         plateImageOut.setImageBitmap(bmp);
                         plateImageOut.invalidate();
+                        //缓存出口图片
+                        outPortPicBuffer = info.getCarPicdata();
                         //出口处理
-                        if (carProcess.processCarOutFunc(info.getPlateNumber())) {
+                        if (carProcess.processCarOutFunc(info.getPlateNumber(),info.getCarPicdata())) {
                             //更新出口收费信息
                             chargeCarNumber.setText(chargeInfo.getCarNumber());
                             chargeCarType.setText(chargeInfo.getType());

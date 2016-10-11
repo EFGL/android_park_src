@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.PriorityQueue;
 
 public class FileUtils {
     private String SDPATH;
@@ -66,6 +67,14 @@ public class FileUtils {
             }
         }
         return file;
+    }
+    public boolean removePicture(String picPath){
+        File file = new File(SDPATH + picPath);
+        if(file.exists()) {
+            file.delete();
+            return true;
+        }
+        return false;
     }
     public String savePicture(byte[] bytes)
     {
