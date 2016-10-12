@@ -78,8 +78,8 @@ public class MainActivity extends BaseActivity {
     static Button buttonAgainIdentOut;   //出口重新识别
     static Button buttonManualInOpen;    //入口手动起杆
     static Button getButtonManualOutOpen;//出口手动起杆
-    static TextView chargeCarNumber;        //收费信息车号
-    static TextView chargeCarType;          //收费信息车类型
+    public  static TextView chargeCarNumber;        //收费信息车号
+    public  static TextView chargeCarType;          //收费信息车类型
     static TextView chargeParkTime;         //收费信息停车时长
     static TextView chargeMoney;            //收费信息收费金额
     static Button enterCharge;              //确认收费按钮
@@ -452,8 +452,8 @@ public class MainActivity extends BaseActivity {
 
     //确认收费
     private void enterChangeFunc() {
-        String carType = chargeCarType.getText().toString();
-        if (carType.contentEquals( "固定车") ||  carType.length() == 0) {
+        String ParkTime = chargeParkTime.getText().toString().toString();
+        if (ParkTime.indexOf("无入场记录") >0 || chargeCarNumber.getText().length() == 0 ) {
             T.showShort(context, "无可收费车辆");
             return;
         }
@@ -499,7 +499,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    //入口手动起杆
+    //入口确认起杆
     private void manualInOpenFunc() {
         T.showShort(context, "已完成确认通行");
         byte[] picBuffer = inCamera.CapturePic();
@@ -507,40 +507,42 @@ public class MainActivity extends BaseActivity {
             T.showShort(context, "拍照失败，请重新操作");
         } else {
             try {
+                if(plateTextIn.getText().toString().contentEquals("待通行")){
+                    T.showShort(context, "无可确认通行车辆");
+                    return;
+                }
                 carInfoProcess.saveInTempCar(plateTextIn.getText().toString(),picBuffer);
             } catch (DbException e) {
                 e.printStackTrace();
             }
         }
+        plateTextIn.setText("待通行");
         T.showShort(context, "已完成确认通行");
     }
-
-    //出口手动起杆
+    //出口手免费通行
     private void manualOutOpenFunc() {
-        //拍照
-        outCamera.CapturePic();
-        //起杆
-        outCamera.openGate();
-        outCamera.playAudio("46");   //一路顺风
-        //显示
-        String[] dispInfo = new String[]{"车牌识别  一车一杆  减速慢行", "手动通行", "一路顺风", "智能停车场"};
-        outCamera.ledDisplay(dispInfo);
-        T.showShort(context, "出口手动起杆");
+        T.showShort(context, "免费通行");
+        String ParkTime = chargeParkTime.getText().toString().toString();
+        if (ParkTime.indexOf("无入场记录") >0 || chargeCarNumber.getText().length() == 0 )  {
+            //拍照
+            byte[] picBuffer = outCamera.CapturePic();
+            carInfoProcess.saveOutFreeCar(picBuffer);
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
+        }
+        else
+        {
+            chargeInfo.setMoney(0);
+            chargeInfo.setType("免费车");
+            carInfoProcess.saveOutTempCar(outPortPicBuffer);
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
+            T.showShort(context, "已放行");
+        }
+        //更新出口收费信息
+        chargeCarNumber.setText("");
+        chargeCarType.setText("");
+        chargeParkTime.setText("");
+        chargeMoney.setText("待通行");
     }
-
-//    public void setting(View view) {
-//        startActivity(new Intent(this, SettingActivity.class));
-//    }
-//
-//    public void query(View view) {
-//        startActivity(new Intent(this, SrarchActivity.class));
-//    }
-//
-//    public void exchange(View view) {
-//        startActivity(new Intent(this, LoginActivity.class));
-//    }
-
-
     @Override
     public void onBackPressed() {
         final NormalDialog dialog = new NormalDialog(mContext);

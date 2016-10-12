@@ -278,7 +278,7 @@ public class camera {
         PlateInfo info = new PlateInfo();
         info.setName(portName);
         if(result != null){
-            info.setPlateNumber("手动起杆");
+            info.setPlateNumber("待通行");
             info.setPlateColor("蓝色");
             info.CarPicdata = result.picdata;
             info.msgType = msgType.PIC;

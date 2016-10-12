@@ -316,15 +316,16 @@ public class carInfoProcess {
     public static boolean saveInNoPlateCar(String picPath) throws DbException {
         String AudioString;
         String[] dispInfo = new String[]{null, null,null,null};
+        inCamera.openGate();
         //初始化显示屏内容
         //车类型
         dispInfo[0] = " 临时车";
         //车号
         dispInfo[1] = "无牌车";
         //有效日期
-        dispInfo[2] =  "欢迎光临";
+        dispInfo[2] =  "无牌入场";
         //欢迎观临
-        dispInfo[3] ="\\DH时\\DM分";
+        dispInfo[3] ="欢迎光临";
         //显示
         inCamera.ledDisplay(dispInfo);
         AudioString = camera.AudioList.get("欢迎光临");
@@ -528,7 +529,12 @@ public class carInfoProcess {
                             outCamera.playAudio(camera.AudioList.get("未进主区"));
                         }
                     }, 5000);
-                    return false;
+                    //设置显示
+                    MainActivity.chargeInfo.setCarNumber(carNumber);
+                    MainActivity. chargeInfo.setType("临时车");
+                    MainActivity.chargeInfo.setParkTime("无入场记录");
+                    MainActivity.chargeInfo.setMoney(0);
+                    return true;
                 }
                 //判断收费为0时是否需要确认
                 //写收费记录表
@@ -580,6 +586,7 @@ public class carInfoProcess {
             }
         return true;
     }
+    //保存临时收费车辆记录
     public static boolean saveOutTempCar(byte[] picBuffer){
         TrafficInfoTable trafficInfo = null;
         outCamera.openGate();
@@ -597,6 +604,41 @@ public class carInfoProcess {
             }
             //保存收费信息
             MyApplication.db.save(MainActivity.chargeInfo);
+            return true;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    //保存免费出口车辆
+    public static boolean saveOutFreeCar(byte[] picBuffer){
+        TrafficInfoTable trafficInfo = null;
+        outCamera.openGate();
+        try {
+            //更新通行记录
+            FileUtils picFileManage = new FileUtils();
+            String picPath = picFileManage.savePicture(picBuffer); //保存图片
+            trafficInfo = MyApplication.db.selector(TrafficInfoTable.class).where("car_no", "=", MainActivity.chargeInfo.getCarNumber()).and("out_time", "=", null).findFirst();
+            if (trafficInfo == null) {
+                trafficInfo = new TrafficInfoTable();
+                trafficInfo.setIn_time(null);
+                trafficInfo.setIn_image(null);
+                if(MainActivity.chargeCarNumber.getText().toString().isEmpty()) {
+                    trafficInfo.setCar_no("无牌");
+                }else{
+                    trafficInfo.setCar_no(MainActivity.chargeInfo.getCarNumber().toString());
+                }
+                trafficInfo.setCard_type("免费车");
+                trafficInfo.setOut_time(new Date());
+                trafficInfo.setOut_image(picPath);
+                MyApplication.db.save(trafficInfo);
+            } else {
+                trafficInfo.setOut_time(MainActivity.chargeInfo.getOutTime());
+                trafficInfo.setOut_image(picPath);
+                MyApplication.db.update(trafficInfo, "out_time","out_image");
+                //保存收费信息
+                MyApplication.db.save(MainActivity.chargeInfo);
+            }
             return true;
         } catch (DbException e) {
             e.printStackTrace();
