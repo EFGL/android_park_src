@@ -542,7 +542,11 @@ public class carInfoProcess {
                 MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
                 MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
                 MainActivity.chargeInfo.setOutTime(new Date());
-                final long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
+                long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
+                if(timeLong<=0)
+                {
+                    timeLong = 1;
+                }
                 Double money = moneyCount(timeLong);
                 MainActivity.chargeInfo.setMoney(money);
                 String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
@@ -570,15 +574,16 @@ public class carInfoProcess {
                                 outCamera.playAudio(camera.AudioList.get("一路顺风"));
                             }
                         }, 5000);
-                        return false;
+                        return true;
                     }
                 }
                 //延时播放语音
+                final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney());
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        outCamera.playAudio(formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney()));
+                        outCamera.playAudio(audioString);
                     }
                 }, 5000);
             } catch (DbException e) {
@@ -603,7 +608,9 @@ public class carInfoProcess {
                 MyApplication.db.update(trafficInfo, "out_time","out_image");
             }
             //保存收费信息
-            MyApplication.db.save(MainActivity.chargeInfo);
+            if(MainActivity.chargeInfo.getMoney()>0) {
+                MyApplication.db.save(MainActivity.chargeInfo);
+            }
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -636,8 +643,6 @@ public class carInfoProcess {
                 trafficInfo.setOut_time(MainActivity.chargeInfo.getOutTime());
                 trafficInfo.setOut_image(picPath);
                 MyApplication.db.update(trafficInfo, "out_time","out_image");
-                //保存收费信息
-                MyApplication.db.save(MainActivity.chargeInfo);
             }
             return true;
         } catch (DbException e) {

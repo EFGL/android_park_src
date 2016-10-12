@@ -85,6 +85,18 @@ public class MainActivity extends BaseActivity {
     static Button enterCharge;              //确认收费按钮
     static Context context;
 
+    //状态信息
+    static TextView textViewAllPlace;       //总车位
+    static TextView textViewEmptyPlace;     //空闲车位
+    static TextView textViewInCarCount;     //入场数量
+    static TextView textViewOutCarCount;    //出场数量
+    //当班信息
+    static TextView textViewUserName;       //操作员
+    static TextView textViewLoginTime;      //登录长
+    static TextView textViewSumCar;         //当前班费车辆
+    static TextView textViewSumMoney;       //当班收费金额
+
+
     @Bind(R.id.main_setting)
     Button mainSetting;
 
@@ -129,13 +141,6 @@ public class MainActivity extends BaseActivity {
                 manualPassInFunc();
             }
         });
-//        buttonManualPassOut = (Button) findViewById(R.id.button_manual_Pass_Out);
-//        buttonManualPassOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                inCamera.manualPassOutFunc();
-//            }
-//        });
         buttonAgainIdentIn = (Button) findViewById(R.id.button_againIdent_In);
         buttonAgainIdentIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +178,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+
         showLogin();
 
     }
@@ -203,18 +209,18 @@ public class MainActivity extends BaseActivity {
                 if (spUtils == null) {
                     spUtils = new SPUtils(MainActivity.this, "config");
                 }
-
                 if (spUtils.getString("serverIp")==null){
 
                     spUtils.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
-                }
-                if (spUtils.getString("inCameraIp")==null){
-
                     spUtils.putString("inCameraIp", "192.168.10.203");// 入口相机地址
-                }
-                if (spUtils.getString("outCameraIp")==null){
-
                     spUtils.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+                    spUtils.putInt("allCarPlace",999);                  // 总车位
+                    spUtils.putInt("emptyCarPlace",999);                  // 空闲车位
+                    spUtils.putInt("inCarCount",0);                     // 当天入场车次
+                    spUtils.putInt("outCarCount",0);                     // 当天出厂车次
+                    spUtils.putBoolean("loginStatus",false);             //登陆状态
+                    spUtils.putString("userName","");                //操作员
+
                 }
             }
         }.start();
@@ -460,8 +466,8 @@ public class MainActivity extends BaseActivity {
         if(carInfoProcess.saveOutTempCar(outPortPicBuffer))
         {
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
-            T.showShort(context, "收费完成");
         }
+        T.showShort(context, "收费完成");
         //更新出口收费信息
         chargeCarNumber.setText("");
         chargeCarType.setText("");

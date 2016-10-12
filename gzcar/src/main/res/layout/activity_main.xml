@@ -234,31 +234,35 @@
                     />
 
                 <TextView
+                    android:id="@+id/textViewAllPlace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="总车位：200个"
+                    android:text="总车位："
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/textViewEmptyPlace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="空闲车位：100个"
+                    android:text="空闲车位："
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/textViewInCarCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="当天入场：259辆"
+                    android:text="当天入场："
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/textViewOutCarCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="当天出场：198辆"
+                    android:text="当天出场："
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -284,19 +288,14 @@
                     android:background="@color/divid_line_gray"
                     />
                 <TextView
+                    android:id="@+id/textViewUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
-                    android:text="登录时间："
+                    android:text="操作员："
                     android:textSize="16sp" />
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#fff"
-                    android:text=""
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-                <TextView
+                    android:id="@+id/textViewloginTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
@@ -304,6 +303,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/textViewSumCar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
@@ -311,6 +311,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/textViewSumMoney"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
