@@ -29,6 +29,7 @@
                 android:textSize="18sp" />
 
             <EditText
+                android:id="@+id/out_carnum"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -39,17 +40,15 @@
                 android:singleLine="true" />
 
             <Button
-                android:id="@+id/textView2"
+                android:id="@+id/out_nocarnum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/ic_bg_message"
-                android:padding="5dp"
                 android:text="无车牌车辆" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_marginLeft="8dp"
@@ -72,7 +71,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="8dp"
             android:layout_weight="3"
-            android:background="#00f"
+            android:background="#fff"
             android:orientation="vertical">
 
             <LinearLayout
@@ -112,7 +111,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/select_out_car_rcy"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="#fff" />
         </LinearLayout>
 
@@ -125,12 +124,14 @@
 
 
             <ImageView
+                android:id="@+id/out_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_img_car" />
 
             <TextView
+                android:id="@+id/out_ph_carnum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -152,6 +153,7 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/out_1hour"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -160,6 +162,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_2hour"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -169,6 +172,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_4hour"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -178,6 +182,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_all_car"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -187,6 +192,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_no_pass"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -196,6 +202,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -205,6 +212,7 @@
             android:textSize="17sp" />
 
         <Button
+            android:id="@+id/out_ok"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

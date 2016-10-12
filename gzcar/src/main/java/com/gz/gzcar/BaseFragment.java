@@ -16,7 +16,8 @@ import java.util.Date;
  */
 
 public class BaseFragment extends Fragment {
-    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//    protected  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    protected  SimpleDateFormat dateFormatDetail = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
 
@@ -54,6 +55,37 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 end.setText(DateUtils.date2String(date));
+            }
+        });
+    }
+
+    // yyyy-MM-dd HH:mm
+    protected void initDetailTime(Context context,final TextView star, final TextView end) {
+        //时间选择器
+        pvTime = new TimePickerView(context, TimePickerView.Type.ALL);
+        pvTime.setTime(new Date());
+        pvTime.setCyclic(true);
+        pvTime.setCancelable(true);
+        //时间选择后回调
+        pvTime.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
+
+            @Override
+            public void onTimeSelect(Date date) {
+                star.setText(DateUtils.date2StringDetail(date));
+                Log.e("a","--------");
+            }
+        });
+
+        pvTime2 = new TimePickerView(context, TimePickerView.Type.ALL);
+        pvTime2.setTime(new Date());
+        pvTime2.setCyclic(true);
+        pvTime2.setCancelable(true);
+        //时间选择后回调
+        pvTime2.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
+
+            @Override
+            public void onTimeSelect(Date date) {
+                end.setText(DateUtils.date2StringDetail(date));
             }
         });
     }

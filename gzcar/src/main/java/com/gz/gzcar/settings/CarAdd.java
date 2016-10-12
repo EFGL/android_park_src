@@ -70,7 +70,6 @@ public class CarAdd extends BaseActivity {
 
     private void initMypull() {
         ArrayList<String> typeList = new ArrayList<>();
-        typeList.add("临时车");
         typeList.add("固定车");
         typeList.add("探亲车");
         mCartype.setPopList(typeList);

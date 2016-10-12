@@ -70,7 +70,7 @@ public class PrizeFragment extends BaseFragment {
     private void initViews() {
 
         //时间选择器
-     initTime(getContext(),mStartTime,mEndTime);
+        initDetailTime(getContext(), mStartTime, mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -90,7 +90,7 @@ public class PrizeFragment extends BaseFragment {
                 if (carNum.length() == 0) {
                     try {
                         List<FreeInfoTable> all = db.selector(FreeInfoTable.class).findAll();
-                        if (allData!=null){
+                        if (allData != null) {
 
                             allData.clear();
                             allData.addAll(all);
@@ -110,7 +110,7 @@ public class PrizeFragment extends BaseFragment {
 
         RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
-        if(allData!=null){
+        if (allData != null) {
 
             myAdapter = new MyAdapter();
             rcy.setAdapter(myAdapter);
@@ -130,15 +130,14 @@ public class PrizeFragment extends BaseFragment {
     }
 
 
-
     @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_money_starttime:
-               startTimeShow();
+                startTimeShow();
                 break;
             case R.id.et_money_endtime:
-               endTimeShow();
+                endTimeShow();
                 break;
 
             case R.id.btn_money_search:
@@ -150,21 +149,21 @@ public class PrizeFragment extends BaseFragment {
                 if (TextUtils.isEmpty(carNum)) {
                     try {
                         List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
-                                .where("in_time", ">", dateFormat.parse(start))
-                                .and("out_time", "<", dateFormat.parse(end))
+                                .where("in_time", ">", dateFormatDetail.parse(start))
+                                .and("out_time", "<", dateFormatDetail.parse(end))
 //                            .and("car_no","=",carNum)
                                 .findAll();
 
 //                        Log.e("mm", "all.size==" + allData.size());
 
-                        if (allData!=null&&all.size()>0){
+                        if (allData != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
-                        }else{
-                            T.showShort(getContext(),"未查到相关数据");
-                            if (allData!=null){
+                        } else {
+                            T.showShort(getContext(), "未查到相关数据");
+                            if (allData != null) {
 
                                 allData.clear();
                                 allData = db.selector(FreeInfoTable.class).findAll();
@@ -181,21 +180,21 @@ public class PrizeFragment extends BaseFragment {
                 } else {
                     try {
                         List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
-                                .where("in_time", ">", dateFormat.parse(start))
-                                .and("out_time", "<", dateFormat.parse(end))
+                                .where("in_time", ">", dateFormatDetail.parse(start))
+                                .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_number", "=", carNum)
                                 .findAll();
 
 //                        Log.e("mm", "all.size==" + allData.size());
 
-                        if (allData!=null&&all.size()>0){
+                        if (allData != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
-                        }else{
-                            T.showShort(getContext(),"未查到相关数据");
-                            if (allData!=null){
+                        } else {
+                            T.showShort(getContext(), "未查到相关数据");
+                            if (allData != null) {
 
                                 allData.clear();
                                 allData = db.selector(FreeInfoTable.class).findAll();
@@ -212,21 +211,19 @@ public class PrizeFragment extends BaseFragment {
                 }
 
 
-
-
                 break;
         }
     }
 
-    private void sumMoney(){
+    private void sumMoney() {
 
         double toteMoney = 0;
         for (int i = 0; i < allData.size(); i++) {
 
             double money = allData.get(i).getMoney();
-            toteMoney+=money;
+            toteMoney += money;
         }
-        mMoney.setText("合计金额:"+toteMoney);
+        mMoney.setText("合计金额:" + toteMoney);
     }
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
@@ -243,19 +240,19 @@ public class PrizeFragment extends BaseFragment {
         public void onBindViewHolder(MyHolder holder, int position) {
 
             FreeInfoTable free = allData.get(position);
-            holder.mId.setText(position+1+"");
+            holder.mId.setText(position + 1 + "");
             holder.mCarNum.setText(free.getCarNumber());
-            holder.mMoney.setText(free.getMoney()+"");
+            holder.mMoney.setText(free.getMoney() + "");
             holder.mParkingtime.setText(free.getParkTime());
             holder.mType.setText(free.getType());
             Date inTime = free.getInTime();
-            if (inTime!=null){
+            if (inTime != null) {
 
-                holder.mInTime.setText(dateFormat.format(inTime));
+                holder.mInTime.setText(dateFormatDetail.format(inTime));
             }
-            if (free.getOutTime()!=null){
+            if (free.getOutTime() != null) {
 
-                holder.mOuttime.setText(dateFormat.format(free.getOutTime()));
+                holder.mOuttime.setText(dateFormatDetail.format(free.getOutTime()));
             }
 
             free = null;
@@ -295,7 +292,7 @@ public class PrizeFragment extends BaseFragment {
 
     public String getTime(Date date) {
 
-        return dateFormat.format(date);
+        return dateFormatDetail.format(date);
     }
 
     @Override

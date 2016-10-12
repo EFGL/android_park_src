@@ -24,7 +24,6 @@ import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.FreeInfoTable;
-import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
@@ -62,12 +61,12 @@ public class MainActivity extends BaseActivity {
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     //摄像机IP
-    static String inCameraIp = "192.168.10.202";
-    static String outCameraIp = "192.168.10.203";
-    //static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
-    // static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
-    static camera inCamera = new camera("in", inCameraIp);
-    static camera outCamera = new camera("out", outCameraIp);
+//    static String inCameraIp = "192.168.10.202";
+//    static String outCameraIp = "192.168.10.203";
+    static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
+     static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
+//    static camera inCamera = new camera("in", inCameraIp);
+//    static camera outCamera = new camera("out", outCameraIp);
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌

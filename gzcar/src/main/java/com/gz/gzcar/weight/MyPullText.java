@@ -103,8 +103,22 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
                 String text = mItem.get(i);
                 textView.setText(text);
                 pop.dismiss();
+
+                if (mOnTextChangedListener==null){
+                    return;
+                }else {
+                    mOnTextChangedListener.OnTextChanged();
+                }
             }
         });
+    }
+    OnTextChangedListener mOnTextChangedListener;
+    public void setOnTextChangedListener(OnTextChangedListener listener) {
+        mOnTextChangedListener = listener;
+    }
+
+    public interface OnTextChangedListener {
+        void OnTextChanged();
     }
 
     @Override

@@ -77,7 +77,7 @@ public class RunFragment extends BaseFragment {
     private void initViews() {
 
         //时间选择器
-        initTime(getContext(),mStartTime, mEndTime);
+        initDetailTime(getContext(),mStartTime, mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -161,8 +161,8 @@ public class RunFragment extends BaseFragment {
                 if (TextUtils.isEmpty(carNum)) {
                     try {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormat.parse(start))
-                                .and("out_time", "<", dateFormat.parse(end))
+                                .where("in_time", ">", dateFormatDetail.parse(start))
+                                .and("out_time", "<", dateFormatDetail.parse(end))
 //                            .and("car_no","=",carNum)
                                 .findAll();
 
@@ -191,8 +191,8 @@ public class RunFragment extends BaseFragment {
                 } else {
                     try {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormat.parse(start))
-                                .and("out_time", "<", dateFormat.parse(end))
+                                .where("in_time", ">", dateFormatDetail.parse(start))
+                                .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_no", "=", carNum)
                                 .findAll();
 
@@ -257,11 +257,11 @@ public class RunFragment extends BaseFragment {
             holder.Type.setText(traffic.getCard_type());
             if (traffic.getIn_time() != null) {
 
-                holder.Starttime.setText(dateFormat.format(traffic.getIn_time()));
+                holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
             }
             if (traffic.getOut_time() != null) {
 
-                holder.Endtime.setText(dateFormat.format(traffic.getOut_time()));
+                holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
             }
         }
 
