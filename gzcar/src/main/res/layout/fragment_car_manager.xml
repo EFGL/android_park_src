@@ -24,7 +24,7 @@
             android:background="@drawable/shape_white"
             android:layout_marginLeft="30dp"
             android:singleLine="true"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:id="@+id/carnumber"
             android:layout_width="260dp"
             android:layout_height="wrap_content"

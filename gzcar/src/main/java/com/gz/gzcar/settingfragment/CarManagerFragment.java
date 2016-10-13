@@ -104,16 +104,55 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 String carNum = mCarNumber.getText().toString().trim();
                 String type = mCarType.getText().toString().trim();
 // TODO: 2016/10/12 0012  
-                if (!TextUtils.isEmpty(carNum)) {
-                    if (!TextUtils.isEmpty(type)) {
+                if (type.equals("所有车")) {
+                    // TODO: 2016/10/12 0012
+                    if (TextUtils.isEmpty(carNum)) {
+                        try {
+                            List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                            if (allData != null && all.size() > 0) {
+
+                                allData.clear();
+                                allData.addAll(all);
+                                myAdapter.notifyDataSetChanged();
+                            } else {
+                                T.showShort(getContext(), "未查到相关数据");
+                            }
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
+                                    .where("car_no", "=", carNum)
+                                    .findAll();
+                            if (allData != null && all.size() > 0) {
+
+                                allData.clear();
+                                allData.addAll(all);
+                                myAdapter.notifyDataSetChanged();
+                            } else {
+                                T.showShort(getContext(), "未查到相关数据");
+                            }
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+
+                    if (!TextUtils.isEmpty(carNum)) {
                         try {
                             List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                     .where("car_no", "=", carNum)
                                     .and("car_type", "=", type)
                                     .findAll();
-                            allData.clear();
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
+                            if (allData != null && all.size() > 0) {
+
+                                allData.clear();
+                                allData.addAll(all);
+                                myAdapter.notifyDataSetChanged();
+                            } else {
+                                T.showShort(getContext(), "未查到相关数据");
+                            }
                         } catch (DbException e) {
                             e.printStackTrace();
                         }
@@ -121,37 +160,19 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
                         try {
                             List<CarInfoTable> all = db.selector(CarInfoTable.class)
-                                    .where("car_no", "=", carNum)
+                                    .where("car_type", "=", type)
                                     .findAll();
-                            if (allData != null) {
+                            if (allData != null && all.size() > 0) {
 
                                 allData.clear();
                                 allData.addAll(all);
                                 myAdapter.notifyDataSetChanged();
+                            } else {
+                                T.showShort(getContext(), "未查到相关数据");
                             }
                         } catch (DbException e) {
                             e.printStackTrace();
                         }
-                    }
-                } else if (!TextUtils.isEmpty(type)) {
-                    try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class)
-                                .where("car_type", "=", type)
-                                .findAll();
-                        allData.clear();
-                        allData.addAll(all);
-                        myAdapter.notifyDataSetChanged();
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).findAll();
-                        allData.clear();
-                        allData.addAll(all);
-                        myAdapter.notifyDataSetChanged();
-                    } catch (DbException e) {
-                        e.printStackTrace();
                     }
                 }
 //晋A8888    临时车
