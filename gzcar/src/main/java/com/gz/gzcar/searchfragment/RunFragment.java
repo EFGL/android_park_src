@@ -271,7 +271,6 @@ public class RunFragment extends BaseFragment {
         }
 
     }
-
     class MyHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.item_search_id)
         TextView Id;

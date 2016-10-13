@@ -46,7 +46,9 @@ import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,12 +63,8 @@ public class MainActivity extends BaseActivity {
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     //摄像机IP
-//    static String inCameraIp = "192.168.10.202";
-//    static String outCameraIp = "192.168.10.203";
     static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
      static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
-//    static camera inCamera = new camera("in", inCameraIp);
-//    static camera outCamera = new camera("out", outCameraIp);
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌
@@ -81,12 +79,24 @@ public class MainActivity extends BaseActivity {
     static Button buttonAgainIdentOut;   //出口重新识别
     static Button buttonManualInOpen;    //入口手动起杆
     static Button getButtonManualOutOpen;//出口手动起杆
-    static TextView chargeCarNumber;        //收费信息车号
-    static TextView chargeCarType;          //收费信息车类型
+    public  static TextView chargeCarNumber;        //收费信息车号
+    public  static TextView chargeCarType;          //收费信息车类型
     static TextView chargeParkTime;         //收费信息停车时长
     static TextView chargeMoney;            //收费信息收费金额
     static Button enterCharge;              //确认收费按钮
     static Context context;
+
+    //状态信息
+    static TextView textViewAllPlace;       //总车位
+    static TextView textViewEmptyPlace;     //空闲车位
+    static TextView textViewInCarCount;     //入场数量
+    static TextView textViewOutCarCount;    //出场数量
+    //当班信息
+    static TextView textViewUserName;       //操作员
+    static TextView textViewLoginTime;      //登录长
+    static TextView textViewSumCar;         //当前班费车辆
+    static TextView textViewSumMoney;       //当班收费金额
+
 
     @Bind(R.id.main_setting)
     Button mainSetting;
@@ -132,13 +142,6 @@ public class MainActivity extends BaseActivity {
                 manualPassInFunc();
             }
         });
-//        buttonManualPassOut = (Button) findViewById(R.id.button_manual_Pass_Out);
-//        buttonManualPassOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                inCamera.manualPassOutFunc();
-//            }
-//        });
         buttonAgainIdentIn = (Button) findViewById(R.id.button_againIdent_In);
         buttonAgainIdentIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,9 +178,7 @@ public class MainActivity extends BaseActivity {
                 enterChangeFunc();
             }
         });
-
         showLogin();
-
     }
 
     private void initLogin() {
@@ -206,18 +207,20 @@ public class MainActivity extends BaseActivity {
                 if (spUtils == null) {
                     spUtils = new SPUtils(MainActivity.this, "config");
                 }
-
                 if (spUtils.getString("serverIp")==null){
 
                     spUtils.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
-                }
-                if (spUtils.getString("inCameraIp")==null){
-
                     spUtils.putString("inCameraIp", "192.168.10.203");// 入口相机地址
-                }
-                if (spUtils.getString("outCameraIp")==null){
-
                     spUtils.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+                    spUtils.putInt("allCarPlace",999);                  // 总车位
+                    spUtils.putInt("emptyCarPlace",999);                  // 空闲车位
+                    spUtils.putInt("inCarCount",0);                     // 当天入场车次
+                    spUtils.putInt("outCarCount",0);                     // 当天出厂车次
+                    spUtils.putBoolean("loginStatus",false);             //登陆状态
+                    spUtils.putString("userName","");                //操作员
+                    spUtils.putInt("chargeCarNumer",0);             // 收费车辆
+                    spUtils.putInt("cgargeMoney",0);                // 收费金额
+
                 }
             }
         }.start();
@@ -230,8 +233,8 @@ public class MainActivity extends BaseActivity {
             if (all == null || all.size() < 1) {
 
                 UserTable user = new UserTable();
-                user.setUserName("123");
-                user.setPassword("123");
+                user.setUserName("管理员");
+                user.setPassword("123456a");
                 user.setType("管理员");
                 db.save(user);
 
@@ -314,8 +317,13 @@ public class MainActivity extends BaseActivity {
             if (all.size() > 0) {
                 T.showShort(this, "count==" + all.size());
                 String type = all.get(0).getType();
-
-//                进入主页面
+                spUtils.putString("userName",userName);
+                spUtils.putBoolean("loginStatus",true);
+                spUtils.putInt("chagerCarNumber",0);
+                spUtils.putInt("chargeMoney",0);
+                SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                spUtils.putString("loginTime",format.format(new Date()));
+                //进入主页面
                 if (type.equals("管理员")) {
                     mainSetting.setVisibility(View.VISIBLE);
                 } else if (type.equals("操作员")) {
@@ -452,18 +460,22 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+    //更新状态信息
+    private  void upStatusInfoDisp(){
 
+    }
     //确认收费
     private void enterChangeFunc() {
-
-        if (chargeCarNumber.getText().length() == 0) {
+        String ParkTime = chargeParkTime.getText().toString().toString();
+        if (ParkTime.indexOf("无入场记录") >0 || chargeCarNumber.getText().length() == 0 ) {
             T.showShort(context, "无可收费车辆");
             return;
         }
         if(carInfoProcess.saveOutTempCar(outPortPicBuffer))
         {
-            T.showShort(context, "收费完成");
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
         }
+        T.showShort(context, "收费完成");
         //更新出口收费信息
         chargeCarNumber.setText("");
         chargeCarType.setText("");
@@ -501,7 +513,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    //入口手动起杆
+    //入口确认起杆
     private void manualInOpenFunc() {
         T.showShort(context, "已完成确认通行");
         byte[] picBuffer = inCamera.CapturePic();
@@ -509,40 +521,42 @@ public class MainActivity extends BaseActivity {
             T.showShort(context, "拍照失败，请重新操作");
         } else {
             try {
+                if(plateTextIn.getText().toString().contentEquals("待通行")){
+                    T.showShort(context, "无可确认通行车辆");
+                    return;
+                }
                 carInfoProcess.saveInTempCar(plateTextIn.getText().toString(),picBuffer);
             } catch (DbException e) {
                 e.printStackTrace();
             }
         }
+        plateTextIn.setText("待通行");
         T.showShort(context, "已完成确认通行");
     }
-
-    //出口手动起杆
+    //出口手免费通行
     private void manualOutOpenFunc() {
-        //拍照
-        outCamera.CapturePic();
-        //起杆
-        outCamera.openGate();
-        outCamera.playAudio("46");   //一路顺风
-        //显示
-        String[] dispInfo = new String[]{"车牌识别  一车一杆  减速慢行", "手动通行", "一路顺风", "智能停车场"};
-        outCamera.ledDisplay(dispInfo);
-        T.showShort(context, "出口手动起杆");
+        T.showShort(context, "免费通行");
+        String ParkTime = chargeParkTime.getText().toString().toString();
+        if (ParkTime.indexOf("无入场记录") >0 || chargeCarNumber.getText().length() == 0 )  {
+            //拍照
+            byte[] picBuffer = outCamera.CapturePic();
+            carInfoProcess.saveOutFreeCar(picBuffer);
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
+        }
+        else
+        {
+            chargeInfo.setMoney(0);
+            chargeInfo.setType("免费车");
+            carInfoProcess.saveOutTempCar(outPortPicBuffer);
+            outCamera.playAudio(camera.AudioList.get("一路顺风"));
+            T.showShort(context, "已放行");
+        }
+        //更新出口收费信息
+        chargeCarNumber.setText("");
+        chargeCarType.setText("");
+        chargeParkTime.setText("");
+        chargeMoney.setText("待通行");
     }
-
-//    public void setting(View view) {
-//        startActivity(new Intent(this, SettingActivity.class));
-//    }
-//
-//    public void query(View view) {
-//        startActivity(new Intent(this, SrarchActivity.class));
-//    }
-//
-//    public void exchange(View view) {
-//        startActivity(new Intent(this, LoginActivity.class));
-//    }
-
-
     @Override
     public void onBackPressed() {
         final NormalDialog dialog = new NormalDialog(mContext);
