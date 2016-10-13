@@ -166,7 +166,7 @@ public class SelectPassOut extends BaseActivity {
 
                 try {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
-                    Log.e("ende", "allData==" + allData.toString());
+//                    Log.e("ende", "allData==" + allData.toString());
                     if (allData != null && allData.size() > 0) {
                         allData.clear();
                         allData.addAll(all);
