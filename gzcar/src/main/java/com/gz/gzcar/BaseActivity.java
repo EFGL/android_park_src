@@ -58,7 +58,12 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         pvTime2 = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
-        pvTime2.setTime(new Date());
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        int year = calendar.get(Calendar.YEAR);
+//        int month = calendar.get(Calendar.MONTH)+1;
+//        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear()+1)+"-"+DateUtils.getCurrentMonth()+"-"+DateUtils.getCurrentDay()));
         pvTime2.setCyclic(true);
         pvTime2.setCancelable(true);
         //时间选择后回调

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
@@ -55,7 +57,6 @@ public class RunFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_search_run, container, false);
-
         ButterKnife.bind(this, view);
         return view;
     }
@@ -64,6 +65,13 @@ public class RunFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
+        String end = DateUtils.getCurrentDataDetailStr();
+        Log.e("ende","start=="+start);
+        Log.e("ende","end=="+end);
+        mStartTime.setText(start);
+        mEndTime.setText(end);
+        // TODO: 2016/10/13 0013
         initData();
     }
 
@@ -255,14 +263,14 @@ public class RunFragment extends BaseFragment {
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCard_type());
-            if (traffic.getIn_time() != null) {
-
+            if (traffic.getIn_time() != null)
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
-            }
-            if (traffic.getOut_time() != null) {
-
+            else
+                holder.Starttime.setText("未入场");
+            if (traffic.getOut_time() != null)
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-            }
+            else
+                holder.Starttime.setText("未出场");
         }
 
         @Override
