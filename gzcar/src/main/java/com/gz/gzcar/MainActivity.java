@@ -47,7 +47,9 @@ import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -177,10 +179,7 @@ public class MainActivity extends BaseActivity {
                 enterChangeFunc();
             }
         });
-
-
         showLogin();
-
     }
 
     private void initLogin() {
@@ -220,6 +219,8 @@ public class MainActivity extends BaseActivity {
                     spUtils.putInt("outCarCount",0);                     // 当天出厂车次
                     spUtils.putBoolean("loginStatus",false);             //登陆状态
                     spUtils.putString("userName","");                //操作员
+                    spUtils.putInt("chargeCarNumer",0);             // 收费车辆
+                    spUtils.putInt("cgargeMoney",0);                // 收费金额
 
                 }
             }
@@ -317,8 +318,13 @@ public class MainActivity extends BaseActivity {
             if (all.size() > 0) {
                 T.showShort(this, "count==" + all.size());
                 String type = all.get(0).getType();
-
-//                进入主页面
+                spUtils.putString("userName",userName);
+                spUtils.putBoolean("loginStatus",true);
+                spUtils.putInt("chagerCarNumber",0);
+                spUtils.putInt("chargeMoney",0);
+                SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                spUtils.putString("loginTime",format.format(new Date()));
+                //进入主页面
                 if (type.equals("管理员")) {
                     mainSetting.setVisibility(View.VISIBLE);
                 } else if (type.equals("操作员")) {
@@ -455,7 +461,10 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+    //更新状态信息
+    private  void upStatusInfoDisp(){
 
+    }
     //确认收费
     private void enterChangeFunc() {
         String ParkTime = chargeParkTime.getText().toString().toString();
