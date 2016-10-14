@@ -1,7 +1,5 @@
 package com.gz.gzcar.utils;
 
-import android.util.Log;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -66,7 +64,7 @@ public class DateUtils {
         calendar.setTimeInMillis(System.currentTimeMillis());
         return calendar.get(Calendar.YEAR);
     }
-    // 获取当前月份
+    // 获取当前月份 前面默认没0   eg:03 - 3
     public static int getCurrentMonth(){
         if (calendar==null){
 
@@ -93,7 +91,7 @@ public class DateUtils {
         calendar.setTimeInMillis(System.currentTimeMillis());
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
-    // 获取当前分钟
+    // 获取当前分钟  前面默认没0  10:07 - 10:7
     public static int getCurrentinute(){
         if (calendar==null){
 
@@ -105,15 +103,7 @@ public class DateUtils {
     }
     // 获取当前时间字符串表现形式 yyyy-MM-dd
     public static String getCurrentDataStr(){
-        if (calendar==null){
-
-            calendar = Calendar.getInstance();
-        }
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        return year+"-"+month+"-"+day;
+        return date2String(getCurrentData());
     }
 
     // 获取当前时间Date形式 yyyy-MM-dd
@@ -131,18 +121,8 @@ public class DateUtils {
 
     // 获取当前时间字符串表现形式 yyyy-MM-dd HH:mm
     public static String getCurrentDataDetailStr(){
-        if (calendar==null){
 
-            calendar = Calendar.getInstance();
-        }
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        Log.e("11111111111111111", "month==" + month);
-        return year+"-"+month+"-"+day+" "+hours+":"+minute;
+        return date2StringDetail(getCurrentDataDetail());
     }
 
     // 获取当前时间Date形式 yyyy-MM-dd HH:mm

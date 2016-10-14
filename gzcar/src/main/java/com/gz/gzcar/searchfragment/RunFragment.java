@@ -26,6 +26,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -67,12 +68,12 @@ public class RunFragment extends BaseFragment {
 
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
-        Log.e("ende","start=="+start);
-        Log.e("ende","end=="+end);
+//        Log.e("ende", "start==" + start);
+//        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
         // TODO: 2016/10/13 0013
-        initData(start,end);
+        initData();
     }
 
     @Override
@@ -84,7 +85,7 @@ public class RunFragment extends BaseFragment {
     private void initViews() {
 
         //时间选择器
-        initDetailTime(getContext(),mStartTime, mEndTime);
+        initDetailTime(getContext(), mStartTime, mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,8 +104,13 @@ public class RunFragment extends BaseFragment {
 //                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).findAll();
-                        if (allData!=null){
+//                      List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).findAll();
+                        String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+                        Date date = DateUtils.string2DateDetail(today);
+                        List<TrafficInfoTable> all =db.selector(TrafficInfoTable.class)
+                                .where("update_time", ">", date)
+                                .findAll();
+                        if (allData != null) {
 
                             allData.clear();
                             allData.addAll(all);
@@ -129,12 +135,16 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    private void initData(String startTime,String endTime) {
-
-
+    private void initData() {
+//        DateUtils.string2DateDetail(DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00");
+        String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+        Date date = DateUtils.string2DateDetail(today);
         try {
-            allData = db.selector(TrafficInfoTable.class).findAll();
-//            Log.e("my", "alldata==" + allData.toString());
+//            allData = db.selector(TrafficInfoTable.class).findAll();
+            allData = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", date)
+                    .findAll();
+            Log.e("my", "alldata==" + allData.toString());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
@@ -153,7 +163,7 @@ public class RunFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.et_run_starttime:
 
-               startTimeShow();
+                startTimeShow();
                 break;
             case R.id.et_run_endtime:
 
@@ -175,7 +185,7 @@ public class RunFragment extends BaseFragment {
 
 //                        Log.e("mm", "all.size==" + allData.size());
 
-                        if (all!=null&&all.size() > 0) {
+                        if (all != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
@@ -184,7 +194,11 @@ public class RunFragment extends BaseFragment {
                             if (allData != null) {
 
                                 allData.clear();
-                                allData = db.selector(TrafficInfoTable.class).findAll();
+                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+                                Date date = DateUtils.string2DateDetail(today);
+                                allData = db.selector(TrafficInfoTable.class)
+                                        .where("update_time", ">", date)
+                                        .findAll();
                                 myAdapter.notifyDataSetChanged();
                             }
 
@@ -205,16 +219,21 @@ public class RunFragment extends BaseFragment {
 
 //                        Log.e("mm", "all.size==" + allData.size());
 
-                        if (all!=null&&all.size() > 0) {
+                        if (all != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                         } else {
                             T.showShort(getContext(), "未查到相关数据");
-                            if (allData!=null){
+                            if (allData != null) {
 
                                 allData.clear();
-                                allData = db.selector(TrafficInfoTable.class).findAll();
+                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+//                                Log.e("ende", "today==" + today);
+                                Date date = DateUtils.string2DateDetail(today);
+                                allData = db.selector(TrafficInfoTable.class)
+                                        .where("update_time", ">", date)
+                                        .findAll();
                                 myAdapter.notifyDataSetChanged();
                             }
                         }
@@ -262,14 +281,23 @@ public class RunFragment extends BaseFragment {
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCard_type());
-            if (traffic.getIn_time() != null)
+            Date in_time = traffic.getIn_time();
+            if (traffic.getIn_time()==null){
+                Log.e("ende","in_time==null");
+            }
+            if (traffic.getIn_time()!=null){
+                Log.e("ende","in_time!=null");
+            }
+            if (traffic.getIn_time()!=null){
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
-            else
+            }else{
                 holder.Starttime.setText("未入场");
-            if (traffic.getOut_time() != null)
+            }
+            if (traffic.getOut_time() != null){
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-            else
-                holder.Starttime.setText("未出场");
+            }else{
+                holder.Endtime.setText("未出场");
+            }
         }
 
         @Override
@@ -278,6 +306,7 @@ public class RunFragment extends BaseFragment {
         }
 
     }
+
     class MyHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.item_search_id)
         TextView Id;
