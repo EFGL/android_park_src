@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,7 +128,7 @@ public class RunFragment extends BaseFragment {
 
         try {
             allData = db.selector(TrafficInfoTable.class).findAll();
-//            Log.e("my", "alldata==" + allData.toString());
+             Log.e("my", "alldata==" + allData.toString());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
@@ -256,7 +257,6 @@ public class RunFragment extends BaseFragment {
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCard_type());
             if (traffic.getIn_time() != null) {
-
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
             }
             if (traffic.getOut_time() != null) {

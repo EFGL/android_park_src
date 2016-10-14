@@ -175,11 +175,11 @@ public class camera {
         put("此卡可用日期","145");
     }};
     public enum msgType{PLATE,PIC,STREAM};
+
     //手动出场
     public void manualPassOutFunc(){
         Log.i("button:", "manualPassOutFunc");
     }
-
     public class PlateInfo{
         public msgType msgType;
         String name;

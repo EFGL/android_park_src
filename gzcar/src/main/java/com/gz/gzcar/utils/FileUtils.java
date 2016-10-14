@@ -95,7 +95,7 @@ public class FileUtils {
             e.printStackTrace();
             return  null;
         }
-        return  path+fileName;
+        return  SDPATH+path+fileName;
     }
 
 }

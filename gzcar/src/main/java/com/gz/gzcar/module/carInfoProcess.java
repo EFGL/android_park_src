@@ -591,6 +591,66 @@ public class carInfoProcess {
             }
         return true;
     }
+    /**
+     * @param id 通行记录id
+     * @return
+     */
+    public static boolean processManualSelectOut(int id,byte[] picBuffer){
+        String[] dispInfo = new String[]{null, null,null,null};
+        //保存记录
+        try {
+            TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("id", "=", id).findFirst();
+            if(trafficInfo == null) {
+                return false;
+            }
+            //判断收费为0时是否需要确认
+            //写收费记录表
+            MainActivity.chargeInfo.setCarNumber(trafficInfo.getCar_no());
+            MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
+            MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
+            MainActivity.chargeInfo.setOutTime(new Date());
+            long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
+            if(timeLong<=0)
+            {
+                timeLong = 1;
+            }
+            Double money = moneyCount(timeLong);
+            MainActivity.chargeInfo.setMoney(money);
+            String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
+            MainActivity.chargeInfo.setParkTime(timeFormat);
+            //初始化显示屏内容
+            //车类型
+            dispInfo[0] = trafficInfo.getCard_type();
+            //车号
+            dispInfo[1] = trafficInfo.getCar_no();
+            //停车时长
+            dispInfo[2] = " 停车：" + timeFormat;
+            //缴费
+            dispInfo[3] =  String.format("请缴费: %.1f元",MainActivity.chargeInfo.getMoney());
+            //显示
+            outCamera.ledDisplay(dispInfo);
+            boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
+            if(money == 0) {
+                if (!tempCarFree) {
+                    saveOutTempCar(picBuffer);
+                    outCamera.playAudio(camera.AudioList.get("一路顺风"));
+                    return true;
+                }
+            }
+            //延时播放语音
+            final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney());
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    outCamera.playAudio(audioString);
+                }
+            }, 5000);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
     //保存临时收费车辆记录
     public static boolean saveOutTempCar(byte[] picBuffer){
         TrafficInfoTable trafficInfo = null;

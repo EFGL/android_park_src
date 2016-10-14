@@ -1,5 +1,6 @@
 package com.gz.gzcar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -126,11 +127,12 @@ public class SelectPassOut extends BaseActivity {
 
     @OnClick({R.id.out_nocarnum, R.id.out_1hour, R.id.out_2hour, R.id.out_4hour, R.id.out_all_car, R.id.out_no_pass, R.id.out_cancel, R.id.out_ok})
     public void onClick(View view) {
+        Intent intent = new Intent();
+        int id;
         switch (view.getId()) {
             case R.id.out_nocarnum:
-
                 try {
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", null).findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").findAll();
                     if (allData == null || all == null || all.size() < 1) {
                         T.showShort(this, "未查到相关数据");
                     } else {
@@ -142,11 +144,9 @@ public class SelectPassOut extends BaseActivity {
                     T.showShort(this, "查询异常");
                     e.printStackTrace();
                 }
-
                 break;
             case R.id.out_1hour:
 //                T.showShort(this, "1小时内");
-
                 searchWithTime(1, 0);
                 break;
             case R.id.out_2hour:
@@ -163,7 +163,6 @@ public class SelectPassOut extends BaseActivity {
                 break;
             case R.id.out_no_pass:
 //                T.showShort(this, "所有未出场车辆");
-
                 try {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
 //                    Log.e("ende", "allData==" + allData.toString());
@@ -180,27 +179,19 @@ public class SelectPassOut extends BaseActivity {
                 }
                 break;
             case R.id.out_cancel:
-                finish();
+                finish();//结束当前的activity的生命周期
                 break;
             case R.id.out_ok:
                 if (clickItem == -1) {
                     T.showShort(this, "未选择车辆");
                     return;
                 } else {
-                    int id = allData.get(clickItem).getId();
-                    try {
-                        TrafficInfoTable traffic = db.findById(TrafficInfoTable.class, id);
-                        Date date = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis())));
-                        traffic.setOut_time(date);
-                        db.update(traffic, "out_time");
-
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
-                        allData.clear();
-                        allData.addAll(all);
-                        myAdapter.notifyDataSetChanged();
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
+                    id = allData.get(clickItem).getId();
+                        intent = new Intent();
+                        intent.putExtra("id", id);
+                        //通过Intent对象返回结果，调用setResult方法
+                        setResult(1,intent);
+                        finish();//结束当前的activity的生命周期
                 }
                 break;
         }
@@ -209,12 +200,14 @@ public class SelectPassOut extends BaseActivity {
     private void searchWithTime(int start, int end) {
         Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
         Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000)));
+
         Log.e("ende", "befor==" + befor + "：：current==" + current);
 
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("in_time", ">", befor)
                     .and("in_time", "<", current)
+                    .and("out_time","=",null)
                     .findAll();
             if (allData == null || all == null || all.size() < 1) {
                 T.showShort(this, "未查到相关数据");
@@ -259,7 +252,8 @@ public class SelectPassOut extends BaseActivity {
                 public void onClick(View v) {
                     clickItem = position;
                     myAdapter.notifyDataSetChanged();
-                    Glide.with(SelectPassOut.this).load(allData.get(position).getIn_image()).error(R.drawable.ic_img_car).into(outPhoto);
+                    String picPath = allData.get(position).getIn_image();
+                    Glide.with(SelectPassOut.this).load(picPath).error(R.drawable.ic_img_car).into(outPhoto);
                     outPhCarnum.setText(allData.get(position).getCar_no() + "");
                 }
             });
@@ -270,7 +264,6 @@ public class SelectPassOut extends BaseActivity {
             return allData.size();
         }
     }
-
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_pass_out_carnum)
@@ -282,7 +275,6 @@ public class SelectPassOut extends BaseActivity {
 
         public MyViewHolder(View itemView) {
             super(itemView);
-
             ButterKnife.bind(this, itemView);
         }
     }
