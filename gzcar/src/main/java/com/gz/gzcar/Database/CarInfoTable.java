@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * 车辆信息信息表
- * <p/>
+ *
  * Created by Endeavor on 2016/8/18.
  */
 
@@ -87,10 +87,51 @@ public class CarInfoTable implements Comparable {
     @Column(name = "park_code")
     private String park_code;
 
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    @Column(name = "modife_flage")
+    private boolean modifeFlage;
+
+    @Column(name = "user_name")
+    private String userName;
+
     @Override
     public int compareTo(Object andother) {
 
         return ((CarInfoTable) andother).getId() - this.id;
+    }
+
+    @Override
+    public String toString() {
+        return "CarInfoTable{" +
+                "id=" + id +
+                ", carId='" + carId + '\'' +
+                ", fee_flag='" + fee_flag + '\'' +
+                ", garage_code='" + garage_code + '\'' +
+                ", note='" + note + '\'' +
+                ", car_no='" + car_no + '\'' +
+                ", carWei='" + carWei + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", car_type='" + car_type + '\'' +
+                ", card_no='" + card_no + '\'' +
+                ", label_no='" + label_no + '\'' +
+                ", person_name='" + person_name + '\'' +
+                ", person_sex='" + person_sex + '\'' +
+                ", person_tel='" + person_tel + '\'' +
+                ", person_address='" + person_address + '\'' +
+                ", person_idcard='" + person_idcard + '\'' +
+                ", car_color='" + car_color + '\'' +
+                ", stop_date=" + stop_date +
+                ", start_date=" + start_date +
+                ", car_image='" + car_image + '\'' +
+                ", created_at=" + created_at +
+                ", status='" + status + '\'' +
+                ", park_code='" + park_code + '\'' +
+                ", updateTime=" + updateTime +
+                ", modifeFlage=" + modifeFlage +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 
     public int getId() {
@@ -275,5 +316,29 @@ public class CarInfoTable implements Comparable {
 
     public void setPark_code(String park_code) {
         this.park_code = park_code;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public boolean isModifeFlage() {
+        return modifeFlage;
+    }
+
+    public void setModifeFlage(boolean modifeFlage) {
+        this.modifeFlage = modifeFlage;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

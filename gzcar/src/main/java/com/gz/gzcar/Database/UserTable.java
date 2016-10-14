@@ -5,8 +5,8 @@ import org.xutils.db.annotation.Table;
 
 /**
  * Created by Endeavor on 2016/9/8.
- * <p/>
- * 设置 - 车位管理
+ *
+ * 用户表
  */
 @Table(name = "user")
 public class UserTable {

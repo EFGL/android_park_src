@@ -18,6 +18,7 @@ import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
@@ -56,7 +57,6 @@ public class RunFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_search_run, container, false);
-
         ButterKnife.bind(this, view);
         return view;
     }
@@ -65,13 +65,19 @@ public class RunFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        initData();
+        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
+        String end = DateUtils.getCurrentDataDetailStr();
+        Log.e("ende","start=="+start);
+        Log.e("ende","end=="+end);
+        mStartTime.setText(start);
+        mEndTime.setText(end);
+        // TODO: 2016/10/13 0013
+        initData(start,end);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         initViews();
     }
 
@@ -123,12 +129,12 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    private void initData() {
+    private void initData(String startTime,String endTime) {
 
 
         try {
             allData = db.selector(TrafficInfoTable.class).findAll();
-             Log.e("my", "alldata==" + allData.toString());
+//            Log.e("my", "alldata==" + allData.toString());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
@@ -256,13 +262,14 @@ public class RunFragment extends BaseFragment {
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCard_type());
-            if (traffic.getIn_time() != null) {
+            if (traffic.getIn_time() != null)
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
-            }
-            if (traffic.getOut_time() != null) {
-
+            else
+                holder.Starttime.setText("未入场");
+            if (traffic.getOut_time() != null)
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-            }
+            else
+                holder.Starttime.setText("未出场");
         }
 
         @Override

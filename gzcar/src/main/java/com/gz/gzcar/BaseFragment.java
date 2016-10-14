@@ -16,8 +16,8 @@ import java.util.Date;
  */
 
 public class BaseFragment extends Fragment {
-//    protected  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    protected  SimpleDateFormat dateFormatDetail = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    //    protected  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    protected SimpleDateFormat dateFormatDetail = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
 
@@ -29,10 +29,10 @@ public class BaseFragment extends Fragment {
         pvTime2.show();
     }
 
-    protected void initTime(Context context,final TextView star, final TextView end) {
+    protected void initTime(Context context, final TextView star, final TextView end) {
         //时间选择器
         pvTime = new TimePickerView(context, TimePickerView.Type.YEAR_MONTH_DAY);
-        pvTime.setTime(new Date());
+        pvTime.setTime(new Date(System.currentTimeMillis()));
         pvTime.setCyclic(true);
         pvTime.setCancelable(true);
         //时间选择后回调
@@ -41,7 +41,7 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 star.setText(DateUtils.date2String(date));
-                Log.e("a","--------");
+                Log.e("a", "--------");
             }
         });
 
@@ -60,10 +60,18 @@ public class BaseFragment extends Fragment {
     }
 
     // yyyy-MM-dd HH:mm
-    protected void initDetailTime(Context context,final TextView star, final TextView end) {
+    protected void initDetailTime(Context context, final TextView star, final TextView end) {
         //时间选择器
         pvTime = new TimePickerView(context, TimePickerView.Type.ALL);
-        pvTime.setTime(new Date());
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        int year = calendar.get(Calendar.YEAR);
+//        int month = calendar.get(Calendar.MONTH)+1;
+//        int day = calendar.get(Calendar.DAY_OF_MONTH);
+//        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+//        int minute = calendar.get(Calendar.MINUTE);
+//        Log.e("11111111111111111", "month==" + month);
+        pvTime.setTime(DateUtils.string2DateDetail(DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00"));
         pvTime.setCyclic(true);
         pvTime.setCancelable(true);
         //时间选择后回调
@@ -72,7 +80,7 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 star.setText(DateUtils.date2StringDetail(date));
-                Log.e("a","--------");
+                Log.e("a", "--------");
             }
         });
 

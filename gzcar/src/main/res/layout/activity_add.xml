@@ -141,10 +141,10 @@
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:textSize="18sp"
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionNext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -167,7 +167,6 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:textSize="18sp"
                     android:id="@+id/add_phone"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
@@ -176,7 +175,8 @@
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionNext"
                     android:inputType="phone"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
@@ -201,7 +201,6 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:textSize="18sp"
                     android:id="@+id/add_address"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
@@ -209,7 +208,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionDone"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -239,8 +239,8 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_white"
                     android:gravity="center"
-                    android:textSize="18sp"
-                    android:hint="起始时间" />
+                    android:hint="起始时间"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -265,8 +265,8 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_white"
                     android:gravity="center"
-                    android:textSize="18sp"
-                    android:hint="结束时间" />
+                    android:hint="结束时间"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 

@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  *
  * 通行记录表
- * 2016-09-26
+ *
  * Created by Endeavor on 2016/8/19.
  */
 @Table(name = "record_in_out")
@@ -70,6 +70,43 @@ public class TrafficInfoTable {
 
     @Column(name = "out_time_var")
     private Date out_time_var;
+
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    @Column(name = "modife_flage")
+    private boolean modifeFlage;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Override
+    public String toString() {
+        return "TrafficInfoTable{" +
+                "id=" + id +
+                ", pass_no='" + pass_no + '\'' +
+                ", card_type='" + card_type + '\'' +
+                ", car_no='" + car_no + '\'' +
+                ", in_time=" + in_time +
+                ", in_door='" + in_door + '\'' +
+                ", in_image='" + in_image + '\'' +
+                ", Status='" + Status + '\'' +
+                ", out_time=" + out_time +
+                ", out_door='" + out_door + '\'' +
+                ", out_image='" + out_image + '\'' +
+                ", part_time='" + part_time + '\'' +
+                ", created_at=" + created_at +
+                ", fee='" + fee + '\'' +
+                ", end_date='" + end_date + '\'' +
+                ", person_address='" + person_address + '\'' +
+                ", created_at_var='" + created_at_var + '\'' +
+                ", in_time_var='" + in_time_var + '\'' +
+                ", out_time_var=" + out_time_var +
+                ", updateTime=" + updateTime +
+                ", modifeFlage=" + modifeFlage +
+                ", userName='" + userName + '\'' +
+                '}';
+    }
 
     public int getId() {
         return id;
@@ -223,28 +260,27 @@ public class TrafficInfoTable {
         this.out_time_var = out_time_var;
     }
 
-    @Override
-    public String toString() {
-        return "TrafficInfoTable{" +
-                "id=" + id +
-                ", pass_no='" + pass_no + '\'' +
-                ", card_type='" + card_type + '\'' +
-                ", car_no='" + car_no + '\'' +
-                ", in_time=" + in_time +
-                ", in_door='" + in_door + '\'' +
-                ", in_image='" + in_image + '\'' +
-                ", Status='" + Status + '\'' +
-                ", out_time=" + out_time +
-                ", out_door='" + out_door + '\'' +
-                ", out_image='" + out_image + '\'' +
-                ", part_time='" + part_time + '\'' +
-                ", created_at=" + created_at +
-                ", fee='" + fee + '\'' +
-                ", end_date='" + end_date + '\'' +
-                ", person_address='" + person_address + '\'' +
-                ", created_at_var='" + created_at_var + '\'' +
-                ", in_time_var='" + in_time_var + '\'' +
-                ", out_time_var=" + out_time_var +
-                '}';
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public boolean getModifeFlage() {
+        return modifeFlage;
+    }
+
+    public void setModifeFlage(boolean modifeFlage) {
+        this.modifeFlage = modifeFlage;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

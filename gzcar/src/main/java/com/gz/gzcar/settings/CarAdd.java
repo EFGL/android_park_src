@@ -171,6 +171,7 @@ public class CarAdd extends BaseActivity {
                 break;
             case R.id.add_endtime:
                 endTimeShow();
+//                Log.e("ende","当前时间："+year+"-"+month+"-"+day+" "+hours+":"+minute);
                 break;
             case R.id.add_btn_cancle:
                 finish();
@@ -180,5 +181,4 @@ public class CarAdd extends BaseActivity {
                 break;
         }
     }
-
 }

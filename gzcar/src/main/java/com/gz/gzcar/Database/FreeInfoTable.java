@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * 收费记录表
- * <p/>
+ *
  * Created by Endeavor on 2016/8/23.
  */
 @Table(name = "charge_record")
@@ -33,6 +33,31 @@ public class FreeInfoTable {
 
     @Column(name = "money")
     private double money;
+
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    @Column(name = "modife_flage")
+    private boolean modifeFlage;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Override
+    public String toString() {
+        return "FreeInfoTable{" +
+                "id=" + id +
+                ", carNumber='" + carNumber + '\'' +
+                ", type='" + type + '\'' +
+                ", inTime=" + inTime +
+                ", outTime=" + outTime +
+                ", parkTime='" + parkTime + '\'' +
+                ", money=" + money +
+                ", updateTime=" + updateTime +
+                ", modifeFlage=" + modifeFlage +
+                ", userName='" + userName + '\'' +
+                '}';
+    }
 
     public int getId() {
         return id;
@@ -90,16 +115,27 @@ public class FreeInfoTable {
         this.money = money;
     }
 
-    @Override
-    public String toString() {
-        return "FreeInfoTable{" +
-                "id=" + id +
-                ", carNumber='" + carNumber + '\'' +
-                ", type='" + type + '\'' +
-                ", inTime=" + inTime +
-                ", outTime=" + outTime +
-                ", parkTime='" + parkTime + '\'' +
-                ", money='" + money + '\'' +
-                '}';
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public boolean getModifeFlage() {
+        return modifeFlage;
+    }
+
+    public void setModifeFlage(boolean modifeFlage) {
+        this.modifeFlage = modifeFlage;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

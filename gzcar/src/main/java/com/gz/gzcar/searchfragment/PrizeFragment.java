@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.FreeInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
@@ -66,6 +68,24 @@ public class PrizeFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
+        String end = DateUtils.getCurrentDataDetailStr();
+        Log.e("ende","start=="+start);
+        Log.e("ende","end=="+end);
+        mStartTime.setText(start);
+        mEndTime.setText(end);
+        // TODO: 2016/10/13 0013
+        initdata();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initViews();
+    }
 
     private void initViews() {
 
@@ -295,18 +315,7 @@ public class PrizeFragment extends BaseFragment {
         return dateFormatDetail.format(date);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        initdata();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initViews();
-    }
 
     @Override
     public void onDestroyView() {
