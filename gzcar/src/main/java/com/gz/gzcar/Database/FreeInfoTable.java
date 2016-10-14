@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * 收费记录表
- * <p/>
+ *
  * Created by Endeavor on 2016/8/23.
  */
 @Table(name = "charge_record")

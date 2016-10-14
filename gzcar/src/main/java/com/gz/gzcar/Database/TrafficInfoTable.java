@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  *
  * 通行记录表
- * 2016-09-26
+ *
  * Created by Endeavor on 2016/8/19.
  */
 @Table(name = "record_in_out")

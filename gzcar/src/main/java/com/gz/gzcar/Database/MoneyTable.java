@@ -5,6 +5,7 @@ import org.xutils.db.annotation.Table;
 
 /**
  * Created by Endeavor on 2016/9/27 0027.
+ * 收费规则表
  */
 @Table(name = "money")
 public class MoneyTable {

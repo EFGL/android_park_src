@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * 车辆信息信息表
- * <p/>
+ *
  * Created by Endeavor on 2016/8/18.
  */
 

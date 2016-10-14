@@ -5,8 +5,8 @@ import org.xutils.db.annotation.Table;
 
 /**
  * Created by Endeavor on 2016/9/8.
- * <p/>
- * 设置 - 车位管理
+ *
+ * 车位表
  */
 @Table(name = "vehicle_seat")
 public class CarWeiTable {
