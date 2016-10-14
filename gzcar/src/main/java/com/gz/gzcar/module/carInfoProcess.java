@@ -90,18 +90,7 @@ public class carInfoProcess {
         }
         return false;
     }
-
-    /**
-     * @param portName 出入口方向
-     * @param carNumber 车号
-     * @param user 操作员
-     * @return
-     */
-    public static boolean processManualOpenFunc(String portName,String carNumber,String user){
-        //保存手动开门记录
-        return true;
-    }
-    /**
+        /**
      * @param carInfo 车辆信息
      * @return 执行状态
      */
@@ -192,11 +181,17 @@ public class carInfoProcess {
                 trafficInfo.setIn_image(null);
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
+                trafficInfo.setUserName(MainActivity.loginUserName);
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(true);
                 db.save(trafficInfo);
             }
             else{
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
+                trafficInfo.setUserName(MainActivity.loginUserName);
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(true);
                 db.update(trafficInfo,"out_time","out_image");
             }
             db.save(trafficInfo);
@@ -304,10 +299,16 @@ public class carInfoProcess {
             trafficInfo.setIn_time(new Date());
             trafficInfo.setIn_image(picPath);
             trafficInfo.setOut_time(null);
+            trafficInfo.setUserName(MainActivity.loginUserName);
+            trafficInfo.setUpdateTime(new Date());
+            trafficInfo.setModifeFlage(true);
             db.save(trafficInfo);
         }else{
             trafficInfo.setIn_time(new Date());
             trafficInfo.setIn_image(picPath);
+            trafficInfo.setUserName(MainActivity.loginUserName);
+            trafficInfo.setUpdateTime(new Date());
+            trafficInfo.setModifeFlage(true);
             db.update(trafficInfo,"in_time","in_image");
         }
         return true;
@@ -359,12 +360,18 @@ public class carInfoProcess {
             trafficInfo.setIn_time(new Date());
             trafficInfo.setOut_time(null);
             trafficInfo.setIn_image(picPath);
+            trafficInfo.setUserName(MainActivity.loginUserName);
+            trafficInfo.setUpdateTime(new Date());
+            trafficInfo.setModifeFlage(true);
             db.save(trafficInfo);
         }
         else
         {
             trafficInfo.setIn_time(new Date());
             trafficInfo.setIn_image(picPath);
+            trafficInfo.setUserName(MainActivity.loginUserName);
+            trafficInfo.setUpdateTime(new Date());
+            trafficInfo.setModifeFlage(true);
             db.update(trafficInfo,"in_time","in_image");
         }
         return true;
@@ -542,6 +549,9 @@ public class carInfoProcess {
                 MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
                 MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
                 MainActivity.chargeInfo.setOutTime(new Date());
+                MainActivity.chargeInfo.setUserName(MainActivity.loginUserName);
+                MainActivity.chargeInfo.setUpdateTime(new Date());
+                MainActivity.chargeInfo.setModifeFlage(true);
                 long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
                 if(timeLong<=0)
                 {
@@ -665,6 +675,9 @@ public class carInfoProcess {
             } else {
                 trafficInfo.setOut_time(MainActivity.chargeInfo.getOutTime());
                 trafficInfo.setOut_image(picPath);
+                trafficInfo.setUserName(MainActivity.loginUserName);
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(true);
                 MyApplication.db.update(trafficInfo, "out_time","out_image");
             }
             //保存收费信息
@@ -698,10 +711,16 @@ public class carInfoProcess {
                 trafficInfo.setCard_type("免费车");
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
+                trafficInfo.setUserName(MainActivity.loginUserName);
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(true);
                 MyApplication.db.save(trafficInfo);
             } else {
                 trafficInfo.setOut_time(MainActivity.chargeInfo.getOutTime());
                 trafficInfo.setOut_image(picPath);
+                trafficInfo.setUserName(MainActivity.loginUserName);
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(true);
                 MyApplication.db.update(trafficInfo, "out_time","out_image");
             }
             return true;

@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity {
 
     public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public static FileUtils picFileManage = new FileUtils();
+    public static String loginUserName;
     //摄像机IP
     static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
      static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
@@ -321,6 +322,7 @@ public class MainActivity extends BaseActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                loginUserName = userName;
                 MyApplication.settingInfo.putString("userName",userName);
                 MyApplication.settingInfo.putBoolean("loginStatus",true);
                 MyApplication.settingInfo.putLong("chagerCarNumber",0);
