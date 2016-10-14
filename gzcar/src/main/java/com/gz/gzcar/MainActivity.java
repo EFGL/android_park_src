@@ -738,15 +738,17 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         Log.i("log","requestCode:" + requestCode + "   resultCode:" + resultCode );
         switch(resultCode){
-            case 102:
+            case 1:
                 int id = data.getIntExtra("id", -1);
-                byte[] picBuffer = outCamera.CapturePic();
-                carInfoProcess.processManualSelectOut(id, picBuffer);
-                //更新出口收费信息
-                chargeCarNumber.setText(chargeInfo.getCarNumber());
-                chargeCarType.setText(chargeInfo.getType());
-                chargeParkTime.setText("停车：" + chargeInfo.getParkTime());
-                chargeMoney.setText(String.format("收费：%.1f元", chargeInfo.getMoney()));
+                if(id>=0){
+                    byte[] picBuffer = outCamera.CapturePic();
+                    carInfoProcess.processManualSelectOut(id, picBuffer);
+                    //更新出口收费信息
+                    chargeCarNumber.setText(chargeInfo.getCarNumber());
+                    chargeCarType.setText(chargeInfo.getType());
+                    chargeParkTime.setText("停车：" + chargeInfo.getParkTime());
+                    chargeMoney.setText(String.format("收费：%.1f元", chargeInfo.getMoney()));
+                }
                 break;
             default:
                 break;

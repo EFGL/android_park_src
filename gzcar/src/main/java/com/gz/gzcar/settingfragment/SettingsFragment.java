@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.SPUtils;
 import com.gz.gzcar.utils.T;
@@ -42,7 +43,6 @@ public class SettingsFragment extends Fragment {
     JellyToggleButton mTogglebutton4;
     @Bind(R.id.btn_save_update)
     Button mSave;
-    private SPUtils spUtils;
     private final String TEMP_CAR_IN = "tempCarIn";// 临时车入场是否确认
     private final String TEMP_CAR_FREE = "tempCarFree";// 零收费车是否确认
     private final String IS_PRINT_CARD = "isPrintCard";// 是否打印小票
@@ -65,22 +65,18 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initData() {
-        if (spUtils == null) {
-
-            spUtils = new SPUtils(getContext(), "config");
-        }
-        String serverIp = spUtils.getString("serverIp", "");// 服务器地址url
-        String inCameraIp = spUtils.getString("inCameraIp", "");// 入口相机地址
-        String outCameraIp = spUtils.getString("outCameraIp", "");// 出口相机地址
+        String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
+        String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
+        String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
 
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
 
-        boolean tempCarIn = spUtils.getBoolean(TEMP_CAR_IN);
-        boolean tempCarFree = spUtils.getBoolean(TEMP_CAR_FREE);
-        boolean isPrint = spUtils.getBoolean(IS_PRINT_CARD);
-        boolean isUseCard = spUtils.getBoolean(IS_USE_CARD_HELP);
+        boolean tempCarIn = MyApplication.settingInfo.getBoolean(TEMP_CAR_IN);
+        boolean tempCarFree = MyApplication.settingInfo.getBoolean(TEMP_CAR_FREE);
+        boolean isPrint = MyApplication.settingInfo.getBoolean(IS_PRINT_CARD);
+        boolean isUseCard = MyApplication.settingInfo.getBoolean(IS_USE_CARD_HELP);
 
         mTogglebutton1.setChecked(tempCarIn);
         mTogglebutton2.setChecked(tempCarFree);
@@ -166,26 +162,22 @@ public class SettingsFragment extends Fragment {
     @OnClick(R.id.btn_save_update)
     public void onClick() {
 
-        spUtils.putBoolean(TEMP_CAR_IN, isTempCarIn);
-        spUtils.putBoolean(TEMP_CAR_FREE, isFree);
-        spUtils.putBoolean(IS_PRINT_CARD, isPrint);
-        spUtils.putBoolean(IS_USE_CARD_HELP, isCardRead);
+        MyApplication.settingInfo.putBoolean(TEMP_CAR_IN, isTempCarIn);
+        MyApplication.settingInfo.putBoolean(TEMP_CAR_FREE, isFree);
+        MyApplication.settingInfo.putBoolean(IS_PRINT_CARD, isPrint);
+        MyApplication.settingInfo.putBoolean(IS_USE_CARD_HELP, isCardRead);
 
         String serverAddress = mServerAddress.getText().toString().trim();
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();
-        if (spUtils == null) {
-
-            spUtils = new SPUtils(getContext(), "config");
-        }
         if (!TextUtils.isEmpty(serverAddress)) {
-            spUtils.putString("serverIp", serverAddress);
+            MyApplication.settingInfo.putString("serverIp", serverAddress);
         }
         if (!TextUtils.isEmpty(inCameraIp)) {
-            spUtils.putString("inCameraIp", inCameraIp);
+            MyApplication.settingInfo.putString("inCameraIp", inCameraIp);
         }
         if (!TextUtils.isEmpty(outCameraIp)) {
-            spUtils.putString("outCameraIp", outCameraIp);
+            MyApplication.settingInfo.putString("outCameraIp", outCameraIp);
         }
 
         T.showShort(getContext(), "保存成功");

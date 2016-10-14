@@ -649,13 +649,7 @@ public class carInfoProcess {
             }
             //延时播放语音
             final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney());
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    outCamera.playAudio(audioString);
-                }
-            }, 5000);
+            outCamera.playAudio(audioString);
         } catch (DbException e) {
             e.printStackTrace();
         }
