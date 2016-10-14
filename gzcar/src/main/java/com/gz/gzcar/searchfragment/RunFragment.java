@@ -269,7 +269,7 @@ public class RunFragment extends BaseFragment {
             if (traffic.getOut_time() != null)
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
             else
-                holder.Starttime.setText("未出场");
+                holder.Endtime.setText("未出场");
         }
 
         @Override
