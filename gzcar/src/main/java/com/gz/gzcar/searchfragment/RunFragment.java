@@ -72,13 +72,12 @@ public class RunFragment extends BaseFragment {
         mStartTime.setText(start);
         mEndTime.setText(end);
         // TODO: 2016/10/13 0013
-        initData();
+        initData(start,end);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         initViews();
     }
 
@@ -130,7 +129,7 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    private void initData() {
+    private void initData(String startTime,String endTime) {
 
 
         try {
