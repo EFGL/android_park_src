@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gz.gzcar.BaseActivity;
 import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
@@ -49,6 +51,16 @@ public class CarAdd extends BaseActivity {
     TextView mStarttiem;
     @Bind(R.id.add_endtime)
     TextView mEndtime;
+    @Bind(R.id.add_carwei2)
+    MyPullText mCarwei2;
+    @Bind(R.id.add_carwei3)
+    MyPullText mCarwei3;
+    @Bind(R.id.add_carwei4)
+    MyPullText mCarwei4;
+    @Bind(R.id.add_carwei5)
+    MyPullText mCarwei5;
+    @Bind(R.id.add_carwei6)
+    MyPullText mCarwei6;
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
 
@@ -75,6 +87,16 @@ public class CarAdd extends BaseActivity {
         mCartype.setPopList(typeList);
         mCartype.setText(typeList.get(0));
 
+        initCarWei(mCarwei);
+        initCarWei(mCarwei2);
+        initCarWei(mCarwei3);
+        initCarWei(mCarwei4);
+        initCarWei(mCarwei5);
+        initCarWei(mCarwei6);
+
+    }
+
+    private void initCarWei(MyPullText myPullText) {
         ArrayList<String> carweiList = new ArrayList<>();
         try {
             List<CarWeiTable> all = db.findAll(CarWeiTable.class);
@@ -84,13 +106,13 @@ public class CarAdd extends BaseActivity {
 
                     carweiList.add(all.get(i).getInfo() + all.get(i).getId());
                 }
-                mCarwei.setPopList(carweiList);
-                mCarwei.setText(carweiList.get(0));
+                carweiList.add(0,"");
+                myPullText.setPopList(carweiList);
+//                myPullText.setText(carweiList.get(0));
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -103,7 +125,6 @@ public class CarAdd extends BaseActivity {
         String carNum = mCarnumber.getText().toString().trim();
         String person = mPerson.getText().toString().trim();
         String carType = mCartype.getText().toString().trim();
-        String carWei = mCarwei.getText().toString().trim();
         String address = mAddress.getText().toString().trim();
         String phone = mPhone.getText().toString().trim();
         String startTime = mStarttiem.getText().toString().trim();
@@ -142,19 +163,73 @@ public class CarAdd extends BaseActivity {
             T.showShort(this, "请选择结束时间");
             return;
         }
-
-        CarInfoTable mInfo = new CarInfoTable();
-        mInfo.setCar_no(carNum);
-        mInfo.setCar_type(carType);
-        mInfo.setCarWei(carWei);
-        mInfo.setPerson_name(person + "");
-        mInfo.setPerson_tel(phone + "");
-        mInfo.setPerson_address(address + "");
-        mInfo.setStart_date(DateUtils.string2Date(startTime));
-        mInfo.setStop_date(DateUtils.string2Date(endTime));
-
         try {
+            CarInfoTable mInfo = new CarInfoTable();
+            mInfo.setCar_no(carNum);
+            mInfo.setCar_type(carType);
+//        mInfo.setCarWei(carWei);
+            mInfo.setPerson_name(person + "");
+            mInfo.setPerson_tel(phone + "");
+            mInfo.setPerson_address(address + "");
+            mInfo.setStart_date(DateUtils.string2Date(startTime));
+            mInfo.setStop_date(DateUtils.string2Date(endTime));
             x.getDb(daoConfig).save(mInfo);
+
+            String carWei = mCarwei.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第1条保存成功",Toast.LENGTH_SHORT).show();
+            }
+            String carWei2 = mCarwei2.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei2)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei2);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第2条保存成功",Toast.LENGTH_SHORT).show();
+            }
+            String carWei3 = mCarwei3.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei3)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei3);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第3条保存成功",Toast.LENGTH_SHORT).show();
+            }
+            String carWei4 = mCarwei4.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei4)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei4);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第4条保存成功",Toast.LENGTH_SHORT).show();
+            }
+            String carWei6 = mCarwei6.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei6)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei6);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第5条保存成功",Toast.LENGTH_SHORT).show();
+            }
+            String carWei5 = mCarwei5.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei5)){
+
+                CarWeiBindTable carBind = new CarWeiBindTable();
+                carBind.setCarWei(carWei5);
+                carBind.setCarNumber(carNum);
+                db.save(carBind);
+                Toast.makeText(this,"第6条保存成功",Toast.LENGTH_SHORT).show();
+            }
+
             T.showShort(this, "增加成功");
             finish();
         } catch (DbException e) {

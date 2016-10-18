@@ -86,6 +86,7 @@ public class UserAddActivity extends BaseActivity {
             userTable.setType(type);
             db.save(userTable);
             T.showShort(this, "增加成功");
+            finish();
         } catch (DbException e) {
             T.showShort(this, "增加异常");
             e.printStackTrace();
