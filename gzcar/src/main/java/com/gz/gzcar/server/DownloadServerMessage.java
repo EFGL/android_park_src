@@ -1,21 +1,22 @@
 package com.gz.gzcar.server;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.util.Log;
+
+import com.gz.gzcar.MyApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.DbManager;
-import org.xutils.x;
 import org.xutils.common.Callback.CommonCallback;
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
+import org.xutils.x;
 
-import android.util.Log;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import com.gz.gzcar.Database.DownloadTimeBean;
 
 /**
  * 下载一切需要的记录
@@ -24,7 +25,7 @@ public class DownloadServerMessage {
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(AppContext.daoConfig);
+	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
 	public static String mycontroller_sn="001";
 
