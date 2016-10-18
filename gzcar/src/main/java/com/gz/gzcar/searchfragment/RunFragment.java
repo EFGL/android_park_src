@@ -68,6 +68,7 @@ public class RunFragment extends BaseFragment {
     private void initSpinner() {
         MyPullText myPullText = (MyPullText) view.findViewById(R.id.mypulltext);
         ArrayList<String> popListItem = new ArrayList<String>();
+        popListItem.add("所有车");
         popListItem.add("固定车");
         popListItem.add("临时车");
         popListItem.add("免费车");
