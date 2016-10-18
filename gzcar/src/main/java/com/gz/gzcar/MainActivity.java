@@ -62,7 +62,8 @@ import static com.gz.gzcar.MyApplication.settingInfo;
 
 public class MainActivity extends BaseActivity {
 
-    public static FreeInfoTable chargeInfo = new FreeInfoTable();
+   // public static FreeInfoTable chargeInfo = new FreeInfoTable();
+    public static TrafficInfoTable outPortLog =  new TrafficInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     public static String loginUserName;
     //摄像机IP
@@ -589,8 +590,8 @@ public class MainActivity extends BaseActivity {
         }
         else
         {
-            chargeInfo.setMoney(0);
-            chargeInfo.setType("免费车");
+            outPortLog.setActual_money(0.0);
+            outPortLog.setCar_type("免费车");
             carInfoProcess.saveOutTempCar(outPortPicBuffer);
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
             T.showShort(context, "已放行");
@@ -673,10 +674,10 @@ public class MainActivity extends BaseActivity {
                         //出口处理
                         if (carProcess.processCarOutFunc(info.getPlateNumber(),info.getCarPicdata())) {
                             //更新出口收费信息
-                            chargeCarNumber.setText(chargeInfo.getCarNumber());
-                            chargeCarType.setText(chargeInfo.getType());
-                            chargeParkTime.setText("停车：" + chargeInfo.getParkTime());
-                            chargeMoney.setText(String.format("收费：%.1f元", chargeInfo.getMoney()));
+                            chargeCarNumber.setText(outPortLog.getCar_no());
+                            chargeCarType.setText(outPortLog.getCar_type());
+                            chargeParkTime.setText("停车：" + outPortLog.getStall_time());
+                            chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
                         }
                     }
                     upStatusInfoDisp();
@@ -761,10 +762,10 @@ public class MainActivity extends BaseActivity {
                     byte[] picBuffer = outCamera.CapturePic();
                     carInfoProcess.processManualSelectOut(id, picBuffer);
                     //更新出口收费信息
-                    chargeCarNumber.setText(chargeInfo.getCarNumber());
-                    chargeCarType.setText(chargeInfo.getType());
-                    chargeParkTime.setText("停车：" + chargeInfo.getParkTime());
-                    chargeMoney.setText(String.format("收费：%.1f元", chargeInfo.getMoney()));
+                    chargeCarNumber.setText(outPortLog.getCar_no());
+                    chargeCarType.setText(outPortLog.getCar_type());
+                    chargeParkTime.setText("停车：" + outPortLog.getStall_time());
+                    chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
                 }
                 break;
             default:

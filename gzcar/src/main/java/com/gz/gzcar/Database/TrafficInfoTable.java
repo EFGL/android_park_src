@@ -13,98 +13,69 @@ import java.util.Date;
  */
 @Table(name = "record_in_out")
 public class TrafficInfoTable {
-
     @Column(name = "id", isId = true)
     private int id;
-
-    @Column(name = "pass_no")
-    private String pass_no;
-
-    @Column(name = "card_type")
-    private String card_type;
-
+    //车辆类型
+    @Column(name = "car_type")
+    private String car_type;
+    //车号
     @Column(name = "car_no")
     private String car_no;
-
+    //入场时间
     @Column(name = "in_time")
     private Date in_time;
-
-    @Column(name = "in_door")
-    private String in_door;
-
+    //入场图片
     @Column(name = "in_image")
     private String in_image;
-
-    @Column(name = "Status")
-    private String Status;
-
+    //入场操作员
+    @Column(name = "in_user")
+    private String in_user;
+    //出场时间
     @Column(name = "out_time")
     private Date out_time;
-
-    @Column(name = "out_door")
-    private String out_door;
-
+    //出场图片
     @Column(name = "out_image")
     private String out_image;
 
-    @Column(name = "part_time")
-    private String part_time;
-
-    @Column(name = "created_at")
-    private Date created_at;
-
-    @Column(name = "fee")
-    private String fee;
-
-    @Column(name = "end_date")
-    private String end_date;
-
-    @Column(name = "person_address")
-    private String person_address;
-
-    @Column(name = "created_at_var")
-    private String created_at_var;
-
-    @Column(name = "in_time_var")
-    private String in_time_var;
-
-    @Column(name = "out_time_var")
-    private Date out_time_var;
-
+    //出场操作员
+    @Column(name = "out_user")
+    private String out_user;
+    //占用车位
+    @Column(name = "stall")
+    private String stall;
+    //应收费用
+    @Column(name = "receivable")
+    private Double receivable;
+    //实收费用
+    @Column(name = "actual_money")
+    private Double actual_money;
+    //停车时长
+    @Column(name = "stall_time")
+    private String stall_time;
+    //记录更新时间
     @Column(name = "update_time")
     private Date updateTime;
-
+    //记录修改标志
     @Column(name = "modife_flage")
     private boolean modifeFlage;
-
-    @Column(name = "user_name")
-    private String userName;
-
     @Override
     public String toString() {
         return "TrafficInfoTable{" +
                 "id=" + id +
-                ", pass_no='" + pass_no + '\'' +
-                ", card_type='" + card_type + '\'' +
+                ", car_type='" + car_type + '\'' +
                 ", car_no='" + car_no + '\'' +
                 ", in_time=" + in_time +
-                ", in_door='" + in_door + '\'' +
                 ", in_image='" + in_image + '\'' +
-                ", Status='" + Status + '\'' +
+                ", in_user='" + in_user + '\'' +
                 ", out_time=" + out_time +
-                ", out_door='" + out_door + '\'' +
                 ", out_image='" + out_image + '\'' +
-                ", part_time='" + part_time + '\'' +
-                ", created_at=" + created_at +
-                ", fee='" + fee + '\'' +
-                ", end_date='" + end_date + '\'' +
-                ", person_address='" + person_address + '\'' +
-                ", created_at_var='" + created_at_var + '\'' +
-                ", in_time_var='" + in_time_var + '\'' +
-                ", out_time_var=" + out_time_var +
+                ", out_user='" + out_user + '\'' +
+                ", receivable=" + receivable +
+                ", actual_money=" + actual_money +
+                ", stall=" + stall +
+                ", stall_time=" + stall_time +
                 ", updateTime=" + updateTime +
                 ", modifeFlage=" + modifeFlage +
-                ", userName='" + userName + '\'' +
                 '}';
     }
 
@@ -116,20 +87,12 @@ public class TrafficInfoTable {
         this.id = id;
     }
 
-    public String getPass_no() {
-        return pass_no;
+    public String getCar_type() {
+        return car_type;
     }
 
-    public void setPass_no(String pass_no) {
-        this.pass_no = pass_no;
-    }
-
-    public String getCard_type() {
-        return card_type;
-    }
-
-    public void setCard_type(String card_type) {
-        this.card_type = card_type;
+    public void setCar_type(String car_type) {
+        this.car_type = car_type;
     }
 
     public String getCar_no() {
@@ -148,14 +111,6 @@ public class TrafficInfoTable {
         this.in_time = in_time;
     }
 
-    public String getIn_door() {
-        return in_door;
-    }
-
-    public void setIn_door(String in_door) {
-        this.in_door = in_door;
-    }
-
     public String getIn_image() {
         return in_image;
     }
@@ -164,13 +119,10 @@ public class TrafficInfoTable {
         this.in_image = in_image;
     }
 
-    public String getStatus() {
-        return Status;
-    }
+    public String getIn_user() {        return in_user;    }
 
-    public void setStatus(String status) {
-        Status = status;
-    }
+    public void setIn_user(String in_user) {        this.in_user = in_user;    }
+
 
     public Date getOut_time() {
         return out_time;
@@ -178,14 +130,6 @@ public class TrafficInfoTable {
 
     public void setOut_time(Date out_time) {
         this.out_time = out_time;
-    }
-
-    public String getOut_door() {
-        return out_door;
-    }
-
-    public void setOut_door(String out_door) {
-        this.out_door = out_door;
     }
 
     public String getOut_image() {
@@ -196,69 +140,10 @@ public class TrafficInfoTable {
         this.out_image = out_image;
     }
 
-    public String getPart_time() {
-        return part_time;
-    }
+    public String getOut_user() {        return out_user;    }
 
-    public void setPart_time(String part_time) {
-        this.part_time = part_time;
-    }
+    public void setOut_user(String out_user) {        this.out_user = out_user;    }
 
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
-    }
-
-    public String getFee() {
-        return fee;
-    }
-
-    public void setFee(String fee) {
-        this.fee = fee;
-    }
-
-    public String getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(String end_date) {
-        this.end_date = end_date;
-    }
-
-    public String getPerson_address() {
-        return person_address;
-    }
-
-    public void setPerson_address(String person_address) {
-        this.person_address = person_address;
-    }
-
-    public String getCreated_at_var() {
-        return created_at_var;
-    }
-
-    public void setCreated_at_var(String created_at_var) {
-        this.created_at_var = created_at_var;
-    }
-
-    public String getIn_time_var() {
-        return in_time_var;
-    }
-
-    public void setIn_time_var(String in_time_var) {
-        this.in_time_var = in_time_var;
-    }
-
-    public Date getOut_time_var() {
-        return out_time_var;
-    }
-
-    public void setOut_time_var(Date out_time_var) {
-        this.out_time_var = out_time_var;
-    }
 
     public Date getUpdateTime() {
         return updateTime;
@@ -267,20 +152,25 @@ public class TrafficInfoTable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+    public Double getReceivable() {    return receivable;    }
 
-    public boolean getModifeFlage() {
-        return modifeFlage;
-    }
 
-    public void setModifeFlage(boolean modifeFlage) {
-        this.modifeFlage = modifeFlage;
-    }
+    public String getStall() {        return stall;    }
 
-    public String getUserName() {
-        return userName;
-    }
+    public void setStall(String stall) {        this.stall = stall;    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+    public String getStall_time() {        return stall_time;    }
+
+    public void setStall_time(String stall_time) {this.stall_time = stall_time;}
+
+    public void setReceivable(Double receivable) {    this.receivable = receivable;    }
+
+    public Double getActual_money() {        return actual_money;    }
+
+    public void setActual_money(Double actual_money) {        this.actual_money = actual_money;    }
+
+    public boolean isModifeFlage() {        return modifeFlage;    }
+
+    public void setModifeFlage(boolean modifeFlage) {        this.modifeFlage = modifeFlage;    }
+
 }

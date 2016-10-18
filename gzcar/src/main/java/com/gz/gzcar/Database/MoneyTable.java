@@ -16,7 +16,6 @@ public class MoneyTable {
     @Column(name = "part_time")
     private Double partTime;
 
-
     @Column(name = "money")
     private Double money;
 
