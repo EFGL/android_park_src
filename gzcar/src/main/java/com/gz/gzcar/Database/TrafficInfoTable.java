@@ -15,6 +15,9 @@ import java.util.Date;
 public class TrafficInfoTable {
     @Column(name = "id", isId = true)
     private int id;
+    //通行状态
+    @Column(name = "pass_no")
+    private int pass_no;
     //车辆类型
     @Column(name = "car_type")
     private String car_type;
@@ -55,6 +58,9 @@ public class TrafficInfoTable {
     //记录更新时间
     @Column(name = "update_time")
     private Date updateTime;
+    //通行状态
+    @Column(name = "status")
+    private String status;
     //记录修改标志
     @Column(name = "modife_flage")
     private boolean modifeFlage;
@@ -90,6 +96,10 @@ public class TrafficInfoTable {
     public String getCar_type() {
         return car_type;
     }
+
+    public int getPass_no() {        return pass_no;    }
+
+    public void setPass_no(int pass_no) {        this.pass_no = pass_no;    }
 
     public void setCar_type(String car_type) {
         this.car_type = car_type;
@@ -169,8 +179,11 @@ public class TrafficInfoTable {
 
     public void setActual_money(Double actual_money) {        this.actual_money = actual_money;    }
 
+    public String getStatus() {        return status;    }
+
+    public void setStatus(String status) {        this.status = status;    }
+
     public boolean isModifeFlage() {        return modifeFlage;    }
 
     public void setModifeFlage(boolean modifeFlage) {        this.modifeFlage = modifeFlage;    }
-
 }
