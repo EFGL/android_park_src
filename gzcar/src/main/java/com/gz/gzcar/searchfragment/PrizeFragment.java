@@ -109,7 +109,12 @@ public class PrizeFragment extends BaseFragment {
 //                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
-                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class).findAll();
+//                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class).findAll();
+                        String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+                        Date date = DateUtils.string2DateDetail(today);
+                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
+                                .where("update_time", ">", date)
+                                .findAll();
                         if (allData != null) {
 
                             allData.clear();
@@ -141,7 +146,12 @@ public class PrizeFragment extends BaseFragment {
     private void initdata() {
 //        addData();
         try {
-            allData = db.selector(FreeInfoTable.class).findAll();
+//            allData = db.selector(FreeInfoTable.class).findAll();
+            String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+            Date date = DateUtils.string2DateDetail(today);
+            allData =db.selector(FreeInfoTable.class)
+                    .where("update_time", ">", date)
+                    .findAll();
         } catch (DbException e) {
             T.showShort(getContext(), "全部查询异常");
             e.printStackTrace();
@@ -186,7 +196,11 @@ public class PrizeFragment extends BaseFragment {
                             if (allData != null) {
 
                                 allData.clear();
-                                allData = db.selector(FreeInfoTable.class).findAll();
+                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+                                Date date = DateUtils.string2DateDetail(today);
+                                allData =db.selector(FreeInfoTable.class)
+                                        .where("update_time", ">", date)
+                                        .findAll();
                                 myAdapter.notifyDataSetChanged();
                                 sumMoney();
                             }
@@ -217,7 +231,11 @@ public class PrizeFragment extends BaseFragment {
                             if (allData != null) {
 
                                 allData.clear();
-                                allData = db.selector(FreeInfoTable.class).findAll();
+                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+                                Date date = DateUtils.string2DateDetail(today);
+                                allData =db.selector(FreeInfoTable.class)
+                                        .where("update_time", ">", date)
+                                        .findAll();
                                 myAdapter.notifyDataSetChanged();
                                 sumMoney();
                             }
