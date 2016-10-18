@@ -74,20 +74,10 @@
 
 
         <Button
-            android:id="@+id/login_cencle_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
-            android:background="@drawable/ic_bg_message"
-            android:text="取消"
-            android:textColor="#000"
-            android:textSize="18sp" />
-
-        <Button
+            android:layout_gravity="center"
             android:id="@+id/login_sign_in_button"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
             android:background="@drawable/ic_bg_message"
             android:text="登录"
             android:textColor="#000"

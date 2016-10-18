@@ -310,7 +310,7 @@ public class MainActivity extends BaseActivity {
         dialog.getWindow().setAttributes(params);
         final MyPullText mUser = (MyPullText) view.findViewById(R.id.login_user);
         final EditText mPasswordView = (EditText) view.findViewById(R.id.login_password);
-        Button cencle = (Button) view.findViewById(R.id.login_cencle_button);
+//        Button cencle = (Button) view.findViewById(R.id.login_cencle_button);
         Button login = (Button) view.findViewById(R.id.login_sign_in_button);
 
         try {
@@ -792,10 +792,39 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(this, SrarchActivity.class));
                 break;
             case R.id.main_change:
-                showLogin();
+                ask();
 //                startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
+    }
+
+    // TODO: 2016/10/18 0018  
+    private void ask() {
+        View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
+        final AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(true);
+        dialog.show();
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+        Button cencle = (Button) view.findViewById(R.id.ask_cencle);
+        Button ok = (Button) view.findViewById(R.id.ask_ok);
+
+        cencle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                showLogin();
+            }
+        });
     }
 
     @Override
