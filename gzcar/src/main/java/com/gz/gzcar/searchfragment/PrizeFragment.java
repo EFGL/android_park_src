@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gz.gzcar.BaseFragment;
-import com.gz.gzcar.Database.FreeInfoTable;
+import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
@@ -55,7 +55,7 @@ public class PrizeFragment extends BaseFragment {
     @Bind(R.id.tv_money)
     TextView mMoney;
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    private List<FreeInfoTable> allData;
+    private List<TrafficInfoTable> allData;
     private MyAdapter myAdapter;
 
 
@@ -106,21 +106,20 @@ public class PrizeFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
-//                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
-//                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class).findAll();
                         String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
                         Date date = DateUtils.string2DateDetail(today);
-                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
+                                .and("out_time","!=",null)
+                                .and("car_type","!=","固定车")
                                 .findAll();
                         if (allData != null) {
 
                             allData.clear();
                             allData.addAll(all);
 //                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
-
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
                         }
@@ -146,11 +145,13 @@ public class PrizeFragment extends BaseFragment {
     private void initdata() {
 //        addData();
         try {
-//            allData = db.selector(FreeInfoTable.class).findAll();
+//            allData = db.selector(TrafficInfoTable.class).findAll();
             String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
             Date date = DateUtils.string2DateDetail(today);
-            allData =db.selector(FreeInfoTable.class)
+            allData =db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
+                    .and("out_time","!=",null)
+                    .and("car_type","!=","固定车")
                     .findAll();
         } catch (DbException e) {
             T.showShort(getContext(), "全部查询异常");
@@ -178,14 +179,12 @@ public class PrizeFragment extends BaseFragment {
 
                 if (TextUtils.isEmpty(carNum)) {
                     try {
-                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
-//                            .and("car_no","=",carNum)
+                                .and("out_time","!=",null)
+                                .and("car_type","!=","固定车")
                                 .findAll();
-
-//                        Log.e("mm", "all.size==" + allData.size());
-
                         if (allData != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
@@ -198,8 +197,10 @@ public class PrizeFragment extends BaseFragment {
                                 allData.clear();
                                 String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
                                 Date date = DateUtils.string2DateDetail(today);
-                                allData =db.selector(FreeInfoTable.class)
+                                allData =db.selector(TrafficInfoTable.class)
                                         .where("update_time", ">", date)
+                                        .and("out_time","!=",null)
+                                        .and("car_type","!=","固定车")
                                         .findAll();
                                 myAdapter.notifyDataSetChanged();
                                 sumMoney();
@@ -213,10 +214,12 @@ public class PrizeFragment extends BaseFragment {
                     }
                 } else {
                     try {
-                        List<FreeInfoTable> all = db.selector(FreeInfoTable.class)
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_number", "=", carNum)
+                                .and("out_time","!=",null)
+                                .and("car_type","!=","固定车")
                                 .findAll();
 
 //                        Log.e("mm", "all.size==" + allData.size());
@@ -233,8 +236,10 @@ public class PrizeFragment extends BaseFragment {
                                 allData.clear();
                                 String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
                                 Date date = DateUtils.string2DateDetail(today);
-                                allData =db.selector(FreeInfoTable.class)
+                                allData =db.selector(TrafficInfoTable.class)
                                         .where("update_time", ">", date)
+                                        .and("out_time","!=",null)
+                                        .and("car_type","!=","固定车")
                                         .findAll();
                                 myAdapter.notifyDataSetChanged();
                                 sumMoney();
@@ -258,7 +263,7 @@ public class PrizeFragment extends BaseFragment {
         double toteMoney = 0;
         for (int i = 0; i < allData.size(); i++) {
 
-            double money = allData.get(i).getMoney();
+            double money = allData.get(i).getActual_money();
             toteMoney += money;
         }
         mMoney.setText("合计金额:" + toteMoney);
@@ -277,20 +282,20 @@ public class PrizeFragment extends BaseFragment {
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
-            FreeInfoTable free = allData.get(position);
+            TrafficInfoTable free = allData.get(position);
             holder.mId.setText(position + 1 + "");
-            holder.mCarNum.setText(free.getCarNumber());
-            holder.mMoney.setText(free.getMoney() + "");
-            holder.mParkingtime.setText(free.getParkTime());
-            holder.mType.setText(free.getType());
-            Date inTime = free.getInTime();
+            holder.mCarNum.setText(free.getCar_no());
+            holder.mMoney.setText(free.getActual_money() + "");
+            holder.mParkingtime.setText(free.getStall_time());
+            holder.mType.setText(free.getCar_type());
+            Date inTime = free.getIn_time();
             if (inTime != null) {
 
                 holder.mInTime.setText(dateFormatDetail.format(inTime));
             }
-            if (free.getOutTime() != null) {
+            if (free.getOut_time() != null) {
 
-                holder.mOuttime.setText(dateFormatDetail.format(free.getOutTime()));
+                holder.mOuttime.setText(dateFormatDetail.format(free.getOut_time()));
             }
 
             free = null;
@@ -332,9 +337,6 @@ public class PrizeFragment extends BaseFragment {
 
         return dateFormatDetail.format(date);
     }
-
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

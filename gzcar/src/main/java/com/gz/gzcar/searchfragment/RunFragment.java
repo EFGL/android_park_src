@@ -294,7 +294,7 @@ public class RunFragment extends BaseFragment {
             TrafficInfoTable traffic = allData.get(position);
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
-            holder.Type.setText(traffic.getCard_type());
+            holder.Type.setText(traffic.getCar_type());
             Date in_time = traffic.getIn_time();
             if (traffic.getIn_time() == null) {
                 Log.e("ende", "in_time==null");

@@ -24,7 +24,6 @@ import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.FreeInfoTable;
-import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.device.camera;
@@ -63,12 +62,13 @@ import static com.gz.gzcar.MyApplication.settingInfo;
 
 public class MainActivity extends BaseActivity {
 
-    public static FreeInfoTable chargeInfo = new FreeInfoTable();
+   // public static FreeInfoTable chargeInfo = new FreeInfoTable();
+    public static TrafficInfoTable outPortLog =  new TrafficInfoTable();
     public static FileUtils picFileManage = new FileUtils();
     public static String loginUserName;
     //摄像机IP
     static camera inCamera = new camera("in", settingInfo.getString("inCameraIp"));
-    static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
+     static camera outCamera = new camera("out", settingInfo.getString("outCameraIp"));
     //实始化车辆处理模块
     static carInfoProcess carProcess = new carInfoProcess(x.getDb(MyApplication.daoConfig), inCamera, outCamera);
     static TextView plateTextIn; //入口车牌
@@ -82,8 +82,8 @@ public class MainActivity extends BaseActivity {
     static Button buttonAgainIdentOut;   //出口重新识别
     static Button buttonManualInOpen;    //入口手动起杆
     static Button ButtonManualOutOpen;//选车出场
-    public static TextView chargeCarNumber;        //收费信息车号
-    public static TextView chargeCarType;          //收费信息车类型
+    public  static TextView chargeCarNumber;        //收费信息车号
+    public  static TextView chargeCarType;          //收费信息车类型
     static TextView chargeParkTime;         //收费信息停车时长
     static TextView chargeMoney;            //收费信息收费金额
     static Button enterCharge;              //确认收费按钮
@@ -109,7 +109,6 @@ public class MainActivity extends BaseActivity {
     private AlertDialog dialog;
     private static byte[] inPortPicBuffer;
     private static byte[] outPortPicBuffer;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,10 +169,10 @@ public class MainActivity extends BaseActivity {
         });
 
         //状态信息
-        textViewAllPlace = (TextView) findViewById(R.id.textViewAllPlace);       //总车位
-        textViewEmptyPlace = (TextView) findViewById(R.id.textViewEmptyPlace);     //空闲车位
-        textViewInCarCount = (TextView) findViewById(R.id.textViewInCarCount);     //入场数量
-        textViewOutCarCount = (TextView) findViewById(R.id.textViewOutCarCount);    //出场数量
+         textViewAllPlace = (TextView) findViewById(R.id.textViewAllPlace);       //总车位
+         textViewEmptyPlace = (TextView) findViewById(R.id.textViewEmptyPlace);     //空闲车位
+         textViewInCarCount = (TextView) findViewById(R.id.textViewInCarCount);     //入场数量
+         textViewOutCarCount = (TextView) findViewById(R.id.textViewOutCarCount);    //出场数量
         //当班信息
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);       //操作员
         textViewLoginTime = (TextView) findViewById(R.id.textViewloginTime);      //登录长
@@ -197,7 +196,7 @@ public class MainActivity extends BaseActivity {
             MyApplication.settingInfo = new SPUtils(MainActivity.this, "config");
         }
         first = MyApplication.settingInfo.getBoolean("first");
-        new Thread() {
+        new Thread(){
             @Override
             public void run() {
                 super.run();
@@ -216,19 +215,19 @@ public class MainActivity extends BaseActivity {
                 if (MyApplication.settingInfo == null) {
                     MyApplication.settingInfo = new SPUtils(MainActivity.this, "config");
                 }
-                if (MyApplication.settingInfo.getString("serverIp") == null) {
+                if (MyApplication.settingInfo.getString("serverIp")==null){
 
                     MyApplication.settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
                     MyApplication.settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址
                     MyApplication.settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
-                    MyApplication.settingInfo.putLong("allCarPlace", 999);                  // 总车位
-                    MyApplication.settingInfo.putLong("emptyCarPlace", 999);                  // 空闲车位
-                    MyApplication.settingInfo.putLong("inCarCount", 0);                     // 当天入场车次
-                    MyApplication.settingInfo.putLong("outCarCount", 0);                     // 当天出厂车次
-                    MyApplication.settingInfo.putBoolean("loginStatus", false);             //登陆状态
-                    MyApplication.settingInfo.putString("userName", "");                //操作员
-                    MyApplication.settingInfo.putLong("chargeCarNumer", 0);             // 收费车辆
-                    MyApplication.settingInfo.putString("chargeMoney", "0.00");                // 收费金额
+                    MyApplication.settingInfo.putLong("allCarPlace",999);                  // 总车位
+                    MyApplication.settingInfo.putLong("emptyCarPlace",999);                  // 空闲车位
+                    MyApplication.settingInfo.putLong("inCarCount",0);                     // 当天入场车次
+                    MyApplication.settingInfo.putLong("outCarCount",0);                     // 当天出厂车次
+                    MyApplication.settingInfo.putBoolean("loginStatus",false);             //登陆状态
+                    MyApplication.settingInfo.putString("userName","");                //操作员
+                    MyApplication.settingInfo.putLong("chargeCarNumer",0);             // 收费车辆
+                    MyApplication.settingInfo.putString("chargeMoney","0.00");                // 收费金额
 
                 }
             }
@@ -310,7 +309,7 @@ public class MainActivity extends BaseActivity {
         dialog.getWindow().setAttributes(params);
         final MyPullText mUser = (MyPullText) view.findViewById(R.id.login_user);
         final EditText mPasswordView = (EditText) view.findViewById(R.id.login_password);
-//        Button cencle = (Button) view.findViewById(R.id.login_cencle_button);
+        Button cencle = (Button) view.findViewById(R.id.login_cencle_button);
         Button login = (Button) view.findViewById(R.id.login_sign_in_button);
 
         try {
@@ -517,7 +516,6 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
     //更新状态信息
     private static void upStatusInfoDisp() {
         //设定总车位
@@ -647,7 +645,6 @@ public class MainActivity extends BaseActivity {
         chargeMoney.setText("待通行");
         upStatusInfoDisp();
     }
-
     @Override
     public void onBackPressed() {
         final NormalDialog dialog = new NormalDialog(mContext);
@@ -798,7 +795,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    // TODO: 2016/10/18 0018  
+    // TODO: 2016/10/18 0018
     private void ask() {
         View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
         final AlertDialog dialog = new AlertDialog.Builder(this).create();
