@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
@@ -167,48 +167,6 @@ public class CarInfoFragment extends Fragment {
 
     }
 
-    private void addData() {
-
-        CarInfoTable mInfo = new CarInfoTable();
-        mInfo.setCar_color("白色");
-        mInfo.setCar_no("晋A8888");
-        mInfo.setCar_type("临时车");
-        try {
-            db.save(mInfo);
-            Toast.makeText(getActivity(), "mInfo...", Toast.LENGTH_SHORT).show();
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-        CarInfoTable mInfo1 = new CarInfoTable();
-        mInfo1.setCar_color("绿色");
-        mInfo1.setCar_no("晋A6666");
-        mInfo1.setCar_type("临时车");
-        try {
-            db.save(mInfo1);
-            Toast.makeText(getActivity(), "mInfo1...", Toast.LENGTH_SHORT).show();
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-        CarInfoTable mInfo2 = new CarInfoTable();
-        mInfo2.setCar_color("红色");
-        mInfo2.setCar_no("晋A3333");
-        mInfo2.setCar_type("临时车");
-        try {
-            db.save(mInfo2);
-            Toast.makeText(getActivity(), "mInfo2...", Toast.LENGTH_SHORT).show();
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            List<CarInfoTable> list = db.selector(CarInfoTable.class).findAll();
-            Log.e("my", "list:" + list.toString());
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -232,7 +190,15 @@ public class CarInfoFragment extends Fragment {
             holder.id.setText(position+1+"");
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
-            holder.carwei.setText(allData.get(position).getCarWei());
+//            holder.carwei.setText(allData.get(position).getCarWei());
+            try {
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", allData.get(position).getCar_no()).findAll();
+                if (all != null) {
+                    holder.carwei.setText(all.size() + "个");
+                }
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
             holder.person.setText(allData.get(position).getPerson_name());
             holder.phone.setText(allData.get(position).getPerson_tel());
 //            holder.address.setText(allData.get(position).getPerson_address());

@@ -27,6 +27,7 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
     private TextView textView;
     private ListView listwiew;
     private PopupWindow pop;
+    private View view;
 
     public MyPullText(Context context) {
         super(context);
@@ -48,7 +49,7 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
 
     private void init(Context context) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.mypulltext, this);
+        view = LayoutInflater.from(context).inflate(R.layout.mypulltext, this);
         textView = (TextView) view.findViewById(R.id.tv_text);
 
         view.setOnClickListener(this);
@@ -160,7 +161,9 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
 
-            View v = View.inflate(MyPullText.this.getContext(), R.layout.item_pop, null);
+
+    View v = View.inflate(MyPullText.this.getContext(), R.layout.item_pop, null);
+
 
             TextView tv = (TextView) v.findViewById(R.id.tv_pop_text);
 

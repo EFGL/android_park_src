@@ -6,15 +6,9 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="16dp">
 
         <LinearLayout
-            android:layout_width="500dp"
+            android:layout_width="1060dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/shape_white"
@@ -37,12 +31,27 @@
                 android:layout_marginTop="10dp"
                 android:background="#e4e4e4" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+    <!-- 2 root-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+    <!--left-->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -94,25 +103,6 @@
                 android:layout_marginTop="15dp"
                 android:background="#e4e4e4" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="车    位:"
-                    android:textSize="20sp" />
-
-                <com.gz.gzcar.weight.MyPullText
-                    android:id="@+id/car_update_order"
-                    android:layout_width="340dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="10dp" />
-            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -265,6 +255,184 @@
 
             </LinearLayout>
 
+
+    </LinearLayout>
+
+        <!--right-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  1:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  2:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei2"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  3:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei3"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  4:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei4"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  5:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei5"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车  位  6:"
+                    android:textSize="20sp" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei6"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+
+        </LinearLayout> <!--right-->
+
+    </LinearLayout><!--2 root-->
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -282,7 +450,7 @@
                     android:id="@+id/up_cancle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="200dp"
                     android:background="@drawable/ic_bg_message"
                     android:text="取消"
                     android:textSize="16sp" />
@@ -291,11 +459,10 @@
                     android:id="@+id/up_update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="200dp"
                     android:background="@drawable/ic_bg_message"
                     android:text="修改"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

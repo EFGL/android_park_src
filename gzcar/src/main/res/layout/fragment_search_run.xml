@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
@@ -14,56 +15,65 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_weight="0.55"
             android:text="车牌号"
             android:textSize="16sp" />
 
         <EditText
-            android:singleLine="true"
-            android:imeOptions="actionDone"
             android:id="@+id/et_run_carnumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/tab_text_seletor"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="0dp"
-
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_weight="0.45"
+            android:background="@drawable/tab_text_seletor"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="车辆类型"
+            android:textSize="16sp" />
+
+        <com.gz.gzcar.weight.MyPullText
+            android:background="#fff"
+            android:id="@+id/mypulltext"
+            android:layout_width="130dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:text="时间"
             android:textSize="16sp" />
 
         <TextView
-
             android:id="@+id/et_run_starttime"
-            android:layout_width="0dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:text=""
-            android:layout_weight="1.9"
+            android:layout_marginLeft="10dp"
             android:background="@drawable/tab_text_seletor"
+            android:text=""
             android:textSize="15sp" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0.25"
+            android:layout_marginLeft="5dp"
             android:text="至"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/et_run_endtime"
-            android:layout_width="0dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.9"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/tab_text_seletor"
             android:text=""
             android:textSize="15sp" />
@@ -71,10 +81,9 @@
 
         <Button
             android:id="@+id/btn_run_search"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_weight="1"
             android:background="@drawable/shape_white"
             android:text="查询"
             android:textSize="16sp" />

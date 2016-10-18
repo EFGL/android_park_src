@@ -20,12 +20,13 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
+import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
-import org.xutils.x;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,16 +51,28 @@ public class RunFragment extends BaseFragment {
     @Bind(R.id.run_recyclerview)
     RecyclerView rcy;
     private View view;
-    private DbManager db = x.getDb(MyApplication.daoConfig);
+    private DbManager db = null;
     private MyAdapter myAdapter;
     private List<TrafficInfoTable> allData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        if (db == null)
+            db = org.xutils.x.getDb(MyApplication.daoConfig);
         view = inflater.inflate(R.layout.fragment_search_run, container, false);
         ButterKnife.bind(this, view);
+        initSpinner();
         return view;
+    }
+
+    private void initSpinner() {
+        MyPullText myPullText = (MyPullText) view.findViewById(R.id.mypulltext);
+        ArrayList<String> popListItem = new ArrayList<String>();
+        popListItem.add("固定车");
+        popListItem.add("临时车");
+        popListItem.add("免费车");
+        popListItem.add("其他");
+        myPullText.setPopList(popListItem);
     }
 
     @Override
@@ -107,7 +120,7 @@ public class RunFragment extends BaseFragment {
 //                      List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).findAll();
                         String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
                         Date date = DateUtils.string2DateDetail(today);
-                        List<TrafficInfoTable> all =db.selector(TrafficInfoTable.class)
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
                                 .findAll();
                         if (allData != null) {
@@ -144,7 +157,7 @@ public class RunFragment extends BaseFragment {
             allData = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .findAll();
-            Log.e("my", "alldata==" + allData.toString());
+//            Log.e("my", "alldata==" + allData.toString());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
@@ -282,20 +295,20 @@ public class RunFragment extends BaseFragment {
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCar_type());
             Date in_time = traffic.getIn_time();
-            if (traffic.getIn_time()==null){
-                Log.e("ende","in_time==null");
+            if (traffic.getIn_time() == null) {
+                Log.e("ende", "in_time==null");
             }
-            if (traffic.getIn_time()!=null){
-                Log.e("ende","in_time!=null");
+            if (traffic.getIn_time() != null) {
+                Log.e("ende", "in_time!=null");
             }
-            if (traffic.getIn_time()!=null){
+            if (traffic.getIn_time() != null) {
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
-            }else{
+            } else {
                 holder.Starttime.setText("未入场");
             }
-            if (traffic.getOut_time() != null){
+            if (traffic.getOut_time() != null) {
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-            }else{
+            } else {
                 holder.Endtime.setText("未出场");
             }
         }

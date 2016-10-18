@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.CarAdd;
@@ -396,8 +397,17 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             final CarInfoTable carInfo = allData.get(position);
             holder.mId.setText(position + 1 + "");
             holder.mCarNumber.setText(carInfo.getCar_no());
+            try {
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", carInfo.getCar_no()).findAll();
+                if (all != null) {
+                    holder.mCarWei.setText(all.size() + "个");
+                }
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
+
             holder.mType.setText(carInfo.getCar_type());
-            holder.mCarWei.setText(carInfo.getCarWei());
+//            holder.mCarWei.setText(carInfo.getCarWei());
             holder.mPerson.setText(carInfo.getPerson_name());
             holder.mPhone.setText(carInfo.getPerson_tel());
 //            holder.mAddress.setText(carInfo.getPerson_address());
@@ -419,7 +429,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     Intent i = new Intent(getContext(), CarUpdate.class);
                     i.putExtra("carNumber", carInfo.getCar_no());
                     i.putExtra("carType", carInfo.getCar_type());
-                    i.putExtra("carWei", carInfo.getCarWei());
+//                    i.putExtra("carWei", carInfo.getCarWei());
                     i.putExtra("person", carInfo.getPerson_name());
                     i.putExtra("phone", carInfo.getPerson_tel());
                     i.putExtra("address", carInfo.getPerson_address());

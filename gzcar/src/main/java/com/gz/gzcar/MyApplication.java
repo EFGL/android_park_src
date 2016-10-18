@@ -24,6 +24,7 @@ public class MyApplication extends Application {
         super.onCreate();
         settingInfo = new SPUtils(this,"config");
         x.Ext.init(this);
+
 //        x.Ext.init(this);
 //        File file=new File(Environment.getExternalStorageDirectory().getPath());
         daoConfig = new DbManager.DaoConfig()
