@@ -132,14 +132,14 @@ public class SelectPassOut extends BaseActivity {
         switch (view.getId()) {
             case R.id.out_nocarnum:
                 try {
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").findAll();
+                    allData.clear();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("out_time","=",null).findAll();
                     if (allData == null || all == null || all.size() < 1) {
                         T.showShort(this, "未查到相关数据");
                     } else {
-                        allData.clear();
                         allData.addAll(all);
-                        myAdapter.notifyDataSetChanged();
                     }
+                    myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
                     T.showShort(this, "查询异常");
                     e.printStackTrace();
@@ -164,15 +164,14 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_no_pass:
 //                T.showShort(this, "所有未出场车辆");
                 try {
+                    allData.clear();
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
-//                    Log.e("ende", "allData==" + allData.toString());
                     if (allData != null && allData.size() > 0) {
-                        allData.clear();
                         allData.addAll(all);
-                        myAdapter.notifyDataSetChanged();
                     } else {
                         T.showShort(this, "未查到相关信息");
                     }
+                    myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
                     T.showShort(this, "查询异常");
                     e.printStackTrace();
@@ -200,9 +199,8 @@ public class SelectPassOut extends BaseActivity {
     private void searchWithTime(int start, int end) {
         Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
         Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000)));
-
         Log.e("ende", "befor==" + befor + "：：current==" + current);
-
+        allData.clear();
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("in_time", ">", befor)
@@ -212,10 +210,9 @@ public class SelectPassOut extends BaseActivity {
             if (allData == null || all == null || all.size() < 1) {
                 T.showShort(this, "未查到相关数据");
             } else {
-                allData.clear();
                 allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
             }
+            myAdapter.notifyDataSetChanged();
         } catch (DbException e) {
             T.showShort(this, "查询异常");
             e.printStackTrace();

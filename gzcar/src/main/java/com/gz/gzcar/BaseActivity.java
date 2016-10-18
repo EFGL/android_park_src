@@ -20,8 +20,6 @@ public class BaseActivity extends AppCompatActivity {
     protected BaseAnimatorSet mBasOut;
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

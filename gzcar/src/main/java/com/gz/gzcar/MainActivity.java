@@ -226,7 +226,7 @@ public class MainActivity extends BaseActivity {
                     MyApplication.settingInfo.putBoolean("loginStatus",false);             //登陆状态
                     MyApplication.settingInfo.putString("userName","");                //操作员
                     MyApplication.settingInfo.putLong("chargeCarNumer",0);             // 收费车辆
-                    MyApplication.settingInfo.putLong("cgargeMoney",0);                // 收费金额
+                    MyApplication.settingInfo.putString("chargeMoney","0.00");                // 收费金额
 
                 }
             }
@@ -323,12 +323,17 @@ public class MainActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 loginUserName = userName;
-                MyApplication.settingInfo.putString("userName",userName);
-                MyApplication.settingInfo.putBoolean("loginStatus",true);
-                MyApplication.settingInfo.putLong("chagerCarNumber",0);
-                MyApplication.settingInfo.putLong("chargeMoney",0);
-                SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                MyApplication.settingInfo.putString("loginTime",format.format(new Date()));
+                //上次非本用户或用户退出,则清空数据
+                if(!MyApplication.settingInfo.getString("userName").equals(userName) || !MyApplication.settingInfo.getBoolean("loginStatus")) {
+                    MyApplication.settingInfo.putString("userName", userName);
+                    MyApplication.settingInfo.putBoolean("loginStatus", true);
+                    MyApplication.settingInfo.putLong("inCarCount", 0);
+                    MyApplication.settingInfo.putLong("outCarCount", 0);
+                    MyApplication.settingInfo.putLong("chargeCarNumber", 0);
+                    MyApplication.settingInfo.putString("chargeMoney", "0.00");
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                    MyApplication.settingInfo.putString("loginTime", format.format(new Date()));
+                }
                 this.upStatusInfoDisp();
                 //进入主页面
                 if (type.equals("管理员")) {
@@ -468,15 +473,22 @@ public class MainActivity extends BaseActivity {
         });
     }
     //更新状态信息
-    void upStatusInfoDisp(){
+    private  static void upStatusInfoDisp(){
+        //设定总车位
         long value = MyApplication.settingInfo.getLong("allCarPlace");
         textViewAllPlace.setText(String.format("总车位：%d个",value));
+        //设定空闲车位
+        try {
+            value = value - MyApplication.db.selector(TrafficInfoTable.class).where("out_time","=",null).count();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         value = MyApplication.settingInfo.getLong("emptyCarPlace");
         textViewEmptyPlace.setText(String.format("空闲车位：%d个",value));
         value = MyApplication.settingInfo.getLong("inCarCount");
-        textViewInCarCount.setText(String.format("入场车辆：%d辆",value));
+        textViewInCarCount.setText(String.format("当班入场：%d车次",value));
         value = MyApplication.settingInfo.getLong("outCarCount");
-        textViewOutCarCount.setText(String.format("出场车辆：%d辆",value));
+        textViewOutCarCount.setText(String.format("当班出场：%d车次",value));
         String stringValue = MyApplication.settingInfo.getString("userName");
         textViewUserName.setText("操作员：" + stringValue);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -490,7 +502,7 @@ public class MainActivity extends BaseActivity {
         }
         stringValue = String.format("收费车辆：%d辆",MyApplication.settingInfo.getLong("chargeCarNumer"));
         textViewSumCar.setText(stringValue);
-        stringValue = String.format("收费金额：%d.00元",MyApplication.settingInfo.getLong("chargeMoney"));
+        stringValue = String.format("收费金额："+MyApplication.settingInfo.getString("chargeMoney") + "元");
         textViewSumMoney.setText(stringValue);
     }
     //确认收费
@@ -510,6 +522,7 @@ public class MainActivity extends BaseActivity {
         chargeCarType.setText("");
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
+        upStatusInfoDisp();
     }
 
     //无牌入场
@@ -526,6 +539,7 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
+        upStatusInfoDisp();
     }
 
     //重新识别入场
@@ -561,6 +575,7 @@ public class MainActivity extends BaseActivity {
         }
         plateTextIn.setText("待通行");
         T.showShort(context, "已完成确认通行");
+        upStatusInfoDisp();
     }
     //出口手免费通行
     private void manualOutOpenFunc() {
@@ -585,6 +600,7 @@ public class MainActivity extends BaseActivity {
         chargeCarType.setText("");
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
+        upStatusInfoDisp();
     }
     @Override
     public void onBackPressed() {
@@ -663,6 +679,7 @@ public class MainActivity extends BaseActivity {
                             chargeMoney.setText(String.format("收费：%.1f元", chargeInfo.getMoney()));
                         }
                     }
+                    upStatusInfoDisp();
                     break;
                 case PIC:
                     Log.i("log", info.getPlateNumber());

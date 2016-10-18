@@ -11,6 +11,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.gz.gzcar.MainActivity;
+import com.gz.gzcar.MyApplication;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -292,6 +293,11 @@ public class camera {
     //起杆
     public void openGate(){
         sdk.ICE_IPCSDK_OpenGate();
+        if (portName.equals("in")) {
+            MyApplication.settingInfo.putLong("inCarCount", MyApplication.settingInfo.getLong("inCarCount") + 1);
+        }else{
+            MyApplication.settingInfo.putLong("outCarCount", MyApplication.settingInfo.getLong("outCarCount") + 1);
+        }
     }
     //报放语音
     public void playAudio(String audioStr){

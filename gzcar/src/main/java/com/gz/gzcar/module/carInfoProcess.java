@@ -3,6 +3,7 @@ package com.gz.gzcar.module;
 import android.net.rtp.AudioStream;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.Sampler;
 import android.util.Log;
 
 import com.gz.gzcar.Database.CarInfoTable;
@@ -453,56 +454,46 @@ public class carInfoProcess {
         return (buffer.toString());
     }
     //格式化收费语音字符串
-   private static String formatChargeStrMoney(int money) {
-
+   private static String formatChargeStrMoney(double money) {
+       if (money > 999) {
+           money = 999;
+       }
+       String NumberStr1 = String.valueOf((int)(money/100));
+       money %= 100;
+       String NumberStr2 = String.valueOf((int)(money/10));
+       money %= 10;
+       String NumberStr3 = String.valueOf((int)(money/1));
+       money %= 1;
+       String NumberStr4 = String.valueOf((int)(money/0.1));
        StringBuffer buffer = new StringBuffer();
-       buffer.append(camera.AudioList.get("请缴费") + " ");
-           //最大收费999
-           if (money > 999) {
-               money = 999;
-           }
-           //百元
-           if (money / 100 > 0) {
-               buffer.append(camera.AudioList.get(String.valueOf(money / 100)) + " " + camera.AudioList.get("百") + " ");
-               money %= 100;
-               buffer.append(camera.AudioList.get(String.valueOf(money / 10)) + " ");
-               if (money / 10 > 0) {
-                   buffer.append(camera.AudioList.get("十") + " ");
-               }
-               money %= 10;
-               if (money > 0) {
-                   buffer.append(camera.AudioList.get(String.valueOf(money)) + " ");
-               }
-               buffer.append(camera.AudioList.get("元"));
-           }
-           //十元
-           else if (money / 10 > 0) {
-               buffer.append(camera.AudioList.get(String.valueOf(money / 10)) + " " + camera.AudioList.get("十") + " ");
-               money %= 10;
-               if (money > 0) {
-                   buffer.append(camera.AudioList.get(String.valueOf(money)) + " ");
-               }
-               buffer.append(camera.AudioList.get("元"));
-           }
-           //十元以内
-           else {
-               buffer.append(camera.AudioList.get(String.valueOf(money)) + " ");
-               buffer.append(camera.AudioList.get("元"));
-           }
-           return (buffer.toString());
+       buffer.append(camera.AudioList.get("请缴费"));
+       if(!NumberStr1.equals("0")){
+           buffer.append(" " + camera.AudioList.get(NumberStr1) + " " + camera.AudioList.get("百"));
+       }
+       if(!NumberStr2.equals("0")){
+           buffer.append(" " + camera.AudioList.get(NumberStr2) + " " + camera.AudioList.get("十"));
+       }
+       if(!NumberStr3.equals("0")){
+           buffer.append(" " + camera.AudioList.get(NumberStr3));
+       }
+       buffer.append(" " +  camera.AudioList.get("元"));
+       if(!NumberStr4.equals("0")){
+           buffer.append(" " + camera.AudioList.get(NumberStr4) + " " + camera.AudioList.get("角"));
+       }
+       return (buffer.toString());
    }
     //根据停车时长计算收费金额
     private static double moneyCount(double time)
     {
-        int  reuslt=0;
+        double  reuslt=0;
         double  hours=time/60;
         double remainder=hours%24;
         int round=(int)hours/24;
         try {
-            reuslt=round*db.selector(MoneyTable.class).where("part_time","=",24).findFirst().getMoney().intValue();
+            reuslt=round*db.selector(MoneyTable.class).where("part_time","=",24).findFirst().getMoney();
             MoneyTable mymonettable =db.selector(MoneyTable.class).where("part_time", ">=",remainder).and("part_time", "<", remainder+0.5).findFirst();
             if(mymonettable!=null)
-                reuslt= reuslt+mymonettable.getMoney().intValue();
+                reuslt= reuslt+mymonettable.getMoney();
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -569,7 +560,7 @@ public class carInfoProcess {
                 //停车时长
                 dispInfo[2] = " 停车：" + timeFormat;
                 //缴费
-                dispInfo[3] =  String.format("请缴费: %.1f元",MainActivity.chargeInfo.getMoney());
+                dispInfo[3] =  String.format("请缴费: %.2f元",MainActivity.chargeInfo.getMoney());
                 //显示
                 outCamera.ledDisplay(dispInfo);
                 boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
@@ -588,7 +579,7 @@ public class carInfoProcess {
                     }
                 }
                 //延时播放语音
-                final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney());
+                final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney(MainActivity.chargeInfo.getMoney());
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
@@ -619,6 +610,9 @@ public class carInfoProcess {
             MainActivity. chargeInfo.setType(trafficInfo.getCard_type());
             MainActivity.chargeInfo.setInTime(trafficInfo.getIn_time());
             MainActivity.chargeInfo.setOutTime(new Date());
+            MainActivity.chargeInfo.setUpdateTime(new Date());
+            MainActivity.chargeInfo.setUserName(MainActivity.loginUserName);
+            MainActivity.chargeInfo.setModifeFlage(true);
             long timeLong = (MainActivity.chargeInfo.getOutTime().getTime() - MainActivity.chargeInfo.getInTime().getTime())/60/1000;
             if(timeLong<=0)
             {
@@ -636,7 +630,7 @@ public class carInfoProcess {
             //停车时长
             dispInfo[2] = " 停车：" + timeFormat;
             //缴费
-            dispInfo[3] =  String.format("请缴费: %.1f元",MainActivity.chargeInfo.getMoney());
+            dispInfo[3] =  String.format("请缴费: %.2f元",MainActivity.chargeInfo.getMoney());
             //显示
             outCamera.ledDisplay(dispInfo);
             boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
@@ -648,7 +642,7 @@ public class carInfoProcess {
                 }
             }
             //延时播放语音
-            final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney((int) MainActivity.chargeInfo.getMoney());
+            final String audioString = formatChargeStrTime(timeLong)+ " " + formatChargeStrMoney( MainActivity.chargeInfo.getMoney());
             outCamera.playAudio(audioString);
         } catch (DbException e) {
             e.printStackTrace();
@@ -677,6 +671,9 @@ public class carInfoProcess {
             //保存收费信息
             if(MainActivity.chargeInfo.getMoney()>0) {
                 MyApplication.db.save(MainActivity.chargeInfo);
+                Double money = Double.valueOf(MyApplication.settingInfo.getString("chargeMoney")) + MainActivity.chargeInfo.getMoney();
+                MyApplication.settingInfo.putString("chargeMoney",String.format("%.2f",money));
+                MyApplication.settingInfo.putLong("chargeCarNumer", MyApplication.settingInfo.getLong("chargeCarNumer")+1);
             }
             return true;
         } catch (DbException e) {
