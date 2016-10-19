@@ -1,22 +1,5 @@
 package com.gz.gzcar.server;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xutils.DbManager;
-import org.xutils.x;
-import org.xutils.common.Callback.CommonCallback;
-import org.xutils.common.util.KeyValue;
-import org.xutils.db.sqlite.WhereBuilder;
-import org.xutils.ex.DbException;
-import org.xutils.http.RequestParams;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -28,6 +11,23 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xutils.DbManager;
+import org.xutils.common.Callback.CommonCallback;
+import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 上传和下行服务
@@ -50,7 +50,7 @@ public class SendService extends Service{
 	 */
 	public static Boolean startsend=true;
 
-	public static String mycontroller_sn="001";
+	public static String mycontroller_sn="1";
 
 	public static int handlersendtime=5000;
 
@@ -68,11 +68,18 @@ public class SendService extends Service{
 			@Override
 			public void run() {
 				while(true){
-					if(startsend){
-						showlog("发送");
+					try {
+						Thread.sleep(1000);
 						handler.sendEmptyMessage(1);
-						startsend=false;
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+//					if(startsend){
+//						showlog("发送");
+//						handler.sendEmptyMessage(1);
+//						startsend=false;
+//					}
 				}
 			}
 		};
@@ -110,16 +117,16 @@ public class SendService extends Service{
 				TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
 				if(table!=null){
 					String jsonstr=production_jsonstr(table);
-					post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getOut_image()), table.getOut_image(), table.getIn_image(),table);
+					post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
 				}else {
 					showlog("方法执行完成");
-					try {
-						Thread.sleep(handlersendtime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					showlog("唤醒发送");
-					startsend=true;
+//					try {
+//						Thread.sleep(handlersendtime);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//					showlog("唤醒发送");
+//					startsend=true;
 				}
 			} catch (DbException e) {
 				e.printStackTrace();
@@ -156,9 +163,12 @@ public class SendService extends Service{
 		 * @return
 		 */
 		public String getpicname(String path){
+			showlog("path="+path);
 			if(path==null){
+				showlog("shinull");
 				return "";
 			}else {
+				showlog("不是null");
 				String [] mypath=path.split("/");
 				return mypath[mypath.length-1];
 			}
@@ -182,14 +192,19 @@ public class SendService extends Service{
 			params.addBodyParameter("out_imagename",out_imagename);
 			params.addBodyParameter("in_imagename",in_imagename);
 			params.addBodyParameter("out_imagefile",getbase64msg(out_imagefile));
-			params.addBodyParameter("out_imagefile",getbase64msg(in_imagefile));
-			showlog("开始上传记录，params为＝"+params.toString());
+			params.addBodyParameter("in_imagefile",getbase64msg(in_imagefile));
+			showlog("开始上传记录，str为＝"+str);
+			showlog("开始上传记录，out_imagename为＝"+out_imagename);
+			showlog("开始上传记录，in_imagename为＝"+in_imagename);
+			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
+			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
 			x.http().post(params, new CommonCallback<String>() {
 				@Override
 				public void onCancelled(CancelledException arg0) {
 				}
 				@Override
 				public void onError(Throwable arg0, boolean arg1) {
+					showlog("shibai："+arg0.toString());
 				}
 				@Override
 				public void onFinished() {
@@ -199,7 +214,7 @@ public class SendService extends Service{
 					showlog("成功返回："+arg0);
 					try {
 						JSONObject object=new JSONObject(arg0);
-						if(1==object.getInt("ref")){
+						if(0==object.getInt("ref")){
 							//上传成功，开始修改传入的bean
 							updateBean(table);
 							//修改完成后，继续查
@@ -208,16 +223,16 @@ public class SendService extends Service{
 								TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
 								if(table!=null){
 									String jsonstr=production_jsonstr(table);
-									post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getOut_image()), table.getOut_image(), table.getIn_image(),table);
+									post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
 								}else {
 									showlog("方法执行完成");
-									try {
-										Thread.sleep(handlersendtime);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
-									}
-									showlog("唤醒");
-									startsend=true;
+//									try {
+//										Thread.sleep(handlersendtime);
+//									} catch (InterruptedException e) {
+//										e.printStackTrace();
+//									}
+//									showlog("唤醒");
+//									startsend=true;
 								}
 							} catch (DbException e) {
 								e.printStackTrace();
@@ -258,22 +273,24 @@ public class SendService extends Service{
 		 * @return
 		 */
 		public String production_jsonstr(TrafficInfoTable table){
+			String jsonString2 = JSON.toJSONString(table);
+			showlog("jsonString="+jsonString2);
 			//根据传入的table，生成对应的jsonstr
 			UploadBean uploadBean=new UploadBean();
 			uploadBean.setPass_no(table.getPass_no()+"");
 			uploadBean.setCard_type(table.getCar_type());
 			uploadBean.setCar_no(table.getCar_no());
-			uploadBean.setIn_time(table.getIn_time().toString());
+			uploadBean.setIn_time(table.getIn_time()+"");
 			uploadBean.setIn_operator(table.getIn_user());
 			uploadBean.setIn_image(table.getIn_image());
 			uploadBean.setStall_code(table.getStall());
-			uploadBean.setOut_time(table.getOut_time().toString());
+			uploadBean.setOut_time(table.getOut_time()+"");
 			uploadBean.setOut_operator(table.getOut_user());
 			uploadBean.setOut_image(table.getOut_image());
 			uploadBean.setStatus(table.getStatus());
 			uploadBean.setFee(table.getReceivable()+"");
 			uploadBean.setFact_fee(table.getActual_money()+"");
-			uploadBean.setCreated_at(table.getUpdateTime().toString());
+			uploadBean.setCreated_at(table.getUpdateTime()+"");
 			uploadBean.setParked_time(table.getStall_time());
 			String str=JSON.toJSONString(uploadBean);
 			showlog("生产的json为＝"+str);

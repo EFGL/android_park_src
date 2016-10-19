@@ -27,7 +27,7 @@ public class DownloadServerMessage {
 	 */
 	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
-	public static String mycontroller_sn="001";
+	public static String mycontroller_sn="1";
 
 	public static String url="http://221.204.11.69:3002/api/v1";
 
@@ -61,7 +61,7 @@ public class DownloadServerMessage {
 			get_down_info_vehicle(url, bean.getTime(), mycontroller_sn);
 			get_down_record_stall_vehicle(url, bean.getTime(), mycontroller_sn);
 			//修改时间
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd日 HH:mm:ss");
+			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			db.update(DownloadTimeBean.class, WhereBuilder.b("time", "=", bean.getTime()),new KeyValue("time",dateFormat.format(new Date())));
 		} catch (DbException e) {
 			e.printStackTrace();
