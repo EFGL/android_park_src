@@ -112,7 +112,7 @@ public class PrizeFragment extends BaseFragment {
                         Date date = DateUtils.string2DateDetail(today);
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
-                                .and("out_time","!=",null)
+                                .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
                         if (allData != null) {
@@ -150,7 +150,7 @@ public class PrizeFragment extends BaseFragment {
             Date date = DateUtils.string2DateDetail(today);
             allData =db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
-                    .and("out_time","!=",null)
+                    .and("status", "=", "已出")
                     .and("car_type","!=","固定车")
                     .findAll();
         } catch (DbException e) {
@@ -182,7 +182,7 @@ public class PrizeFragment extends BaseFragment {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
-                                .and("out_time","!=",null)
+                                .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
                         if (allData != null && all.size() > 0) {
@@ -199,7 +199,7 @@ public class PrizeFragment extends BaseFragment {
                                 Date date = DateUtils.string2DateDetail(today);
                                 allData =db.selector(TrafficInfoTable.class)
                                         .where("update_time", ">", date)
-                                        .and("out_time","!=",null)
+                                        .and("status", "=", "已出")
                                         .and("car_type","!=","固定车")
                                         .findAll();
                                 myAdapter.notifyDataSetChanged();
@@ -218,7 +218,7 @@ public class PrizeFragment extends BaseFragment {
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_number", "=", carNum)
-                                .and("out_time","!=",null)
+                                .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
 
@@ -238,7 +238,7 @@ public class PrizeFragment extends BaseFragment {
                                 Date date = DateUtils.string2DateDetail(today);
                                 allData =db.selector(TrafficInfoTable.class)
                                         .where("update_time", ">", date)
-                                        .and("out_time","!=",null)
+                                        .and("status", "=", "已出")
                                         .and("car_type","!=","固定车")
                                         .findAll();
                                 myAdapter.notifyDataSetChanged();

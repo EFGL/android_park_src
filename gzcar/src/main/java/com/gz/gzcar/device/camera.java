@@ -21,6 +21,7 @@ import ice_ipcsdk.SDK;
 
 public class camera {
     SDK sdk;
+    public MainActivity mainActivity = null;
     plate_callback PlateCallback;
     mjpeg_callback MjpegCallback;
     String portName;
@@ -228,10 +229,11 @@ public class camera {
             CarPicdata = carPicdata;
         }
     }
-    public  camera(String name, String ip){
+    public  camera(MainActivity myActive,String name, String ip){
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build());
         Log.i("log","connect camera " + name +  " " + ip);
+        mainActivity = myActive;
         sdk = new SDK();
         portName = name;
         cameraIp = ip;
@@ -285,7 +287,8 @@ public class camera {
             info.msgType = msgType.PIC;
             Message msg = new Message();
             msg.obj = info;
-            MainActivity.myHandler.sendMessage(msg);
+            mainActivity.myHandler.sendMessage(msg);
+          //  MainActivity.myHandler.sendMessage(msg);
             return info.CarPicdata;
         }
         return null;
@@ -333,7 +336,8 @@ public class camera {
             plateinfo.msgType = msgType.PLATE;
             Message msg = new Message();
             msg.obj = plateinfo;
-            MainActivity.myHandler.sendMessage(msg);
+           // MainActivity.myHandler.sendMessage(msg);
+            mainActivity.myHandler.sendMessage(msg);
         }
     }
     // mjpeg码流回调

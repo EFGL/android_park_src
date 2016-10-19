@@ -17,14 +17,26 @@ public class MyApplication extends Application {
     public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
-    public static DbManager db = null;
+    public  DbManager db = null;
     public static SPUtils settingInfo;
     @Override
     public void onCreate() {
         super.onCreate();
         settingInfo = new SPUtils(this,"config");
+        if(settingInfo.getString("serverIp") == null) {
+            settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
+            settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址
+            settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+            settingInfo.putString("userName", " ");
+            settingInfo.putBoolean("loginStatus", false);
+            settingInfo.putLong("allCarPlace",500);
+            settingInfo.putLong("allCarPlace",500);
+            settingInfo.putLong("inCarCount", 0);
+            settingInfo.putLong("outCarCount", 0);
+            settingInfo.putLong("chargeCarNumber", 0);
+            settingInfo.putString("chargeMoney", "0.00");
+        }
         x.Ext.init(this);
-
 //        x.Ext.init(this);
 //        File file=new File(Environment.getExternalStorageDirectory().getPath());
         daoConfig = new DbManager.DaoConfig()
@@ -54,7 +66,5 @@ public class MyApplication extends Application {
                         Toast.makeText(getApplicationContext(), "数据库升级了...", Toast.LENGTH_SHORT).show();
                     }
                 });
-                db = x.getDb(daoConfig);
-
     }
 }

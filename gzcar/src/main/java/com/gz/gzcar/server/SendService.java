@@ -31,7 +31,7 @@ import java.io.InputStream;
 
 /**
  * 上传和下行服务
- *@ClassName: SendService 
+ *@ClassName: SendService
  *1，onCreate开始现成，while一直循环，在while里面判断 startsend是否发送handler，true发送，false不发送
  *2，handler收到消息，执行全部下载的代码
  *3，handler收到消息，执行startupload（）；
@@ -43,8 +43,8 @@ public class SendService extends Service{
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(MyApplication.daoConfig);
-
+	//public static DbManager db =  x.getDb(MyApplication.daoConfig);
+	public static DbManager db =  x.getDb(MyApplication.daoConfig);
 	/**
 	 * 是否发送handler
 	 */

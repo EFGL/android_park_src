@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
@@ -159,7 +160,6 @@ public class RunFragment extends BaseFragment {
             allData = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .findAll();
-//            Log.e("my", "alldata==" + allData.toString());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
