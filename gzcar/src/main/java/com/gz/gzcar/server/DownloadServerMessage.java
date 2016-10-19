@@ -15,7 +15,7 @@ import org.xutils.http.RequestParams;
 
 import android.util.Log;
 
-import com.gz.gzcar.Database.DownloadTimeBean;
+import com.gz.gzcar.MyApplication;
 
 /**
  * 下载一切需要的记录
@@ -24,7 +24,7 @@ public class DownloadServerMessage {
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(AppContext.daoConfig);
+	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
 	public static String mycontroller_sn="001";
 
@@ -60,7 +60,7 @@ public class DownloadServerMessage {
 			get_down_info_vehicle(url, bean.getTime(), mycontroller_sn);
 			get_down_record_stall_vehicle(url, bean.getTime(), mycontroller_sn);
 			//修改时间
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd日 HH:mm:ss");
+			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			db.update(DownloadTimeBean.class, WhereBuilder.b("time", "=", bean.getTime()),new KeyValue("time",dateFormat.format(new Date())));
 		} catch (DbException e) {
 			e.printStackTrace();

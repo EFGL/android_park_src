@@ -57,7 +57,7 @@ public class TrafficInfoTable {
     private String stall_time;
     //记录更新时间
     @Column(name = "update_time")
-    private Date updateTime;
+    private Date update_time;
     //通行状态
     @Column(name = "status")
     private String status;
@@ -80,7 +80,7 @@ public class TrafficInfoTable {
                 ", actual_money=" + actual_money +
                 ", stall=" + stall +
                 ", stall_time=" + stall_time +
-                ", updateTime=" + updateTime +
+                ", update_time=" + update_time +
                 ", modifeFlage=" + modifeFlage +
                 '}';
     }
@@ -156,11 +156,11 @@ public class TrafficInfoTable {
 
 
     public Date getUpdateTime() {
-        return updateTime;
+        return update_time;
     }
 
     public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+        this.update_time = updateTime;
     }
     public Double getReceivable() {    return receivable;    }
 

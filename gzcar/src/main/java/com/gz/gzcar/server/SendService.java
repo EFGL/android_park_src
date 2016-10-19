@@ -31,7 +31,7 @@ import com.gz.gzcar.MyApplication;
 
 /**
  * 上传和下行服务
- *@ClassName: SendService 
+ *@ClassName: SendService
  *1，onCreate开始现成，while一直循环，在while里面判断 startsend是否发送handler，true发送，false不发送
  *2，handler收到消息，执行全部下载的代码
  *3，handler收到消息，执行startupload（）；
@@ -43,8 +43,8 @@ public class SendService extends Service{
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(MyApplication.daoConfig);
-
+	//public static DbManager db =  x.getDb(MyApplication.daoConfig);
+	public static DbManager db =  x.getDb(MyApplication.daoConfig);
 	/**
 	 * 是否发送handler
 	 */
@@ -182,8 +182,12 @@ public class SendService extends Service{
 			params.addBodyParameter("out_imagename",out_imagename);
 			params.addBodyParameter("in_imagename",in_imagename);
 			params.addBodyParameter("out_imagefile",getbase64msg(out_imagefile));
-			params.addBodyParameter("out_imagefile",getbase64msg(in_imagefile));
-			showlog("开始上传记录，params为＝"+params.toString());
+			params.addBodyParameter("in_imagefile",getbase64msg(in_imagefile));
+			showlog("开始上传记录，str为＝"+str);
+			showlog("开始上传记录，out_imagename为＝"+out_imagename);
+			showlog("开始上传记录，in_imagename为＝"+in_imagename);
+			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
+			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
 			x.http().post(params, new CommonCallback<String>() {
 				@Override
 				public void onCancelled(CancelledException arg0) {

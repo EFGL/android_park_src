@@ -43,6 +43,7 @@
         <activity android:name=".settings.UserUpdateActivity" />
         <activity android:name=".SelectPassOut"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <service android:name=".server.SendService"/>
     </application>
 
 </manifest>
