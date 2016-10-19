@@ -26,7 +26,6 @@ import com.gz.gzcar.weight.MyPullText;
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +54,7 @@ public class RunFragment extends BaseFragment {
     private DbManager db = null;
     private MyAdapter myAdapter;
     private List<TrafficInfoTable> allData;
+    private MyPullText myPullText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class RunFragment extends BaseFragment {
     }
 
     private void initSpinner() {
-        MyPullText myPullText = (MyPullText) view.findViewById(R.id.mypulltext);
+        myPullText = (MyPullText) view.findViewById(R.id.mypulltext);
         ArrayList<String> popListItem = new ArrayList<String>();
         popListItem.add("所有车");
         popListItem.add("固定车");
@@ -75,6 +75,7 @@ public class RunFragment extends BaseFragment {
         popListItem.add("免费车");
         popListItem.add("其他");
         myPullText.setPopList(popListItem);
+        myPullText.setText(popListItem.get(0));
     }
 
     @Override
@@ -87,7 +88,6 @@ public class RunFragment extends BaseFragment {
 //        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
-        // TODO: 2016/10/13 0013
         initData();
     }
 
@@ -125,11 +125,12 @@ public class RunFragment extends BaseFragment {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
                                 .findAll();
-                        if (allData != null) {
-
+                        if (allData != null&&all!=null) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
+                        }else {
+                            T.showShort(getContext(),"未查到相关数据");
                         }
 //                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
 
@@ -176,90 +177,202 @@ public class RunFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_run_starttime:
-
                 startTimeShow();
                 break;
             case R.id.et_run_endtime:
-
                 endTimeShow();
                 break;
             case R.id.btn_run_search:
-
-                String carNum = mCarNumber.getText().toString().trim();
-                String start = mStartTime.getText().toString().trim();
-                String end = mEndTime.getText().toString().trim();
-
-                if (TextUtils.isEmpty(carNum)) {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormatDetail.parse(start))
-                                .and("out_time", "<", dateFormatDetail.parse(end))
-//                            .and("car_no","=",carNum)
-                                .findAll();
-
-//                        Log.e("mm", "all.size==" + allData.size());
-
-                        if (all != null && all.size() > 0) {
-                            allData.clear();
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                        } else {
-                            T.showShort(getContext(), "未查到相关数据");
-                            if (allData != null) {
-
-                                allData.clear();
-                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-                                Date date = DateUtils.string2DateDetail(today);
-                                allData = db.selector(TrafficInfoTable.class)
-                                        .where("update_time", ">", date)
-                                        .findAll();
-                                myAdapter.notifyDataSetChanged();
-                            }
-
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormatDetail.parse(start))
-                                .and("out_time", "<", dateFormatDetail.parse(end))
-                                .and("car_no", "=", carNum)
-                                .findAll();
-
-//                        Log.e("mm", "all.size==" + allData.size());
-
-                        if (all != null && all.size() > 0) {
-                            allData.clear();
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                        } else {
-                            T.showShort(getContext(), "未查到相关数据");
-                            if (allData != null) {
-
-                                allData.clear();
-                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-//                                Log.e("ende", "today==" + today);
-                                Date date = DateUtils.string2DateDetail(today);
-                                allData = db.selector(TrafficInfoTable.class)
-                                        .where("update_time", ">", date)
-                                        .findAll();
-                                myAdapter.notifyDataSetChanged();
-                            }
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+                search();
                 break;
+        }
+    }
+
+    // TODO: 2016/10/18 0018
+    private void search() {
+        String type = myPullText.getText().toString().trim();
+        String carNum = mCarNumber.getText().toString().trim();
+        String start = mStartTime.getText().toString().trim();
+        String end = mEndTime.getText().toString().trim();
+
+        if (type.equals("所有车")) {
+            if (TextUtils.isEmpty(carNum)) {
+                searchAll(start, end);
+            } else {
+                searchAllWithCarNum(start, end, carNum);
+            }
+            return;
+        } else if (type.equals("固定车")) {
+            if (TextUtils.isEmpty(carNum)) {
+                searchWithType(start, end, "固定车");
+            } else {
+                searchWithTypeAndCarNum(start, end, "固定车", carNum);
+            }
+            return;
+        } else if (type.equals("临时车")) {
+            if (TextUtils.isEmpty(carNum)) {
+                searchWithType(start, end, "临时车");
+            } else {
+                searchWithTypeAndCarNum(start, end, "临时车", carNum);
+            }
+            return;
+        } else if (type.equals("免费车")) {
+            if (TextUtils.isEmpty(carNum)) {
+                searchWithType(start, end, "免费车");
+            } else {
+                searchWithTypeAndCarNum(start, end, "免费车", carNum);
+            }
+        } else if (type.equals("其他")) {
+            if (TextUtils.isEmpty(carNum)) {
+
+                searchWithOther(start,end);
+
+            } else {
+                searchWithOtherAndCarNum(start,end,carNum);
+            }
+        }
+
+    }
+
+    // 除了 固定 临时 免费的
+    // 先查全部 然后移除  固定 临时 免费的
+    private void searchWithOther(String start, String end) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .findAll();
+            // TODO: 2016/10/18 0018
+            List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_type", "=", "固定车")
+                    .or("car_type", "=", "临时车")
+                    .or("car_type", "=", "免费车")
+                    .findAll();
+
+            if (allData != null&&all!=null&&all.size()>0) {
+                all.removeAll(allOther);
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchWithOtherAndCarNum(String start, String end,String carNum) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_no","=",carNum)
+                    .findAll();
+            // TODO: 2016/10/18 0018
+            List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_no","=",carNum)
+                    .and("car_type", "=", "固定车")
+                    .or("car_type", "=", "临时车")
+                    .or("car_type", "=", "免费车")
+                    .findAll();
+
+            if (allData != null&&all!=null&&all.size()>0) {
+                all.removeAll(allOther);
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchWithType(String start, String end, String type) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_type", "=", type)
+                    .findAll();
+            if (allData != null&&all!=null&&all.size()>0) {
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchWithTypeAndCarNum(String start, String end, String type, String carNum) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_type", "=", type)
+                    .and("car_no", "=", carNum)
+                    .findAll();
+            if (allData != null&&all!=null&&all.size()>0) {
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchAll(String start, String end) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .findAll();
+            if (allData != null&&all!=null&&all.size()>0) {
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchAllWithCarNum(String start, String end, String number) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_no", "=", number)
+                    .findAll();
+            if (allData != null&&all!=null&&all.size()>0) {
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
         }
     }
 

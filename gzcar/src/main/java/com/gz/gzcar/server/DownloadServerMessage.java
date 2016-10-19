@@ -1,21 +1,22 @@
 package com.gz.gzcar.server;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.util.Log;
+
+import com.gz.gzcar.MyApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.DbManager;
-import org.xutils.x;
 import org.xutils.common.Callback.CommonCallback;
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
+import org.xutils.x;
 
-import android.util.Log;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import com.gz.gzcar.MyApplication;
 
 /**
  * 下载一切需要的记录
@@ -60,7 +61,7 @@ public class DownloadServerMessage {
 			get_down_info_vehicle(url, bean.getTime(), mycontroller_sn);
 			get_down_record_stall_vehicle(url, bean.getTime(), mycontroller_sn);
 			//修改时间
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd日 HH:mm:ss");
 			db.update(DownloadTimeBean.class, WhereBuilder.b("time", "=", bean.getTime()),new KeyValue("time",dateFormat.format(new Date())));
 		} catch (DbException e) {
 			e.printStackTrace();
