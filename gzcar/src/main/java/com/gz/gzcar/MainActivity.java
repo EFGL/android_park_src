@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
 import com.gz.gzcar.Database.CarInfoTable;
-import com.gz.gzcar.Database.FreeInfoTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
@@ -116,6 +115,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent=new Intent(MainActivity.this, SendService.class);
+        startService(intent);
         initLogin();
         context = MainActivity.this;
         //注册线程通讯

@@ -41,6 +41,7 @@ public class LoginActivity extends BaseActivity {
     private EditText mUser;
     private EditText mPasswordView;
     private RelativeLayout rt;
+
     private DbManager db = x.getDb(daoConfig);
     private SPUtils spUtils;
     private boolean first;
