@@ -216,31 +216,21 @@ public class MainActivity extends BaseActivity {
 
     // 生成收费表
     private void addMoneyBaseData() {
-        double baseMoney = 0.00;
-        double baseTime = 0.00;
         MoneyTable m;
-
         for (int i = 0; i < 48; i++) {
-
-            baseTime += 0.5;
-            baseMoney += 5;
-
-
-            Log.i("ende", "baseTime==" + baseTime);
-            Log.i("ende", "baseMoney==" + baseMoney);
-            Log.e("ende", "----------------------------");
-
             m = new MoneyTable();
-            m.setPartTime(baseTime);
-            m.setMoney(baseMoney);
+            m.setFee_code(String.valueOf(i+1));
+            m.setFee_detail_code(String.valueOf(i+1));
+            m.setMoney(i/2 +1);
+            m.setFee_name(String.format("%.1f小时－%.1f小时",i*0.5,(double)(i*0.5)+0.5));
+            m.setParked_min_time(i*30);
+            m.setParked_max_time((i+1)*30);
             try {
                 db.save(m);
             } catch (DbException e) {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     // 生成管理员基本帐号
@@ -365,125 +355,6 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 硬件终端获取固定车信息
-     *
-     * @param controller_sn
-     * @param id
-     */
-    public void get_info_vehicles(final String controller_sn, String id, final String url) {
-//        RequestParams params=new RequestParams(MyApplication.Baseurl+"first_down_car");
-//        RequestParams params=new RequestParams(MyApplication.Baseurl+"info_vehicles");
-        RequestParams params = new RequestParams(MyApplication.Baseurl + url);
-        params.addBodyParameter("controller_sn", controller_sn);
-        params.addBodyParameter("id", id);
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onCancelled(CancelledException arg0) {
-            }
-
-            @Override
-            public void onError(Throwable arg0, boolean arg1) {
-            }
-
-            @Override
-            public void onFinished() {
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                if (url.equals("first_down_car")) {
-                    try {
-                        JSONObject ret = new JSONObject(result);
-                        int ref = ret.getInt("ref");
-                        if (ref == 0) {
-                            Log.e("ende", "first onSuccess：result==" + result);
-                            // 保存sp
-                            MyApplication.settingInfo.putBoolean("first", true);
-                            Log.e("ende", "sp保存成功");
-                            get_info_vehicles("1", "NULL", "info_vehicles");
-                            return;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                /**
-                 * 成功：[{"id":"P0401030001600001129","car_no":"晋AGL202","car_type":"长期固定车","card_no":null,"label_no":null,"person_name":"浦院","person_sex":null,"person_tel":null,"person_address":null,"person_idcard":null,"car_color":null,"stop_date":"3036-01-01T00:00:00.000+08:00","start_date":"2016-01-01T00:00:00.000+08:00","carimage":null,"fee_flag":"1","created_at":"2016-05-18T11:28:04.000+08:00","updated_at":"2016-09-22T15:06:59.000+08:00","status":"作废","door1":"0","door2":"0","door3":"0","door4":"0","door5":"0","door6":"0","door7":"0","door8":"0","garage_code":"040103000","park_code":"04010300","note":null}]
-                 */
-                else if (result.length() != 2 && url.equals("info_vehicles")) {
-                    try {
-                        Log.e("ende", "info onSuccess：result==" + result);
-                        JSONArray array = new JSONArray(result);
-                        JSONObject object = new JSONObject(array.get(0).toString());
-                        String id = object.getString("id");
-                        String car_no = object.getString("car_no");
-                        String car_type = object.getString("car_type");
-                        String card_no = object.getString("card_no");
-                        String label_no = object.getString("label_no");
-                        String person_name = object.getString("person_name");
-                        String person_sex = object.getString("person_sex");
-                        String person_tel = object.getString("person_tel");
-                        String person_address = object.getString("person_address");
-                        String person_idcard = object.getString("person_idcard");
-                        String car_color = object.getString("car_color");
-                        String stop_date = object.getString("stop_date");
-                        String start_date = object.getString("start_date");
-                        String carimage = object.getString("carimage");
-                        String fee_flag = object.getString("fee_flag");
-                        String created_at = object.getString("created_at");
-                        String updated_at = object.getString("updated_at");
-                        String status = object.getString("status");
-                        String garage_code = object.getString("garage_code");
-                        String park_code = object.getString("park_code");
-                        String note = object.getString("note");
-                        //开始保存数据
-                        try {
-                            CarInfoTable mInfo = new CarInfoTable();
-                            mInfo.setCarId(id);
-                            mInfo.setCar_no(car_no);
-                            mInfo.setCar_type(car_type);
-                            mInfo.setCard_no(card_no);
-                            mInfo.setLabel_no(label_no);
-                            mInfo.setPerson_name(person_name);
-                            mInfo.setPerson_sex(person_sex);
-                            mInfo.setPerson_tel(person_tel);
-                            mInfo.setPerson_address(person_address);
-                            mInfo.setPerson_idcard(person_idcard);
-                            mInfo.setCar_color(car_color);
-                            mInfo.setStop_date(DateUtils.string2Date(DateUtils.change(stop_date)));
-                            mInfo.setStart_date(DateUtils.string2Date(DateUtils.change(start_date)));
-                            mInfo.setCar_image(carimage);
-                            mInfo.setFee_flag(fee_flag);
-                            mInfo.setCreated_at(DateUtils.string2Date(DateUtils.change(created_at)));
-                            mInfo.setUpdated_at(updated_at);
-                            mInfo.setStatus(status);
-                            mInfo.setGarage_code(garage_code);
-                            mInfo.setPark_code(park_code);
-                            mInfo.setNote(note);
-                            T.showShort(MainActivity.this, "stop_data==" + DateUtils.change(stop_date));
-
-                            db.save(mInfo);
-                            T.showShort(MainActivity.this, "增加成功");
-
-                        } catch (DbException e) {
-                            T.showShort(MainActivity.this, "新增异常");
-                            Log.e("ende", "DbException-----" + e.toString());
-                        }
-
-                        //保存完后，继续请求数据，递归
-                        get_info_vehicles(controller_sn, id, "info_vehicles");
-                    } catch (JSONException e) {
-                        Log.e("ende", "JSONException-----" + e.toString());
-                    }
-                } else if (result.length() == 2) {
-                    Log.e("ende", "info 22222");
-                    Toast.makeText(MainActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
     //更新状态信息
     private void upStatusInfoDisp() {
         //设定总车位
@@ -491,11 +362,10 @@ public class MainActivity extends BaseActivity {
         textViewAllPlace.setText(String.format("总车位：%d个", value));
         //设定空闲车位
         try {
-            value = value - db.selector(TrafficInfoTable.class).where("out_time", "=", null).count();
+            value = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
         } catch (DbException e) {
             e.printStackTrace();
         }
-        value = MyApplication.settingInfo.getLong("emptyCarPlace");
         textViewEmptyPlace.setText(String.format("空闲车位：%d个", value));
         value = MyApplication.settingInfo.getLong("inCarCount");
         textViewInCarCount.setText(String.format("当班入场：%d车次", value));

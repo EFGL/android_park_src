@@ -62,7 +62,7 @@ public class ParkingAddActivity extends BaseActivity {
         for (int i = 0; i < Integer.parseInt(count); i++) {
             try {
                 CarWeiTable cw = new CarWeiTable();
-                cw.setInfo(info);
+                cw.setPrint_code(info);
                 db.save(cw);
                 T.showShort(this, "增加成功");
                 finish();

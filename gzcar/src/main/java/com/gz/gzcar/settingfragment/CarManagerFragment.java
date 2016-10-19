@@ -354,19 +354,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     private void initData() {
 
         try {
-
-            if (allData != null) {
-                allData.clear();
-                allData.addAll(db.selector(CarInfoTable.class).findAll());
-                Collections.sort(allData);
-            } else {
-
-                allData = db.selector(CarInfoTable.class).findAll();
-                if (allData != null) {
-
-                    Collections.sort(allData);
-                }
-            }
+            allData = db.selector(CarInfoTable.class).findAll();
+               //Collections.sort(allData);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -444,7 +433,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
                     showDelete(carInfo.getId());
                     return true;
                 }

@@ -19,6 +19,8 @@ import com.gz.gzcar.utils.T;
 
 import org.xutils.*;
 import org.xutils.ex.DbException;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -45,7 +47,7 @@ public class carInfoProcess {
      * @return 执行状态
      */
     public  boolean processCarInFunc(String carNumber,byte[] picBuffer){
-        Log.i("log","out process:"+carNumber);
+        Log.i("log","in process:"+carNumber);
         if(carNumber.length()<=4){
             //无牌车处理
             return false;
@@ -164,7 +166,7 @@ public class carInfoProcess {
             //有效日期
             dispInfo[2] = " 请通行";
             //欢迎观临
-            dispInfo[3] = "欢迎光临";
+            dispInfo[3] = "一路顺风";
             //起杆
             outCamera.openGate();
             //显示
@@ -175,8 +177,20 @@ public class carInfoProcess {
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer);  //保存图片
             trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
-            if(trafficInfo == null) {
+            if(trafficInfo != null) {
+                //更新车辆出厂状态
+                trafficInfo.setOut_time(new Date());
+                trafficInfo.setOut_image(picPath);
+                trafficInfo.setOut_user(mainActivity.loginUserName);
+                trafficInfo.setPass_no("已出");
+                trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setModifeFlage(false);
+                db.update(trafficInfo, "out_time","out_image","out_user","update_time","modifeFlage","status");
+            }
+            else{
                 trafficInfo = new TrafficInfoTable();
+                SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
                 trafficInfo.setCar_no(carInfo.getCar_no());
                 trafficInfo.setCar_type(carInfo.getCar_type());
                 trafficInfo.setIn_time(null);
@@ -184,26 +198,18 @@ public class carInfoProcess {
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
                 trafficInfo.setOut_user(mainActivity.loginUserName);
-                trafficInfo.setStatus("已入");
+                trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
                 trafficInfo.setModifeFlage(false);
                 db.save(trafficInfo);
             }
-            else{
-                trafficInfo.setOut_time(new Date());
-                trafficInfo.setOut_image(picPath);
-                trafficInfo.setOut_user(mainActivity.loginUserName);
-                trafficInfo.setUpdateTime(new Date());
-                trafficInfo.setModifeFlage(false);
-                db.update(trafficInfo, "out_time","out_image","out_user","update_time","modifeFlage");
-            }
-            db.save(mainActivity.outPortLog);
         } catch (DbException e) {
             e.printStackTrace();
         }
+        //设置显示界面内容
         String timeFormat;
-        if(mainActivity.outPortLog.getIn_time() != null) {
-            final long timeLong = (mainActivity.outPortLog.getOut_time().getTime() - mainActivity.outPortLog.getIn_time().getTime()) / 60 / 1000;
+        if(trafficInfo.getIn_time() != null) {
+            final long timeLong = (trafficInfo.getOut_time().getTime() - trafficInfo.getIn_time().getTime()) / 60 / 1000;
             timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
         }else{
             timeFormat = "无入场记录";
@@ -276,7 +282,7 @@ public class carInfoProcess {
         else if (startDate >= 0 && userDate >= 10)  {
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = carInfo.getCar_type();
+            dispInfo[0] = " " + carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -292,27 +298,28 @@ public class carInfoProcess {
         FileUtils picFileManage = new FileUtils();
         String picPath = picFileManage.savePicture(picBuffer);  //保存图片
         TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
-        if(trafficInfo == null) {
-            trafficInfo = new TrafficInfoTable();
-            trafficInfo.setCar_no(carInfo.getCar_no());
-            trafficInfo.setCar_type(carInfo.getCar_type());
-            trafficInfo.setIn_time(new Date());
-            trafficInfo.setIn_image(picPath);
-            trafficInfo.setOut_time(null);
-            trafficInfo.setStall(null);
-            trafficInfo.setIn_user(mainActivity.loginUserName);
-            trafficInfo.setStatus("已入");
+        //修改已有记录标志
+        if(trafficInfo != null) {
+            trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
             trafficInfo.setModifeFlage(false);
-            db.save(trafficInfo);
-        }else{
-            trafficInfo.setIn_time(new Date());
-            trafficInfo.setIn_image(picPath);
-            trafficInfo.setIn_user(mainActivity.loginUserName);
-            trafficInfo.setUpdateTime(new Date());
-            trafficInfo.setModifeFlage(false);
-            db.update(trafficInfo, "in_time","in_image","in_user","update_time","modifeFlage");
+            db.update(trafficInfo, "update_time", "modifeFlage","status");
         }
+        //保存通行记录
+        trafficInfo = new TrafficInfoTable();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
+        trafficInfo.setCar_no(carInfo.getCar_no());
+        trafficInfo.setCar_type(carInfo.getCar_type());
+        trafficInfo.setIn_time(new Date());
+        trafficInfo.setIn_image(picPath);
+        trafficInfo.setOut_time(null);
+        trafficInfo.setStall(null);
+        trafficInfo.setIn_user(mainActivity.loginUserName);
+        trafficInfo.setStatus("已入");
+        trafficInfo.setUpdateTime(new Date());
+        trafficInfo.setModifeFlage(false);
+        db.save(trafficInfo);
         return true;
     }
     //保存无牌车入场记录
@@ -336,6 +343,8 @@ public class carInfoProcess {
         inCamera.playAudio(AudioString);
         //保存数据
         TrafficInfoTable trafficInfo = new TrafficInfoTable();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
         trafficInfo.setCar_no("无牌车");
         trafficInfo.setCar_type("临时车");
         trafficInfo.setIn_time(new Date());
@@ -359,30 +368,26 @@ public class carInfoProcess {
         String picPath = picFileManage.savePicture(picBuffer);
         //保存数据
         TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=",carNumber).and("status", "=", "已入").findFirst();
-        if(trafficInfo == null) {
-            trafficInfo = new TrafficInfoTable();
-            trafficInfo.setCar_no(carNumber);
-            trafficInfo.setCar_type("临时车");
-            trafficInfo.setIn_time(new Date());
-            trafficInfo.setOut_time(null);
-            trafficInfo.setIn_image(picPath);
-            trafficInfo.setStall(null);
-            trafficInfo.setIn_user(mainActivity.loginUserName);
-            trafficInfo.setStatus("已入");
+        if(trafficInfo != null) {
+            trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
             trafficInfo.setModifeFlage(false);
-            db.save(trafficInfo);
+            db.update(trafficInfo,"update_time","modifeFlage","status");
         }
-        else
-        {
-            trafficInfo.setIn_time(new Date());
-            trafficInfo.setIn_image(picPath);
-            trafficInfo.setIn_user(mainActivity.loginUserName);
-            trafficInfo.setStatus("已入");
-            trafficInfo.setUpdateTime(new Date());
-            trafficInfo.setModifeFlage(false);
-            db.update(trafficInfo, "in_time","in_image","in_user","update_time","modifeFlage");
-        }
+        trafficInfo = new TrafficInfoTable();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
+        trafficInfo.setCar_no(carNumber);
+        trafficInfo.setCar_type("临时车");
+        trafficInfo.setIn_time(new Date());;
+        trafficInfo.setIn_image(picPath);
+        trafficInfo.setOut_time(null);
+        trafficInfo.setStall(null);
+        trafficInfo.setIn_user(mainActivity.loginUserName);
+        trafficInfo.setStatus("已入");
+        trafficInfo.setUpdateTime(new Date());
+        trafficInfo.setModifeFlage(false);
+        db.save(trafficInfo);
         return true;
     }
     /**
@@ -493,19 +498,16 @@ public class carInfoProcess {
     //根据停车时长计算收费金额
     private double moneyCount(double time)
     {
-        double  reuslt=0;
-        double  hours=time/60;
-        double remainder=hours%24;
-        int round=(int)hours/24;
+        double res = 0;
+        int day = (int) time/24/60;
+        int minute = (int)time % (24*60);
         try {
-            reuslt=round*db.selector(MoneyTable.class).where("part_time","=",24).findFirst().getMoney();
-            MoneyTable mymonettable =db.selector(MoneyTable.class).where("part_time", ">=",remainder).and("part_time", "<", remainder+0.5).findFirst();
-            if(mymonettable!=null)
-                reuslt= reuslt+mymonettable.getMoney();
+                res = day * db.selector(MoneyTable.class).orderBy("money",true).findFirst().getMoney();
+                res += db.selector(MoneyTable.class).where("parked_min_time","<=",minute).and("parked_max_time",">",minute).findFirst().getMoney();
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return   reuslt;
+        return   res;
     }
     /**
      * @param carNumber 车号
@@ -559,7 +561,7 @@ public class carInfoProcess {
                 mainActivity.outPortLog.setStall_time(timeFormat);
                 //初始化显示屏内容
                 //车类型
-                dispInfo[0] = "临时车";
+                dispInfo[0] = " 临时车";
                 //车号
                 dispInfo[1] = carNumber;
                 //停车时长
@@ -698,6 +700,8 @@ public class carInfoProcess {
             trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
             if (trafficInfo == null) {
                 trafficInfo = new TrafficInfoTable();
+                SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
                 trafficInfo.setIn_time(null);
                 trafficInfo.setIn_image(null);
                 if(mainActivity.chargeCarNumber.getText().toString().isEmpty()) {
@@ -718,6 +722,7 @@ public class carInfoProcess {
                 trafficInfo.setModifeFlage(false);
                 db.save(trafficInfo);
             } else {
+                trafficInfo.setCar_type("免费车");
                 trafficInfo.setOut_time(mainActivity.outPortLog.getOut_time());
                 trafficInfo.setOut_image(picPath);
                 trafficInfo.setReceivable(mainActivity.outPortLog.getReceivable());
@@ -728,7 +733,7 @@ public class carInfoProcess {
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
                 trafficInfo.setModifeFlage(false);
-                db.update(trafficInfo, "out_time","out_image","out_user","update_time","status","stall","stall_time","receivable","actual_money","modifeFlage");
+                db.update(trafficInfo,"car_type","out_time","out_image","out_user","update_time","status","stall","stall_time","receivable","actual_money","modifeFlage");
             }
             return true;
         } catch (DbException e) {

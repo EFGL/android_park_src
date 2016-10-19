@@ -13,35 +13,44 @@ import java.util.Date;
 
 @Table(name = "car_bind")
 public class CarWeiBindTable {
-
     @Column(name = "id", isId = true)
     private int id;
-
-    @Column(name = "update_time")
-    private Date updateTime;
-
-    @Column(name = "modife_flage")
-    private boolean modifeFlage;
-
-    @Column(name = "user_name")
-    private String userName;
-
-    @Column(name = "car_number")
-    private String carNumber;
-
-    @Column(name = "car_wei")
-    private String carWei;
-
+    //组键
+    @Column(name = "code")
+    private String code;
+    //车号
+    @Column(name = "car_no")
+    private String car_no;
+    //车位主键
+    @Column(name = "stall_code")
+    private String stall_code;
+    //有效开始日期
+    @Column(name = "begin_date")
+    private Date begin_date;
+    //有效截止日期
+    @Column(name = "end_date")
+    private Date end_date;
+    //创建时间
+    @Column(name = "created_at")
+    private Date created_at;
+    //更新时间
+    @Column(name = "updated_at")
+    private Date updated_at;
+    //状态Y:N
+    @Column(name = "status")
+    private String status;
 
     @Override
     public String toString() {
         return "CarWeiBindTable{" +
-                "id=" + id +
-                ", updateTime=" + updateTime +
-                ", modifeFlage=" + modifeFlage +
-                ", userName='" + userName + '\'' +
-                ", carNumber='" + carNumber + '\'' +
-                ", carWei='" + carWei + '\'' +
+                "code=" + id +
+                ", car_no=" + car_no +
+                ", stall_code=" + stall_code +
+                ", begin_date='" + begin_date + '\'' +
+                ", end_date='" + end_date + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 
@@ -53,43 +62,68 @@ public class CarWeiBindTable {
         this.id = id;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getCode() {
+        return code;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public boolean isModifeFlage() {
-        return modifeFlage;
+    public String getCar_no() {
+        return car_no;
     }
 
-    public void setModifeFlage(boolean modifeFlage) {
-        this.modifeFlage = modifeFlage;
+    public void setCar_no(String car_no) {
+        this.car_no = car_no;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getStall_code() {
+        return stall_code;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setStall_code(String stall_code) {
+        this.stall_code = stall_code;
     }
 
-    public String getCarNumber() {
-        return carNumber;
+    public Date getBegin_date() {
+        return begin_date;
     }
 
-    public void setCarNumber(String carNumber) {
-        this.carNumber = carNumber;
+    public void setBegin_date(Date begin_date) {
+        this.begin_date = begin_date;
     }
 
-    public String getCarWei() {
-        return carWei;
+    public Date getEnd_date() {
+        return end_date;
     }
 
-    public void setCarWei(String carWei) {
-        this.carWei = carWei;
+    public void setEnd_date(Date end_date) {
+        this.end_date = end_date;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Date updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
+

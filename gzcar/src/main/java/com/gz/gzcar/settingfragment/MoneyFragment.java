@@ -181,13 +181,9 @@ public class MoneyFragment extends Fragment {
                     holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 }
             }
-
             holder.mId.setText(position + 1 + "");
             holder.mMoney.setText(allData.get(position).getMoney() + "元");
-            double start = allData.get(position).getPartTime() - 0.5;
-            double time = allData.get(position).getPartTime();
-            holder.mTime.setText(start + " - " + time + " 小时");
-
+            holder.mTime.setText(allData.get(position).getFee_name());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -247,53 +243,13 @@ public class MoneyFragment extends Fragment {
         } catch (DbException e) {
             e.printStackTrace();
         }
-        if (allData == null || allData.size() < 1) {
-            addBaseData();
-            // TODO: 2016/9/27 0027
-//            initViews();
+        if (allData != null ) {
+             initViews();
         } else {
-            initViews();
+
         }
     }
-
-
-    private void addBaseData() {
-        double baseMoney = 0.00;
-        double baseTime = 0.00;
-        MoneyTable m;
-
-        for (int i = 0; i < 48; i++) {
-
-            baseTime += 0.5;
-            baseMoney += 5;
-
-
-            Log.i("ende", "baseTime==" + baseTime);
-            Log.i("ende", "baseMoney==" + baseMoney);
-            Log.e("ende", "----------------------------");
-
-            m = new MoneyTable();
-            m.setPartTime(baseTime);
-            m.setMoney(baseMoney);
-            try {
-                db.save(m);
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            allData = db.findAll(MoneyTable.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-
-        if (allData != null) {
-            initViews();
-        }
-    }
-
-    @Override
+        @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);

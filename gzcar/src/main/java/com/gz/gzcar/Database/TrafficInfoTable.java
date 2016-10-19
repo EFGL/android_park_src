@@ -15,9 +15,9 @@ import java.util.Date;
 public class TrafficInfoTable {
     @Column(name = "id", isId = true)
     private int id;
-    //通行状态
+    //通行记录号
     @Column(name = "pass_no")
-    private int pass_no;
+    private String pass_no;
     //车辆类型
     @Column(name = "car_type")
     private String car_type;
@@ -97,9 +97,9 @@ public class TrafficInfoTable {
         return car_type;
     }
 
-    public int getPass_no() {        return pass_no;    }
+    public String getPass_no() {        return pass_no;    }
 
-    public void setPass_no(int pass_no) {        this.pass_no = pass_no;    }
+    public void setPass_no(String pass_no) {        this.pass_no = pass_no;    }
 
     public void setCar_type(String car_type) {
         this.car_type = car_type;

@@ -33,6 +33,8 @@ public class SettingsFragment extends Fragment {
     EditText mInIp;
     @Bind(R.id.et_out_ip)
     EditText mOutIp;
+    @Bind(R.id.editText_stallNumber)
+    EditText stallNumber;
     @Bind(R.id.tb_togglebutton1)
     JellyToggleButton mTogglebutton1;
     @Bind(R.id.tb_togglebutton2)
@@ -68,10 +70,11 @@ public class SettingsFragment extends Fragment {
         String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
         String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
         String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
-
+        long stallNum = MyApplication.settingInfo.getLong("allCarPlace");
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
+        stallNumber.setText(String.valueOf(stallNum));
 
         boolean tempCarIn = MyApplication.settingInfo.getBoolean(TEMP_CAR_IN);
         boolean tempCarFree = MyApplication.settingInfo.getBoolean(TEMP_CAR_FREE);
@@ -170,16 +173,11 @@ public class SettingsFragment extends Fragment {
         String serverAddress = mServerAddress.getText().toString().trim();
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();
-        if (!TextUtils.isEmpty(serverAddress)) {
-            MyApplication.settingInfo.putString("serverIp", serverAddress);
-        }
-        if (!TextUtils.isEmpty(inCameraIp)) {
-            MyApplication.settingInfo.putString("inCameraIp", inCameraIp);
-        }
-        if (!TextUtils.isEmpty(outCameraIp)) {
-            MyApplication.settingInfo.putString("outCameraIp", outCameraIp);
-        }
-
+        Long stallNum = Long.valueOf(stallNumber.getText().toString().trim());
+        MyApplication.settingInfo.putString("serverIp", serverAddress);
+        MyApplication.settingInfo.putString("inCameraIp", inCameraIp);
+        MyApplication.settingInfo.putString("outCameraIp", outCameraIp);
+        MyApplication.settingInfo.putLong("allCarPlace", stallNum);
         T.showShort(getContext(), "保存成功");
     }
 }

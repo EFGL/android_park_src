@@ -193,39 +193,6 @@ public class LoginActivity extends BaseActivity {
                         String garage_code = object.getString("garage_code");
                         String park_code = object.getString("park_code");
                         String note = object.getString("note");
-                        //开始保存数据
-                        try {
-                            CarInfoTable mInfo = new CarInfoTable();
-                            mInfo.setCarId(id);
-                            mInfo.setCar_no(car_no);
-                            mInfo.setCar_type(car_type);
-                            mInfo.setCard_no(card_no);
-                            mInfo.setLabel_no(label_no);
-                            mInfo.setPerson_name(person_name);
-                            mInfo.setPerson_sex(person_sex);
-                            mInfo.setPerson_tel(person_tel);
-                            mInfo.setPerson_address(person_address);
-                            mInfo.setPerson_idcard(person_idcard);
-                            mInfo.setCar_color(car_color);
-                            mInfo.setStop_date(DateUtils.string2Date(DateUtils.change(stop_date)));
-                            mInfo.setStart_date(DateUtils.string2Date(DateUtils.change(start_date)));
-                            mInfo.setCar_image(carimage);
-                            mInfo.setFee_flag(fee_flag);
-                            mInfo.setCreated_at(DateUtils.string2Date(DateUtils.change(created_at)));
-                            mInfo.setUpdated_at(updated_at);
-                            mInfo.setStatus(status);
-                            mInfo.setGarage_code(garage_code);
-                            mInfo.setPark_code(park_code);
-                            mInfo.setNote(note);
-                            T.showShort(LoginActivity.this, "stop_data==" + DateUtils.change(stop_date));
-
-                            db.save(mInfo);
-                            T.showShort(LoginActivity.this, "增加成功");
-
-                        } catch (DbException e) {
-                            T.showShort(LoginActivity.this, "新增异常");
-                            Log.e("ende","DbException-----"+e.toString());
-                        }
 
                         //保存完后，继续请求数据，递归
                         get_info_vehicles(controller_sn, id, "info_vehicles");

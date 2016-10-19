@@ -98,7 +98,7 @@ public class SelectPassOut extends BaseActivity {
                 String carNum = outCarnum.getText().toString().trim();
                 if (TextUtils.isEmpty(carNum)) {
                     try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status","=","已入").findAll();
                         allData.clear();
                         allData.addAll(all);
                         myAdapter.notifyDataSetChanged();
@@ -109,7 +109,7 @@ public class SelectPassOut extends BaseActivity {
                 } else {
                     try {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("out_time", "=", null).and("car_no", "=", carNum).findAll();
+                                .where("status","=","已入").and("car_no", "=", carNum).findAll();
                         if (all != null && all.size() > 0) {
                             allData.clear();
                             allData.addAll(all);
@@ -133,11 +133,12 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_nocarnum:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("out_time","=",null).findAll();
-                    if (allData == null || all == null || all.size() < 1) {
-                        T.showShort(this, "未查到相关数据");
-                    } else {
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status","=","已入").findAll();
+                    if (all.size() >0) {
+                        T.showShort(this,"找到"+all.size()+ "条相关数据");
                         allData.addAll(all);
+                    } else {
+                        T.showShort(this, "未查到相关数据");
                     }
                     myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
@@ -165,11 +166,12 @@ public class SelectPassOut extends BaseActivity {
 //                T.showShort(this, "所有未出场车辆");
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("out_time", "=", null).findAll();
-                    if (allData != null && allData.size() > 0) {
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status","=","已入").findAll();
+                    if (all.size() >0) {
+                        T.showShort(this,"找到"+all.size()+ "条相关数据");
                         allData.addAll(all);
                     } else {
-                        T.showShort(this, "未查到相关信息");
+                        T.showShort(this, "未查到相关数据");
                     }
                     myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
@@ -205,12 +207,13 @@ public class SelectPassOut extends BaseActivity {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("in_time", ">", befor)
                     .and("in_time", "<", current)
-                    .and("out_time","=",null)
+                    .and("status","=","已入")
                     .findAll();
-            if (allData == null || all == null || all.size() < 1) {
-                T.showShort(this, "未查到相关数据");
-            } else {
+            if (all.size() >0) {
+                T.showShort(this,"找到"+all.size()+ "条相关数据");
                 allData.addAll(all);
+            } else {
+                T.showShort(this, "未查到相关数据");
             }
             myAdapter.notifyDataSetChanged();
         } catch (DbException e) {

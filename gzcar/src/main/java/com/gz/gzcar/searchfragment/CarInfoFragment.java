@@ -151,16 +151,8 @@ public class CarInfoFragment extends Fragment {
     }
 
     private void initData() {
-//        try {
-//            db.dropTable(CarInfoTable.class);
-//        } catch (DbException e) {
-//            e.printStackTrace();
-//        }
-//        addData();
-        try {
+       try {
             allData = db.selector(CarInfoTable.class).findAll();
-//            allData = db.selector(CarInfoTable.class).where()
-//            Log.e("my", "list:" + allData.toString());
         } catch (DbException e) {
             e.printStackTrace();
         }

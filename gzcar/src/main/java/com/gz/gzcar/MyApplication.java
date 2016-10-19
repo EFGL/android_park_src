@@ -14,6 +14,7 @@ import org.xutils.x;
  */
 public class MyApplication extends Application {
 
+    public static String devID = "1FFFFFFFFFFF";
     public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
@@ -29,7 +30,6 @@ public class MyApplication extends Application {
             settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
             settingInfo.putString("userName", " ");
             settingInfo.putBoolean("loginStatus", false);
-            settingInfo.putLong("allCarPlace",500);
             settingInfo.putLong("allCarPlace",500);
             settingInfo.putLong("inCarCount", 0);
             settingInfo.putLong("outCarCount", 0);

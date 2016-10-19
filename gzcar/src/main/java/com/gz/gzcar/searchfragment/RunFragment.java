@@ -152,11 +152,9 @@ public class RunFragment extends BaseFragment {
     }
 
     private void initData() {
-//        DateUtils.string2DateDetail(DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00");
         String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
         Date date = DateUtils.string2DateDetail(today);
         try {
-//            allData = db.selector(TrafficInfoTable.class).findAll();
             allData = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .findAll();

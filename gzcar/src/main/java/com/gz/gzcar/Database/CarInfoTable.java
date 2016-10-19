@@ -12,166 +12,73 @@ import java.util.Date;
  */
 
 @Table(name = "record_stall_vehicle")
-public class CarInfoTable implements Comparable {
-
+public class CarInfoTable{
     @Column(name = "id", isId = true)
     private int id;
-
-    @Column(name = "carId")
-    private String carId;
-
-    @Column(name = "fee_flag")
-    private String fee_flag;
-
-    @Column(name = "garage_code")
-    private String garage_code;
-
-    @Column(name = "note")
-    private String note;
-
+    //组键
+    @Column(name = "codeId", isId = true)
+    private String codeId;
+    //车号
     @Column(name = "car_no")
     private String car_no;
-
-    @Column(name = "car_wei")
-    private String carWei;
-
-    @Column(name = "updated_at")
-    private String updated_at;
-
+    //车辆类型
     @Column(name = "car_type")
     private String car_type;
-
-    @Column(name = "card_no")
-    private String card_no;
-
-    @Column(name = "label_no")
-    private String label_no;
-
+    //车辆所有人姓名
     @Column(name = "person_name")
     private String person_name;
-
-    @Column(name = "person_sex")
-    private String person_sex;
-
+    //车辆所有人电话
     @Column(name = "person_tel")
     private String person_tel;
-
+    //车辆所有人地址
     @Column(name = "person_address")
     private String person_address;
-
-    @Column(name = "person_idcard")
-    private String person_idcard;
-
-    @Column(name = "car_color")
-    private String car_color;
-
-    @Column(name = "stop_date")
-    private Date stop_date;
-
+    //有效开始时间
     @Column(name = "start_date")
     private Date start_date;
-
-
-    @Column(name = "car_image")
-    private String car_image;
-
-
+    //有效结束时间
+    @Column(name = "stop_date")
+    private Date stop_date;
+    //数据创建时间
     @Column(name = "created_at")
     private Date created_at;
-
-
+    //数据更新时间
+    @Column(name = "updated_at")
+    private String updated_at;
+    //状态
     @Column(name = "status")
     private String status;
-
-
-    @Column(name = "park_code")
-    private String park_code;
-
-    @Column(name = "update_time")
-    private Date updateTime;
-
-    @Column(name = "modife_flage")
-    private boolean modifeFlage;
-
-    @Column(name = "user_name")
-    private String userName;
-
-    @Override
-    public int compareTo(Object andother) {
-
-        return ((CarInfoTable) andother).getId() - this.id;
-    }
 
     @Override
     public String toString() {
         return "CarInfoTable{" +
                 "id=" + id +
-                ", carId='" + carId + '\'' +
-                ", fee_flag='" + fee_flag + '\'' +
-                ", garage_code='" + garage_code + '\'' +
-                ", note='" + note + '\'' +
                 ", car_no='" + car_no + '\'' +
-                ", carWei='" + carWei + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", car_type='" + car_type + '\'' +
-                ", card_no='" + card_no + '\'' +
-                ", label_no='" + label_no + '\'' +
+               ", car_type='" + car_type + '\'' +
                 ", person_name='" + person_name + '\'' +
-                ", person_sex='" + person_sex + '\'' +
                 ", person_tel='" + person_tel + '\'' +
                 ", person_address='" + person_address + '\'' +
-                ", person_idcard='" + person_idcard + '\'' +
-                ", car_color='" + car_color + '\'' +
-                ", stop_date=" + stop_date +
                 ", start_date=" + start_date +
-                ", car_image='" + car_image + '\'' +
+                ", stop_date=" + stop_date +
                 ", created_at=" + created_at +
+                ", updated_at='" + updated_at + '\'' +
                 ", status='" + status + '\'' +
-                ", park_code='" + park_code + '\'' +
-                ", updateTime=" + updateTime +
-                ", modifeFlage=" + modifeFlage +
-                ", userName='" + userName + '\'' +
                 '}';
     }
 
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getCarId() {
-        return carId;
+    public String getCodeId() {
+        return codeId;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
-    }
-
-    public String getFee_flag() {
-        return fee_flag;
-    }
-
-    public void setFee_flag(String fee_flag) {
-        this.fee_flag = fee_flag;
-    }
-
-    public String getGarage_code() {
-        return garage_code;
-    }
-
-    public void setGarage_code(String garage_code) {
-        this.garage_code = garage_code;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
+    public void setCodeId(String codeId) {
+        this.codeId = codeId;
     }
 
     public String getCar_no() {
@@ -180,14 +87,6 @@ public class CarInfoTable implements Comparable {
 
     public void setCar_no(String car_no) {
         this.car_no = car_no;
-    }
-
-    public String getCarWei() {
-        return carWei;
-    }
-
-    public void setCarWei(String carWei) {
-        this.carWei = carWei;
     }
 
     public String getUpdated_at() {
@@ -206,36 +105,12 @@ public class CarInfoTable implements Comparable {
         this.car_type = car_type;
     }
 
-    public String getCard_no() {
-        return card_no;
-    }
-
-    public void setCard_no(String card_no) {
-        this.card_no = card_no;
-    }
-
-    public String getLabel_no() {
-        return label_no;
-    }
-
-    public void setLabel_no(String label_no) {
-        this.label_no = label_no;
-    }
-
     public String getPerson_name() {
         return person_name;
     }
 
     public void setPerson_name(String person_name) {
         this.person_name = person_name;
-    }
-
-    public String getPerson_sex() {
-        return person_sex;
-    }
-
-    public void setPerson_sex(String person_sex) {
-        this.person_sex = person_sex;
     }
 
     public String getPerson_tel() {
@@ -254,22 +129,6 @@ public class CarInfoTable implements Comparable {
         this.person_address = person_address;
     }
 
-    public String getPerson_idcard() {
-        return person_idcard;
-    }
-
-    public void setPerson_idcard(String person_idcard) {
-        this.person_idcard = person_idcard;
-    }
-
-    public String getCar_color() {
-        return car_color;
-    }
-
-    public void setCar_color(String car_color) {
-        this.car_color = car_color;
-    }
-
     public Date getStop_date() {
         return stop_date;
     }
@@ -286,14 +145,6 @@ public class CarInfoTable implements Comparable {
         this.start_date = start_date;
     }
 
-    public String getCar_image() {
-        return car_image;
-    }
-
-    public void setCar_image(String car_image) {
-        this.car_image = car_image;
-    }
-
     public Date getCreated_at() {
         return created_at;
     }
@@ -308,37 +159,5 @@ public class CarInfoTable implements Comparable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getPark_code() {
-        return park_code;
-    }
-
-    public void setPark_code(String park_code) {
-        this.park_code = park_code;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public boolean isModifeFlage() {
-        return modifeFlage;
-    }
-
-    public void setModifeFlage(boolean modifeFlage) {
-        this.modifeFlage = modifeFlage;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 }

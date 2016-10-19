@@ -103,12 +103,10 @@ public class CarAdd extends BaseActivity {
             if (all != null) {
 
                 for (int i = 0; i < all.size(); i++) {
-
-                    carweiList.add(all.get(i).getInfo() + all.get(i).getId());
+                    carweiList.add(all.get(i).getPrint_code());
                 }
                 carweiList.add(0,"");
                 myPullText.setPopList(carweiList);
-//                myPullText.setText(carweiList.get(0));
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -174,62 +172,38 @@ public class CarAdd extends BaseActivity {
             mInfo.setStart_date(DateUtils.string2Date(startTime));
             mInfo.setStop_date(DateUtils.string2Date(endTime));
             x.getDb(daoConfig).save(mInfo);
-
+            //保存车位绑定信息
+            CarWeiBindTable carBind = new CarWeiBindTable();
             String carWei = mCarwei.getText().toString().trim();
             if (!TextUtils.isEmpty(carWei)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei);
-                carBind.setCarNumber(carNum);
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第1条保存成功",Toast.LENGTH_SHORT).show();
             }
-            String carWei2 = mCarwei2.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei2)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei2);
-                carBind.setCarNumber(carNum);
+            carWei = mCarwei2.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第2条保存成功",Toast.LENGTH_SHORT).show();
             }
-            String carWei3 = mCarwei3.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei3)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei3);
-                carBind.setCarNumber(carNum);
+            carWei = mCarwei3.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第3条保存成功",Toast.LENGTH_SHORT).show();
             }
-            String carWei4 = mCarwei4.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei4)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei4);
-                carBind.setCarNumber(carNum);
+            carWei = mCarwei4.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第4条保存成功",Toast.LENGTH_SHORT).show();
             }
-            String carWei6 = mCarwei6.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei6)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei6);
-                carBind.setCarNumber(carNum);
+            carWei = mCarwei5.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第5条保存成功",Toast.LENGTH_SHORT).show();
             }
-            String carWei5 = mCarwei5.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei5)){
-
-                CarWeiBindTable carBind = new CarWeiBindTable();
-                carBind.setCarWei(carWei5);
-                carBind.setCarNumber(carNum);
+            carWei = mCarwei6.getText().toString().trim();
+            if (!TextUtils.isEmpty(carWei)){
+                carBind.setStall_code(carWei);
                 db.save(carBind);
-                Toast.makeText(this,"第6条保存成功",Toast.LENGTH_SHORT).show();
             }
-
             T.showShort(this, "增加成功");
             finish();
         } catch (DbException e) {
@@ -237,7 +211,6 @@ public class CarAdd extends BaseActivity {
             e.printStackTrace();
         }
     }
-
     @OnClick({R.id.add_starttiem, R.id.add_endtime, R.id.add_btn_cancle, R.id.add_btn_ok})
     public void onClick(View view) {
         switch (view.getId()) {

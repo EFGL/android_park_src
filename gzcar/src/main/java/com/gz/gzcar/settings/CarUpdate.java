@@ -90,9 +90,7 @@ public class CarUpdate extends BaseActivity {
         initCarWei(mCarwei4);
         initCarWei(mCarwei5);
         initCarWei(mCarwei6);
-
     }
-
     private void initCarWei(MyPullText myPullText) {
         ArrayList<String> carweiList = new ArrayList<>();
         try {
@@ -101,11 +99,10 @@ public class CarUpdate extends BaseActivity {
 
                 for (int i = 0; i < all.size(); i++) {
 
-                    carweiList.add(all.get(i).getInfo() + all.get(i).getId());
+                    carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
                 }
                 carweiList.add(0, "");
                 myPullText.setPopList(carweiList);
-//                myPullText.setText(carweiList.get(0));
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -150,43 +147,36 @@ public class CarUpdate extends BaseActivity {
             return;
 
         try {
-            List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", carNumber).findAll();
+            List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no", "=", carNumber).findAll();
             if (all != null && all.size() > 0) {
                 for (int i = 0; i < all.size(); i++) {
-                    String carWei = all.get(i).getCarWei();
+                    String carWei = all.get(i).getStall_code();
                     if (i == 0) {
-
                         mCarwei1.setText(carWei);
                         id1 = all.get(i).getId();
                     }
                     if (i == 1) {
-
                         mCarwei2.setText(carWei);
                         id2 = all.get(i).getId();
                     }
                     if (i == 2) {
-
                         mCarwei3.setText(carWei);
                         id3 = all.get(i).getId();
                     }
                     if (i == 3) {
-
                         mCarwei4.setText(carWei);
                         id4 = all.get(i).getId();
                     }
                     if (i == 4) {
-
                         mCarwei5.setText(carWei);
                         id5 = all.get(i).getId();
                     }
                     if (i == 5) {
-
                         mCarwei6.setText(carWei);
                         id6 = all.get(i).getId();
                     }
                 }
             }
-
 
         } catch (DbException e) {
             e.printStackTrace();
@@ -251,7 +241,7 @@ public class CarUpdate extends BaseActivity {
         if (id != -1 && !TextUtils.isEmpty(carWei)) {
             // 原来有 现在也有 更新
             CarWeiBindTable carBind = db.findById(CarWeiBindTable.class, id);
-            carBind.setCarWei(carWei);
+            carBind.setStall_code(carWei);
             db.update(carBind, "car_wei");
             Log.e("ende","id=="+id+"原来有 现在也有 更新");
         } else if (id != -1 && TextUtils.isEmpty(carWei)) {
@@ -261,8 +251,8 @@ public class CarUpdate extends BaseActivity {
         } else if (id == -1 && !TextUtils.isEmpty(carWei)) {
             // 原来没有 现在有 创建
             CarWeiBindTable carBind = new CarWeiBindTable();
-            carBind.setCarNumber(mCarnum.getText().toString().trim());
-            carBind.setCarWei(carWei);
+            carBind.setCar_no(mCarnum.getText().toString().trim());
+            carBind.setStall_code(carWei);
             db.save(carBind);
             Log.e("ende","id=="+id+" 原来没有 现在有 创建");
         }
