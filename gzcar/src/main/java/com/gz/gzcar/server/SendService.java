@@ -31,30 +31,25 @@ import java.io.InputStream;
 
 /**
  * 上传和下行服务
- *@ClassName: SendService
- *1，onCreate开始现成，while一直循环，在while里面判断 startsend是否发送handler，true发送，false不发送
- *2，handler收到消息，执行全部下载的代码
- *3，handler收到消息，执行startupload（）；
- *4.查询TrafficInfoTable表中的上传是否为false，如果有false，那么就上传，上传完后，修改数据库，把false改完true
- *5，一条执行完在查询，始终调用）—4—.直到全为true了，那么就停止
- *6，进入sleep的状态
+ *@ClassName: SendService  程浩
+ *1，onCreate开始现成，while一直循环，在while里面发送handler
+ *2，handler收到消息，执行查询数据库的代码
+ *3，handler收到消息，如果数据库里有没有上传的，那么就开始上传第一条
+ *4.上传成功，修改数据库
+ *
+ *也就是没一次只传一条数据上去
  */
 public class SendService extends Service{
 	/**
 	 * DB
 	 */
-	//public static DbManager db =  x.getDb(MyApplication.daoConfig);
-	public static DbManager db =  x.getDb(MyApplication.daoConfig);
-	/**
-	 * 是否发送handler
-	 */
-	public static Boolean startsend=true;
+	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
 	public static String mycontroller_sn="1";
 
-	public static int handlersendtime=5000;
+	public static int handlersendtime=1000*20;
 
-	public static Boolean log=true;
+	public static Boolean log=false;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -69,34 +64,36 @@ public class SendService extends Service{
 			public void run() {
 				while(true){
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(handlersendtime);
 						handler.sendEmptyMessage(1);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-//					if(startsend){
-//						showlog("发送");
-//						handler.sendEmptyMessage(1);
-//						startsend=false;
-//					}
 				}
 			}
 		};
 		Thread thread=new Thread(runnable);
 		thread.start();
-		showlog(thread.getName());
 	}
 
 	Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			//调用下载全部，目的，下载全部所需要的值
-			DownloadServerMessage message=new DownloadServerMessage();
-			message.getallmessage();
-			startupload();
+			try {
+				TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
+				if(table!=null){
+					showlog("立即执行更新方法");
+					String jsonstr=production_jsonstr(table);
+					post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
+				}else {
+					showlog("没有需要更新的消息");
+				}
+			} catch (DbException e) {
+				e.printStackTrace();
+			}
 		}};
+
 
 		/**
 		 * 打印log
@@ -107,32 +104,6 @@ public class SendService extends Service{
 				Log.i("chenghao", msg);
 			}
 		}
-
-		/**
-		 * 开始进行上传记录
-		 * 1，进入就先查询下，如果有值，那么就开始上传
-		 */
-		public void startupload() {
-			try {
-				TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
-				if(table!=null){
-					String jsonstr=production_jsonstr(table);
-					post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
-				}else {
-					showlog("方法执行完成");
-//					try {
-//						Thread.sleep(handlersendtime);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//					showlog("唤醒发送");
-//					startsend=true;
-				}
-			} catch (DbException e) {
-				e.printStackTrace();
-			}
-		}
-
 		/**
 		 * 把图片转换成base64的字符串
 		 * 如果传空串，直接返回空串
@@ -163,12 +134,9 @@ public class SendService extends Service{
 		 * @return
 		 */
 		public String getpicname(String path){
-			showlog("path="+path);
 			if(path==null){
-				showlog("shinull");
 				return "";
 			}else {
-				showlog("不是null");
 				String [] mypath=path.split("/");
 				return mypath[mypath.length-1];
 			}
@@ -196,15 +164,14 @@ public class SendService extends Service{
 			showlog("开始上传记录，str为＝"+str);
 			showlog("开始上传记录，out_imagename为＝"+out_imagename);
 			showlog("开始上传记录，in_imagename为＝"+in_imagename);
-			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
-			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
+			//			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
+			//			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
 			x.http().post(params, new CommonCallback<String>() {
 				@Override
 				public void onCancelled(CancelledException arg0) {
 				}
 				@Override
 				public void onError(Throwable arg0, boolean arg1) {
-					showlog("shibai："+arg0.toString());
 				}
 				@Override
 				public void onFinished() {
@@ -218,25 +185,7 @@ public class SendService extends Service{
 							//上传成功，开始修改传入的bean
 							updateBean(table);
 							//修改完成后，继续查
-							showlog("继续查询");
-							try {
-								TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
-								if(table!=null){
-									String jsonstr=production_jsonstr(table);
-									post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
-								}else {
-									showlog("方法执行完成");
-//									try {
-//										Thread.sleep(handlersendtime);
-//									} catch (InterruptedException e) {
-//										e.printStackTrace();
-//									}
-//									showlog("唤醒");
-//									startsend=true;
-								}
-							} catch (DbException e) {
-								e.printStackTrace();
-							}
+							showlog("修改成功");
 						};
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -273,8 +222,6 @@ public class SendService extends Service{
 		 * @return
 		 */
 		public String production_jsonstr(TrafficInfoTable table){
-			String jsonString2 = JSON.toJSONString(table);
-			showlog("jsonString="+jsonString2);
 			//根据传入的table，生成对应的jsonstr
 			UploadBean uploadBean=new UploadBean();
 			uploadBean.setPass_no(table.getPass_no()+"");
