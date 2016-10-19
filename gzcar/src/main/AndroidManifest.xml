@@ -44,6 +44,7 @@
         <activity android:name=".SelectPassOut"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <service android:name=".server.SendService"></service>
+        <service android:name=".server.DownLoadServer"></service>
     </application>
 
 </manifest>
