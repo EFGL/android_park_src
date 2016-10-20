@@ -115,8 +115,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent=new Intent(MainActivity.this, SendService.class);
-        startService(intent);
         initLogin();
         context = MainActivity.this;
         //注册线程通讯
@@ -191,8 +189,8 @@ public class MainActivity extends BaseActivity {
             }
         });
         showLogin();
-       // Intent intent=new Intent(MainActivity.this,SendService.class);
-     //   startService(intent);
+       Intent intent=new Intent(MainActivity.this,SendService.class);
+        startService(intent);
     }
 
     private void initLogin() {

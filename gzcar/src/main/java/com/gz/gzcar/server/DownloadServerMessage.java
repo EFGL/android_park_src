@@ -17,18 +17,12 @@ import org.xutils.http.RequestParams;
 
 import android.util.Log;
 
-import com.chenghao.bean.DownInfoStallBean;
-import com.chenghao.bean.DownInfoVehicleBean;
-import com.chenghao.bean.DownRecordStallVehicleBean;
-import com.chenghao.bean.DownTemFeeBean;
-import com.chenghao.bean.DownUtils;
-import com.chenghao.bean.DownloadinandoutRecordBean;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.Database.CarWeiTable;
-import com.gz.gzcar.Database.DownloadTimeBean;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
+import com.gz.gzcar.MyApplication;
 
 /**
  * 下载一切需要的记录
@@ -37,7 +31,7 @@ public class DownloadServerMessage {
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(AppContext.daoConfig);
+	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
 	public static String mycontroller_sn="1";
 

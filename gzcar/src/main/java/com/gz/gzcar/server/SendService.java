@@ -49,7 +49,7 @@ public class SendService extends Service{
 
 	public static int handlersendtime=1000*20;
 
-	public static Boolean log=false;
+	public static Boolean log=true;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -64,9 +64,36 @@ public class SendService extends Service{
 			public void run() {
 				while(true){
 					try {
-						Thread.sleep(handlersendtime);
-						handler.sendEmptyMessage(1);
-					} catch (InterruptedException e) {
+						TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
+						if(table!=null){
+							showlog("立即执行更新方法");
+							String jsonstr=production_jsonstr(table);
+							post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
+							while(true){
+								try {
+									Thread.sleep(100);
+									table=db.selector(TrafficInfoTable.class).where("id", "=", table.getId()).findFirst();
+
+									if(table.isModifeFlage()){
+										break;
+									}
+									else
+									{
+										Thread.sleep(3000);
+									}
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}else {
+							try {
+								Thread.sleep(10*1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							showlog("没有需要更新的消息");
+						}
+					} catch (DbException e) {
 						e.printStackTrace();
 					}
 				}
