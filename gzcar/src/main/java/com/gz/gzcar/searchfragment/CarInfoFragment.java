@@ -63,27 +63,20 @@ public class CarInfoFragment extends Fragment {
     @OnClick(R.id.btn_search_car)
     public void onClick() {
         String carNum = mCarNumber.getText().toString().trim();
-        Toast.makeText(getActivity(), "carNum111=" + carNum, Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(carNum) && carNum.length() > 1) {
             try {
-//                Toast.makeText(getActivity(), "carNum=" + carNum, Toast.LENGTH_SHORT).show();
                 List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).findAll();
            if (allData!=null){
-
                allData.clear();
                allData.addAll(carNumList);
-               Toast.makeText(getContext(), "carNumList=" + carNumList.size() + ";;allData=" + allData.size(), Toast.LENGTH_SHORT).show();
-
                myAdapter.notifyDataSetChanged();
            }
             } catch (DbException e) {
                 T.showShort(getActivity(), "查询异常");
-//                Toast.makeText(getActivity(), "查询异常", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         } else {
             T.showShort(getActivity(),"请输入正确的车牌号码");
-//            Toast.makeText(getActivity(), "请输入正确的车牌号码", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -182,7 +175,6 @@ public class CarInfoFragment extends Fragment {
             holder.id.setText(position+1+"");
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
-//            holder.carwei.setText(allData.get(position).getCarWei());
             try {
                 List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", allData.get(position).getCar_no()).findAll();
                 if (all != null) {
@@ -193,7 +185,6 @@ public class CarInfoFragment extends Fragment {
             }
             holder.person.setText(allData.get(position).getPerson_name());
             holder.phone.setText(allData.get(position).getPerson_tel());
-//            holder.address.setText(allData.get(position).getPerson_address());
             Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
             if (start_date!=null){
@@ -220,7 +211,6 @@ public class CarInfoFragment extends Fragment {
         private TextView carwei;
         private TextView person;
         private TextView phone;
-//        private TextView address;
         private TextView startTime;
         private TextView endTime;
         private TextView id;
@@ -233,7 +223,6 @@ public class CarInfoFragment extends Fragment {
             carwei = (TextView) itemView.findViewById(R.id.search_carinfo_carwei);
             person = (TextView) itemView.findViewById(R.id.search_carinfo_person);
             phone = (TextView) itemView.findViewById(R.id.search_carinfo_phone);
-//            address = (TextView) itemView.findViewById(R.id.search_carinfo_address);
             startTime = (TextView) itemView.findViewById(R.id.search_carinfo_starttime);
             endTime = (TextView) itemView.findViewById(R.id.search_carinfo_endtime);
             id = (TextView) itemView.findViewById(R.id.search_carinfo_id);

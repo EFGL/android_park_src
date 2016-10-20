@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e4e4e4"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".settings.CarAdd">
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="400dp"
@@ -34,13 +28,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -55,7 +49,7 @@
                 android:imeOptions="actionNext"
                 android:id="@+id/user_name"
                 android:layout_width="250dp"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/shape_white"
                 android:textSize="15sp" />
@@ -64,14 +58,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -84,7 +78,7 @@
             <com.gz.gzcar.weight.MyPullText
                 android:id="@+id/user_type"
                 android:layout_width="240dp"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/shape_white" />
         </LinearLayout>
@@ -92,13 +86,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -113,7 +107,7 @@
                 android:imeOptions="actionDone"
                 android:id="@+id/password"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:inputType="textPassword"
                 android:layout_weight="1"
@@ -123,14 +117,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -138,8 +132,8 @@
                 android:id="@+id/user_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/btn_login"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/ic_bg_message"
                 android:text="取消"
                 android:textSize="17sp" />
 
@@ -147,8 +141,8 @@
                 android:id="@+id/user_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/btn_login"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/ic_bg_message"
                 android:text="增加"
                 android:textSize="17sp" />
         </LinearLayout>

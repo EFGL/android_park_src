@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e4e4e4"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".settings.CarAdd">
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="400dp"
@@ -35,13 +28,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -52,28 +45,27 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:imeOptions="actionNext"
-                android:singleLine="true"
                 android:id="@+id/user_up_name"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/shape_white"
-                android:text="张三" />
+                android:imeOptions="actionNext"
+                android:singleLine="true" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -84,10 +76,9 @@
                 android:textSize="20sp" />
 
             <com.gz.gzcar.weight.MyPullText
-
                 android:id="@+id/user_update_type"
-                android:layout_width="250dp"
-                android:layout_height="30dp"
+                android:layout_width="240dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/shape_white" />
         </LinearLayout>
@@ -95,13 +86,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -112,47 +103,46 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:imeOptions="actionDone"
-                android:singleLine="true"
                 android:id="@+id/user_up_pwd"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/shape_white"
+                android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:text="111111" />
+                android:singleLine="true" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:background="#e4e4e4" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/user_up_cancle"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/btn_login"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/ic_bg_message"
                 android:text="取消"
                 android:textSize="17sp" />
 
             <Button
                 android:id="@+id/user_up_update"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/btn_login"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/ic_bg_message"
                 android:text="修改"
                 android:textSize="17sp" />
         </LinearLayout>

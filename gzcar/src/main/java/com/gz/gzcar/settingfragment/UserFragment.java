@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.UserTable;
@@ -33,7 +32,6 @@ import butterknife.OnClick;
 
 /**
  * Created by Endeavor on 2016/8/8.
- * <p/>
  * 用户管理
  */
 public class UserFragment extends Fragment implements View.OnClickListener {
@@ -74,8 +72,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
-        // TODO: 2016/9/9
-//        addData();
 
         try {
             allData = db.selector(UserTable.class).findAll();
@@ -136,8 +132,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.item_user_check)
-        CheckBox mCheck;
         @Bind(R.id.item_user_name)
         TextView mName;
         @Bind(R.id.item_user_type)
@@ -147,25 +141,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
-        }
-    }
-
-    private void addData() {
-        try {
-
-            UserTable userTable = new UserTable();
-            userTable.setUserName("张三");
-            userTable.setPassword("111");
-            userTable.setType("管理员");
-            db.save(userTable);
-
-            UserTable lisi = new UserTable();
-            lisi.setUserName("李四");
-            lisi.setPassword("111");
-            lisi.setType("操作员");
-            db.save(lisi);
-        } catch (Exception e) {
-            T.showShort(getContext(), "添加异常");
         }
     }
 

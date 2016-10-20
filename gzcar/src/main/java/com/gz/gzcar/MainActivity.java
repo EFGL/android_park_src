@@ -18,11 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
-import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
@@ -30,7 +28,6 @@ import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
-import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
 import com.gz.gzcar.utils.SPUtils;
 import com.gz.gzcar.utils.T;
@@ -39,13 +36,8 @@ import com.gz.gzcar.weight.MyPullText;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.DbManager;
-import org.xutils.common.Callback;
 import org.xutils.ex.DbException;
-import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.text.ParseException;
@@ -627,12 +619,10 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.main_change:
                 ask();
-//                startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
     }
 
-    // TODO: 2016/10/18 0018
     private void ask() {
         View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
         final AlertDialog dialog = new AlertDialog.Builder(this).create();
