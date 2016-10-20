@@ -370,6 +370,8 @@ public class carInfoProcess {
             trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
             trafficInfo.setModifeFlage(false);
+            trafficInfo.setReceivable(0.0);
+            trafficInfo.setActual_money(0.0);
             db.update(trafficInfo,"update_time","modifeFlage","status");
         }
         trafficInfo = new TrafficInfoTable();
@@ -548,6 +550,8 @@ public class carInfoProcess {
                 mainActivity.outPortLog.setStall_time(mainActivity.loginUserName);
                 mainActivity.outPortLog.setUpdateTime(new Date());
                 mainActivity.outPortLog.setModifeFlage(false);
+                mainActivity.outPortLog.setCar_no(carNumber);
+                mainActivity.outPortLog.setCar_type("临时车");
                 long timeLong = (mainActivity.outPortLog.getOut_time().getTime() - trafficInfo.getIn_time().getTime())/60/1000;
                 if(timeLong<=0)
                 {
@@ -712,7 +716,6 @@ public class carInfoProcess {
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
                 trafficInfo.setReceivable(mainActivity.outPortLog.getReceivable());
-                trafficInfo.setActual_money(mainActivity.outPortLog.getReceivable());
                 trafficInfo.setActual_money(0.0);
                 trafficInfo.setStall_time(mainActivity.outPortLog.getStall_time());
                 trafficInfo.setOut_user(mainActivity.loginUserName);

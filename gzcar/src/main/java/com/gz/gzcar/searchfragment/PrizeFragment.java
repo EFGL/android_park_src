@@ -27,6 +27,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class PrizeFragment extends BaseFragment {
     @Bind(R.id.tv_money)
     TextView mMoney;
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    private List<TrafficInfoTable> allData;
+    private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
 
 
@@ -63,7 +64,6 @@ public class PrizeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search_money, container, false);
-
         ButterKnife.bind(this, view);
         return view;
     }
@@ -114,9 +114,7 @@ public class PrizeFragment extends BaseFragment {
                                 .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
-                        if (allData != null) {
-
-                            allData.clear();
+                        if (all != null) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
@@ -132,23 +130,23 @@ public class PrizeFragment extends BaseFragment {
 
         RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
-        if (allData != null) {
-
-            myAdapter = new MyAdapter();
-            rcy.setAdapter(myAdapter);
-            sumMoney();
-        }
+        myAdapter = new MyAdapter();
+        rcy.setAdapter(myAdapter);
+        sumMoney();
     }
 
     private void initdata() {
         try {
             String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
             Date date = DateUtils.string2DateDetail(today);
-            allData =db.selector(TrafficInfoTable.class)
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .and("status", "=", "已出")
                     .and("car_type","!=","固定车")
                     .findAll();
+            if(all != null){
+                allData.addAll(all);
+            }
         } catch (DbException e) {
             T.showShort(getContext(), "全部查询异常");
             e.printStackTrace();
@@ -172,7 +170,7 @@ public class PrizeFragment extends BaseFragment {
                 String carNum = mCarNumber.getText().toString().trim();
                 String start = mStartTime.getText().toString().trim();
                 String end = mEndTime.getText().toString().trim();
-
+                allData.clear();
                 if (TextUtils.isEmpty(carNum)) {
                     try {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
@@ -181,26 +179,13 @@ public class PrizeFragment extends BaseFragment {
                                 .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
-                        if (allData != null && all.size() > 0) {
-                            allData.clear();
+                        if (all != null ) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
                         } else {
                             T.showShort(getContext(), "未查到相关数据");
-                            if (allData != null) {
-
-                                allData.clear();
-                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-                                Date date = DateUtils.string2DateDetail(today);
-                                allData =db.selector(TrafficInfoTable.class)
-                                        .where("update_time", ">", date)
-                                        .and("status", "=", "已出")
-                                        .and("car_type","!=","固定车")
-                                        .findAll();
-                                myAdapter.notifyDataSetChanged();
-                                sumMoney();
-                            }
+                            sumMoney();
                         }
 
                     } catch (DbException e) {
@@ -217,29 +202,13 @@ public class PrizeFragment extends BaseFragment {
                                 .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();
-
-//                        Log.e("mm", "all.size==" + allData.size());
-
-                        if (allData != null && all.size() > 0) {
-                            allData.clear();
+                        if (all != null ) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
                         } else {
                             T.showShort(getContext(), "未查到相关数据");
-                            if (allData != null) {
-
-                                allData.clear();
-                                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-                                Date date = DateUtils.string2DateDetail(today);
-                                allData =db.selector(TrafficInfoTable.class)
-                                        .where("update_time", ">", date)
-                                        .and("status", "=", "已出")
-                                        .and("car_type","!=","固定车")
-                                        .findAll();
-                                myAdapter.notifyDataSetChanged();
-                                sumMoney();
-                            }
+                            sumMoney();
                         }
 
                     } catch (DbException e) {
@@ -255,9 +224,6 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void sumMoney() {
-
-        Log.e("ende","allData=="+allData.get(0).toString());
-
         double toteMoney = 0;
         for (int i = 0; i < allData.size(); i++) {
 
@@ -287,7 +253,6 @@ public class PrizeFragment extends BaseFragment {
             holder.mType.setText(free.getCar_type());
             Date inTime = free.getIn_time();
             if (inTime != null) {
-
                 holder.mInTime.setText(dateFormatDetail.format(inTime));
             }
             if (free.getOut_time() != null) {
