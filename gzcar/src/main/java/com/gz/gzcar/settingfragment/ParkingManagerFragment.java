@@ -122,30 +122,6 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
     }
 
-    private void addData() {
-        try {
-            CarWeiTable cw = new CarWeiTable();
-            cw.setPrint_code("地下车库1");
-            db.save(cw);
-
-            CarWeiTable cw2 = new CarWeiTable();
-            cw.setPrint_code("地下车库2");
-            db.save(cw);
-
-            CarWeiTable cw3 = new CarWeiTable();
-            cw.setPrint_code("地下车库3");
-            db.save(cw);
-
-            CarWeiTable cw4 = new CarWeiTable();
-            cw.setPrint_code("地下车库4");
-            db.save(cw);
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getActivity(), "增加异常");
-        }
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
