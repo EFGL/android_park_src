@@ -361,8 +361,6 @@ public class carInfoProcess {
     public boolean saveInTempCar(String carNumber,byte[] picBuffer) throws DbException {
         //入口起杆
         inCamera.openGate();
-        //语音
-        inCamera.playAudio(camera.AudioList.get("欢迎光临"));
         //保存图片
         FileUtils picFileManage = new FileUtils();
         String picPath = picFileManage.savePicture(picBuffer);
@@ -372,6 +370,8 @@ public class carInfoProcess {
             trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
             trafficInfo.setModifeFlage(false);
+            trafficInfo.setReceivable(0.0);
+            trafficInfo.setActual_money(0.0);
             db.update(trafficInfo,"update_time","modifeFlage","status");
         }
         trafficInfo = new TrafficInfoTable();
@@ -399,7 +399,7 @@ public class carInfoProcess {
         String[] dispInfo = new String[]{null, null,null,null};
          //初始化显示屏内容
         //车类型
-        dispInfo[0] = "临时车";
+        dispInfo[0] = " 临时车";
         //车号
         dispInfo[1] = carNumber;
         //有效日期
@@ -550,6 +550,8 @@ public class carInfoProcess {
                 mainActivity.outPortLog.setStall_time(mainActivity.loginUserName);
                 mainActivity.outPortLog.setUpdateTime(new Date());
                 mainActivity.outPortLog.setModifeFlage(false);
+                mainActivity.outPortLog.setCar_no(carNumber);
+                mainActivity.outPortLog.setCar_type("临时车");
                 long timeLong = (mainActivity.outPortLog.getOut_time().getTime() - trafficInfo.getIn_time().getTime())/60/1000;
                 if(timeLong<=0)
                 {
@@ -670,7 +672,7 @@ public class carInfoProcess {
                 trafficInfo.setOut_image(picPath);
                 trafficInfo.setOut_user(mainActivity.loginUserName);
                 trafficInfo.setReceivable(mainActivity.outPortLog.getReceivable());
-                trafficInfo.setActual_money(mainActivity.outPortLog.getActual_money());
+                trafficInfo.setActual_money(mainActivity.outPortLog.getReceivable());
                 trafficInfo.setStall_time(mainActivity.outPortLog.getStall_time());
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
@@ -681,7 +683,8 @@ public class carInfoProcess {
             if(mainActivity.outPortLog.getReceivable()>0) {
                 Double money = Double.valueOf(MyApplication.settingInfo.getString("chargeMoney")) + mainActivity.outPortLog.getReceivable();
                 MyApplication.settingInfo.putString("chargeMoney",String.format("%.2f",money));
-                MyApplication.settingInfo.putLong("chargeCarNumer", MyApplication.settingInfo.getLong("chargeCarNumer")+1);
+                long chargeCarNum = MyApplication.settingInfo.getLong("chargeCarNumer") + 1;
+                MyApplication.settingInfo.putLong("chargeCarNumer", chargeCarNum);
             }
             return true;
         } catch (DbException e) {
@@ -713,7 +716,6 @@ public class carInfoProcess {
                 trafficInfo.setOut_time(new Date());
                 trafficInfo.setOut_image(picPath);
                 trafficInfo.setReceivable(mainActivity.outPortLog.getReceivable());
-                trafficInfo.setActual_money(mainActivity.outPortLog.getReceivable());
                 trafficInfo.setActual_money(0.0);
                 trafficInfo.setStall_time(mainActivity.outPortLog.getStall_time());
                 trafficInfo.setOut_user(mainActivity.loginUserName);

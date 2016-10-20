@@ -191,7 +191,6 @@ public class CarUpdate extends BaseActivity {
             try {
                 CarInfoTable car = db.findById(CarInfoTable.class, id);
                 car.setCar_no(mCarnum.getText().toString().trim());
-//                car.setCarWei(mOrder.getText().toString().trim());
                 car.setCar_type(mType.getText().toString().trim());
                 car.setPerson_name(mPerson.getText().toString().trim());
                 car.setPerson_tel(mPhone.getText().toString().trim());
