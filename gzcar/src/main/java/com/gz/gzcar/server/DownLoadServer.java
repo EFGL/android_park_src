@@ -27,14 +27,14 @@ public class DownLoadServer extends Service{
 		Runnable runnable=new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				do{
+					handler.sendEmptyMessage(2);
 					try {
 						Thread.sleep(handlersendtime);
-						handler.sendEmptyMessage(2);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				}
+				}while(true);
 			}
 		};
 		Thread thread=new Thread(runnable);

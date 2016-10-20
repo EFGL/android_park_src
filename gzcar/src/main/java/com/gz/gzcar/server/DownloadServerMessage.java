@@ -1,20 +1,5 @@
 package com.gz.gzcar.server;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xutils.DbManager;
-import org.xutils.x;
-import org.xutils.common.Callback.CommonCallback;
-import org.xutils.common.util.KeyValue;
-import org.xutils.db.sqlite.WhereBuilder;
-import org.xutils.ex.DbException;
-import org.xutils.http.RequestParams;
-
 import android.util.Log;
 
 import com.gz.gzcar.Database.CarInfoTable;
@@ -23,6 +8,21 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xutils.DbManager;
+import org.xutils.common.Callback.CommonCallback;
+import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 下载一切需要的记录
@@ -97,67 +97,43 @@ public class DownloadServerMessage {
 			}
 			@Override
 			public void onSuccess(String arg0) {
-				//				showlog("下载通行记录返回:"+arg0);
 				try {
 					JSONObject object=new JSONObject(arg0);
 					String ref=object.getString("ref");
 					if("0".equals(ref)){
 						String result=object.getString("result");
-						showlog("得到result=");
 						if(result.length()!=2){
 							List<DownloadinandoutRecordBean> list=new ArrayList<DownloadinandoutRecordBean>();
 							list=com.alibaba.fastjson.JSONObject.parseArray(result, DownloadinandoutRecordBean.class);
 							//下一步根据list来存数据库
 							for(int c=0;c<list.size();c++){
 								//开始存数据
-								showlog("开始读数据");
 								TrafficInfoTable table=new TrafficInfoTable();
 								table.setIn_user(list.get(c).getIn_operator());
-								showlog("成功1");
 								table.setPass_no(list.get(c).getPass_no());
-								showlog("成功2");
 								table.setCar_type(list.get(c).getCard_type());
-								showlog("成功3");
 								table.setCar_no(list.get(c).getCar_no());
-								showlog("成功4");
 								table.setIn_time(DownUtils.getstringtodate(list.get(c).getIn_time()));
-								showlog("成功5");
 								table.setIn_image(list.get(c).getIn_image());
-								showlog("成功6");
 								table.setOut_time(DownUtils.getstringtodate(list.get(c).getOut_time()));
-								showlog("成功7");
 								table.setOut_image(list.get(c).getOut_image());
-								showlog("成功8");
 								table.setOut_user(list.get(c).getOut_operator());
-								showlog("成功9");
 								table.setStall(list.get(c).getStall_code());
-								showlog("成功10");
 								table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
-								showlog("成功11");
 								table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
-								showlog("成功12");
 								table.setStall_time(list.get(c).getParked_time()+"");
-								showlog("成功13");
 								table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
-								showlog("成功14");
 								table.setStatus(list.get(c).getStatus());
-								showlog("成功15");
 								table.setModifeFlage(false);
-								showlog("开始保存");
 								try {
 									db.save(table);
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
-								showlog("保存完");
 							}
-
-							try {
-								List<TrafficInfoTable> ceshilist=db.selector(TrafficInfoTable.class).findAll();
-								showlog("数据库保存的长度为＝"+ceshilist.size());
-							} catch (DbException e) {
-								e.printStackTrace();
-							}
+							showlog("下载通行记录保存完成");
+						}else {
+							showlog("下载通行记录无更新");	
 						}
 					}
 				} catch (JSONException e) {
@@ -190,7 +166,6 @@ public class DownloadServerMessage {
 			}
 			@Override
 			public void onSuccess(String arg0) {
-				//				showlog("下传临时车收费明细返回:"+arg0);
 				try {
 					JSONObject object=new JSONObject(arg0);
 					String ref=object.getString("ref");
@@ -217,8 +192,10 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
-								showlog("保存成功");
 							}
+							showlog("下传临时车收费明细保存成功");
+						}else {
+							showlog("下传临时车收费明细无更新");	
 						}
 					}
 				} catch (JSONException e) {
@@ -250,7 +227,6 @@ public class DownloadServerMessage {
 			}
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("下传车位表返回:"+arg0);
 				try {
 					JSONObject object=new JSONObject(arg0);
 					String ref=object.getString("ref");
@@ -273,8 +249,10 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
-								showlog("保存成功");
 							}
+							showlog("下传车位表保存成功");
+						}else {
+							showlog("下传车位表无更新");	
 						}
 					}
 				} catch (JSONException e) {
@@ -305,7 +283,6 @@ public class DownloadServerMessage {
 			}
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("下传固定车信息表返回:"+arg0);
 				try {
 					JSONObject object=new JSONObject(arg0);
 					String ref=object.getString("ref");
@@ -334,8 +311,10 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
-								showlog("保存成功");
 							}
+							showlog("下传固定车信息表保存成功");
+						}else {
+							showlog("下传固定车信息表无更新");	
 						}
 					}
 				} catch (JSONException e) {
@@ -366,7 +345,6 @@ public class DownloadServerMessage {
 			}
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("下传车位和车辆绑定表返回:"+arg0);
 				try {
 					JSONObject object=new JSONObject(arg0);
 					String ref=object.getString("ref");
@@ -392,8 +370,10 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
-								showlog("保存成功");
 							}
+							showlog("下传车位和车辆绑定表保存成功");
+						}else {
+							showlog("下传车位和车辆绑定表无更新");
 						}
 					}
 				} catch (JSONException e) {
