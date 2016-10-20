@@ -138,37 +138,76 @@
                     android:textSize="18sp" />
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="临时车入场是否确认："
-                    android:textSize="20sp" />
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="临时车入场是否确认："
+                        android:textSize="20sp" />
 
-                <com.nightonke.jellytogglebutton.JellyToggleButton
-                    android:id="@+id/tb_togglebutton1"
-                    android:layout_width="70dp"
+                    <com.nightonke.jellytogglebutton.JellyToggleButton
+                        android:id="@+id/tb_togglebutton1"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        app:jtbJelly="itself"
+                        app:jtbLeftBackgroundColor="@android:color/white"
+                        app:jtbLeftText="否"
+                        app:jtbLeftTextColor="@android:color/black"
+                        app:jtbLeftTextSize="16sp"
+                        app:jtbLeftThumbColor="#f00"
+                        app:jtbRightBackgroundColor="@android:color/white"
+                        app:jtbRightText="是"
+                        app:jtbRightTextColor="@android:color/black"
+                        app:jtbRightTextSize="16sp"
+                        app:jtbRightThumbColor="#0f0"
+                        app:jtbTextMarginBottom="2dp"
+                        app:jtbTextMarginCenter="4dp"
+                        app:jtbTextMarginLeft="2dp"
+                        app:jtbTextMarginRight="2dp"
+                        app:jtbTextMarginTop="2dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:jtbJelly="itself"
-                    app:jtbLeftBackgroundColor="@android:color/white"
-                    app:jtbLeftText="否"
-                    app:jtbLeftTextColor="@android:color/black"
-                    app:jtbLeftTextSize="16sp"
-                    app:jtbLeftThumbColor="#f00"
-                    app:jtbRightBackgroundColor="@android:color/white"
-                    app:jtbRightText="是"
-                    app:jtbRightTextColor="@android:color/black"
-                    app:jtbRightTextSize="16sp"
-                    app:jtbRightThumbColor="#0f0"
-                    app:jtbTextMarginBottom="2dp"
-                    app:jtbTextMarginCenter="4dp"
-                    app:jtbTextMarginLeft="2dp"
-                    app:jtbTextMarginRight="2dp"
-                    app:jtbTextMarginTop="2dp" />
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="150dp"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="车牌是否匹配汉字："
+                        android:textSize="20sp" />
+
+                    <com.nightonke.jellytogglebutton.JellyToggleButton
+                        android:id="@+id/tb_togglebutton_carNumber"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        app:jtbJelly="itself"
+                        app:jtbLeftBackgroundColor="@android:color/white"
+                        app:jtbLeftText="否"
+                        app:jtbLeftTextColor="@android:color/black"
+                        app:jtbLeftTextSize="16sp"
+                        app:jtbLeftThumbColor="#f00"
+                        app:jtbRightBackgroundColor="@android:color/white"
+                        app:jtbRightText="是"
+                        app:jtbRightTextColor="@android:color/black"
+                        app:jtbRightTextSize="16sp"
+                        app:jtbRightThumbColor="#0f0"
+                        app:jtbTextMarginBottom="2dp"
+                        app:jtbTextMarginCenter="4dp"
+                        app:jtbTextMarginLeft="2dp"
+                        app:jtbTextMarginRight="2dp"
+                        app:jtbTextMarginTop="2dp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

@@ -43,13 +43,15 @@ public class SettingsFragment extends Fragment {
     JellyToggleButton mTogglebutton3;
     @Bind(R.id.tb_togglebutton4)
     JellyToggleButton mTogglebutton4;
+    @Bind(R.id.tb_togglebutton_carNumber)
+    JellyToggleButton getmTogglebuttonCarNumber;
     @Bind(R.id.btn_save_update)
     Button mSave;
     private final String TEMP_CAR_IN = "tempCarIn";// 临时车入场是否确认
     private final String TEMP_CAR_FREE = "tempCarFree";// 零收费车是否确认
     private final String IS_PRINT_CARD = "isPrintCard";// 是否打印小票
     private final String IS_USE_CARD_HELP = "isUseCardHelp";// 是否使用读卡器
-
+    private final String IS_USE_CHINA= "isUseChina";// 是否使用读卡器
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,26 +67,33 @@ public class SettingsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initData();
     }
-
+    private boolean isTempCarIn;
+    private boolean isFree;
+    private boolean isPrint;
+    private boolean isCardRead;
+    private boolean isChina;
     private void initData() {
         String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
         String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
         String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
         long stallNum = MyApplication.settingInfo.getLong("allCarPlace");
+
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
         stallNumber.setText(String.valueOf(stallNum));
 
-        boolean tempCarIn = MyApplication.settingInfo.getBoolean(TEMP_CAR_IN);
-        boolean tempCarFree = MyApplication.settingInfo.getBoolean(TEMP_CAR_FREE);
-        boolean isPrint = MyApplication.settingInfo.getBoolean(IS_PRINT_CARD);
-        boolean isUseCard = MyApplication.settingInfo.getBoolean(IS_USE_CARD_HELP);
+         isTempCarIn = MyApplication.settingInfo.getBoolean(TEMP_CAR_IN);
+         isFree = MyApplication.settingInfo.getBoolean(TEMP_CAR_FREE);
+         isPrint = MyApplication.settingInfo.getBoolean(IS_PRINT_CARD);
+         isCardRead = MyApplication.settingInfo.getBoolean(IS_USE_CARD_HELP);
+         isChina = MyApplication.settingInfo.getBoolean(IS_USE_CHINA);
 
-        mTogglebutton1.setChecked(tempCarIn);
-        mTogglebutton2.setChecked(tempCarFree);
+        mTogglebutton1.setChecked(isTempCarIn);
+        mTogglebutton2.setChecked(isFree);
         mTogglebutton3.setChecked(isPrint);
-        mTogglebutton4.setChecked(isUseCard);
+        mTogglebutton4.setChecked(isCardRead);
+        getmTogglebuttonCarNumber.setChecked(isChina);
     }
 
     @Override
@@ -92,12 +101,6 @@ public class SettingsFragment extends Fragment {
         super.onResume();
         initViews();
     }
-
-    private boolean isTempCarIn;
-    private boolean isFree;
-    private boolean isPrint;
-    private boolean isCardRead;
-
     private void initViews() {
         mTogglebutton1.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
             @Override
@@ -153,6 +156,19 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+        getmTogglebuttonCarNumber.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
+            @Override
+            public void onStateChange(float process, State state, JellyToggleButton jtb) {
+                // 关
+                if (state.equals(State.LEFT)) {
+                    isChina = false;
+                }
+                //开
+                if (state.equals(State.RIGHT)) {
+                    isChina = true;
+                }
+            }
+        });
     }
 
 
@@ -169,7 +185,7 @@ public class SettingsFragment extends Fragment {
         MyApplication.settingInfo.putBoolean(TEMP_CAR_FREE, isFree);
         MyApplication.settingInfo.putBoolean(IS_PRINT_CARD, isPrint);
         MyApplication.settingInfo.putBoolean(IS_USE_CARD_HELP, isCardRead);
-
+        MyApplication.settingInfo.putBoolean(IS_USE_CHINA,isChina);
         String serverAddress = mServerAddress.getText().toString().trim();
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();

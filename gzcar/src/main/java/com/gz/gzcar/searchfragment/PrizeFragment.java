@@ -58,8 +58,6 @@ public class PrizeFragment extends BaseFragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -112,6 +110,7 @@ public class PrizeFragment extends BaseFragment {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
                                 .and("status", "=", "已出")
+                                .and("receivable",">",0)
                                 .and("car_type","!=","固定车")
                                 .findAll();
                         if (all != null) {
@@ -142,6 +141,7 @@ public class PrizeFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .and("status", "=", "已出")
+                    .and("receivable",">",0)
                     .and("car_type","!=","固定车")
                     .findAll();
             if(all != null){
@@ -177,6 +177,7 @@ public class PrizeFragment extends BaseFragment {
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("status", "=", "已出")
+                                .and("receivable",">",0)
                                 .and("car_type","!=","固定车")
                                 .findAll();
                         if (all != null ) {
@@ -199,6 +200,7 @@ public class PrizeFragment extends BaseFragment {
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_number", "=", carNum)
+                                .and("receivable",">",0)
                                 .and("status", "=", "已出")
                                 .and("car_type","!=","固定车")
                                 .findAll();

@@ -199,8 +199,8 @@ public class SelectPassOut extends BaseActivity {
         try {
             allData.clear();
             List<TrafficInfoTable> all  = db.selector(TrafficInfoTable.class)
-                    .where("in_time", ">", befor)
-                    .and("in_time", "<", current)
+                    .where("in_time", ">=", befor)
+                    .and("in_time", "<=", current)
                     .and("car_type","!=","固定车")
                     .and("status","=","已入")
                     .findAll();

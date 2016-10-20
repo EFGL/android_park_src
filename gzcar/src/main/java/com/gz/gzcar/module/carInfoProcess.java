@@ -372,7 +372,7 @@ public class carInfoProcess {
             trafficInfo.setModifeFlage(false);
             trafficInfo.setReceivable(0.0);
             trafficInfo.setActual_money(0.0);
-            db.update(trafficInfo,"update_time","modifeFlage","status");
+            db.update(trafficInfo,"update_time","receivable","actual_money","modifeFlage","status");
         }
         trafficInfo = new TrafficInfoTable();
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
