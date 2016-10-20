@@ -84,23 +84,23 @@ public class MainActivity extends BaseActivity {
     Button buttonAgainIdentOut;   //出口重新识别
     Button buttonManualInOpen;    //入口手动起杆
     Button ButtonManualOutOpen;//选车出场
-    public  static TextView chargeCarNumber;        //收费信息车号
-    public  static TextView chargeCarType;          //收费信息车类型
+    public  TextView chargeCarNumber;        //收费信息车号
+    public  TextView chargeCarType;          //收费信息车类型
     TextView chargeParkTime;         //收费信息停车时长
     TextView chargeMoney;            //收费信息收费金额
     Button enterCharge;              //确认收费按钮
     Context context;
 
     //状态信息
-    static TextView textViewAllPlace;       //总车位
-    static TextView textViewEmptyPlace;     //空闲车位
-    static TextView textViewInCarCount;     //入场数量
-    static TextView textViewOutCarCount;    //出场数量
+    TextView textViewAllPlace;       //总车位
+    TextView textViewEmptyPlace;     //空闲车位
+    TextView textViewInCarCount;     //入场数量
+    TextView textViewOutCarCount;    //出场数量
     //当班信息
-    static TextView textViewUserName;       //操作员
-    static TextView textViewLoginTime;      //登录长
-    static TextView textViewSumCar;         //当前班费车辆
-    static TextView textViewSumMoney;       //当班收费金额
+    TextView textViewUserName;       //操作员
+    TextView textViewLoginTime;      //登录长
+    TextView textViewSumCar;         //当前班费车辆
+    TextView textViewSumMoney;       //当班收费金额
 
 
     @Bind(R.id.main_setting)
@@ -127,7 +127,6 @@ public class MainActivity extends BaseActivity {
         plateImageOut = (ImageView) findViewById(R.id.imageView_PicPlateOut);
         videoStreamIn = (ImageView) findViewById(R.id.imageView_videoPlateIn);
         videoStreamOut = (ImageView) findViewById(R.id.imageView_videoPlateOut);
-
         chargeCarNumber = (TextView) findViewById(R.id.chargeCarNumber);
         chargeCarType = (TextView) findViewById(R.id.chargeCarType);
         chargeParkTime = (TextView) findViewById(R.id.chargeParkTime);
@@ -322,18 +321,17 @@ public class MainActivity extends BaseActivity {
                 }
                 loginUserName = userName;
                 //上次非本用户或用户退出,则清空数据
-                if (!MyApplication.settingInfo.getBoolean("loginStatus")) {
-                    userName = MyApplication.settingInfo.getString("userName")+"";
-                    if(!userName.equals(loginUserName)) {
-                        MyApplication.settingInfo.putString("userName", userName);
+                userName = MyApplication.settingInfo.getString("userName");
+                MyApplication.settingInfo.putString("userName", userName);
+                if (!MyApplication.settingInfo.getBoolean("loginStatus")   || !userName.equals(loginUserName)) {
+                        MyApplication.settingInfo.putString("userName",loginUserName);
                         MyApplication.settingInfo.putBoolean("loginStatus", true);
                         MyApplication.settingInfo.putLong("inCarCount", 0);
                         MyApplication.settingInfo.putLong("outCarCount", 0);
-                        MyApplication.settingInfo.putLong("chargeCarNumber", 0);
+                        MyApplication.settingInfo.putLong("chargeCarNumer", 0);
                         MyApplication.settingInfo.putString("chargeMoney", "0.00");
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                         MyApplication.settingInfo.putString("loginTime", format.format(new Date()));
-                    }
                 }
                 this.upStatusInfoDisp();
                 //进入主页面
@@ -381,7 +379,8 @@ public class MainActivity extends BaseActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        stringValue = String.format("收费车辆：%d辆", MyApplication.settingInfo.getLong("chargeCarNumer"));
+        long chargeNum = MyApplication.settingInfo.getLong("chargeCarNumer");
+        stringValue = String.format("收费车辆：%d辆",chargeNum);
         textViewSumCar.setText(stringValue);
         stringValue = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
         textViewSumMoney.setText(stringValue);
@@ -554,7 +553,7 @@ public class MainActivity extends BaseActivity {
                         if (carProcess.processCarOutFunc(info.getPlateNumber(), info.getCarPicdata())) {
                             //更新出口收费信息
                             chargeCarNumber.setText(outPortLog.getCar_no());
-                            chargeCarType.setText(outPortLog.getCar_no());
+                            chargeCarType.setText(outPortLog.getCar_type());
                             chargeParkTime.setText("停车：" + outPortLog.getStall_time());
                             chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
                         }
@@ -656,6 +655,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                //退出
+                settingInfo.putBoolean("loginStatus", false);
                 showLogin();
             }
         });
