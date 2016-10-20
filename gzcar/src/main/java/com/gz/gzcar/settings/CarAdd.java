@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gz.gzcar.BaseActivity;
 import com.gz.gzcar.Database.CarInfoTable;
@@ -103,7 +102,7 @@ public class CarAdd extends BaseActivity {
             if (all != null) {
 
                 for (int i = 0; i < all.size(); i++) {
-                    carweiList.add(all.get(i).getPrint_code());
+                    carweiList.add(all.get(i).getPrint_code()+all.get(i).getId());
                 }
                 carweiList.add(0,"");
                 myPullText.setPopList(carweiList);
@@ -136,10 +135,6 @@ public class CarAdd extends BaseActivity {
             T.showShort(this, "请输入类型");
             return;
         }
-//        if (TextUtils.isEmpty(carWei)) {
-//            T.showShort(this, "请输入车位");
-//            return;
-//        }
         if (TextUtils.isEmpty(person)) {
             T.showShort(this, "请输入联系人");
             return;

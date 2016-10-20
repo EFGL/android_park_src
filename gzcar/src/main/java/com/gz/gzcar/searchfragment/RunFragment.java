@@ -83,8 +83,6 @@ public class RunFragment extends BaseFragment {
 
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
-//        Log.e("ende", "start==" + start);
-//        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
         initData();
@@ -115,10 +113,8 @@ public class RunFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
-//                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
-//                      List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).findAll();
                         String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
                         Date date = DateUtils.string2DateDetail(today);
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
@@ -131,7 +127,6 @@ public class RunFragment extends BaseFragment {
                         }else {
                             T.showShort(getContext(),"未查到相关数据");
                         }
-//                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
 
                     } catch (DbException e) {
                         e.printStackTrace();
@@ -185,7 +180,6 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    // TODO: 2016/10/18 0018
     private void search() {
         String type = myPullText.getText().toString().trim();
         String carNum = mCarNumber.getText().toString().trim();
@@ -231,7 +225,6 @@ public class RunFragment extends BaseFragment {
 
     }
 
-    // 除了 固定 临时 免费的
     // 先查全部 然后移除  固定 临时 免费的
     private void searchWithOther(String start, String end) {
         try {
@@ -239,7 +232,6 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .findAll();
-            // TODO: 2016/10/18 0018
             List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
@@ -269,7 +261,6 @@ public class RunFragment extends BaseFragment {
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_no","=",carNum)
                     .findAll();
-            // TODO: 2016/10/18 0018
             List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
@@ -373,27 +364,10 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-
-    //    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if(pvTime2.isShowing()||pvTime.isShowing()){
-//                pvTime2.dismiss();
-//                pvTime.dismiss();
-//                return true;
-//            }
-//            if(pvTime.isShowing()){
-//                pvTime.dismiss();
-//                return true;
-//            }
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
         @Override
         public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = View.inflate(getActivity(), R.layout.search_car_info, false);
             View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_search_traffic, parent, false);
             MyHolder myHolder = new MyHolder(itemView);
             return myHolder;
@@ -405,13 +379,7 @@ public class RunFragment extends BaseFragment {
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCar_type());
-            Date in_time = traffic.getIn_time();
-            if (traffic.getIn_time() == null) {
-                Log.e("ende", "in_time==null");
-            }
-            if (traffic.getIn_time() != null) {
-                Log.e("ende", "in_time!=null");
-            }
+
             if (traffic.getIn_time() != null) {
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
             } else {

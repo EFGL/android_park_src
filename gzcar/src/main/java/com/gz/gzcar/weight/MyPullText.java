@@ -105,15 +105,17 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
                 textView.setText(text);
                 pop.dismiss();
 
-                if (mOnTextChangedListener==null){
+                if (mOnTextChangedListener == null) {
                     return;
-                }else {
+                } else {
                     mOnTextChangedListener.OnTextChanged();
                 }
             }
         });
     }
+
     OnTextChangedListener mOnTextChangedListener;
+
     public void setOnTextChangedListener(OnTextChangedListener listener) {
         mOnTextChangedListener = listener;
     }
@@ -128,7 +130,6 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
         if (listwiew == null) {
             return;
         }
-        Log.i("my", "zou le");
         pop.showAsDropDown(view, 0, 0);
 
     }
@@ -149,7 +150,7 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
         }
 
         @Override
-        public Object getItem(int i) {
+        public String getItem(int i) {
             return mItem.get(i);
         }
 
@@ -159,17 +160,26 @@ public class MyPullText extends RelativeLayout implements View.OnClickListener {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            ViewHolder holder;
+            if (convertView == null) {
 
+                convertView = View.inflate(MyPullText.this.getContext(), R.layout.item_pop, null);
+                holder = new ViewHolder();
+                holder.tv = (TextView) convertView.findViewById(R.id.tv_pop_text);
+                convertView.setTag(holder);
+            }else {
+                holder = (ViewHolder) convertView.getTag();
+            }
 
-    View v = View.inflate(MyPullText.this.getContext(), R.layout.item_pop, null);
+            String item = getItem(i);
+            holder.tv.setText(item);
 
-
-            TextView tv = (TextView) v.findViewById(R.id.tv_pop_text);
-
-            tv.setText(mItem.get(i) + "");
-
-            return v;
+            return convertView;
         }
+    }
+
+    static class ViewHolder {
+        public TextView tv;
     }
 }

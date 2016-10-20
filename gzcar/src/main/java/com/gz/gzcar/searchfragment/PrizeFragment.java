@@ -77,7 +77,6 @@ public class PrizeFragment extends BaseFragment {
         Log.e("ende","end=="+end);
         mStartTime.setText(start);
         mEndTime.setText(end);
-        // TODO: 2016/10/13 0013
         initdata();
     }
 
@@ -119,7 +118,6 @@ public class PrizeFragment extends BaseFragment {
 
                             allData.clear();
                             allData.addAll(all);
-//                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
                         }
@@ -143,9 +141,7 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void initdata() {
-//        addData();
         try {
-//            allData = db.selector(TrafficInfoTable.class).findAll();
             String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
             Date date = DateUtils.string2DateDetail(today);
             allData =db.selector(TrafficInfoTable.class)
@@ -260,6 +256,8 @@ public class PrizeFragment extends BaseFragment {
 
     private void sumMoney() {
 
+        Log.e("ende","allData=="+allData.get(0).toString());
+
         double toteMoney = 0;
         for (int i = 0; i < allData.size(); i++) {
 
@@ -273,7 +271,6 @@ public class PrizeFragment extends BaseFragment {
 
         @Override
         public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = View.inflate(getActivity(), R.layout.search_car_info, false);
             View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_search_free, parent, false);
             MyHolder myHolder = new MyHolder(itemView);
             return myHolder;
@@ -298,7 +295,6 @@ public class PrizeFragment extends BaseFragment {
                 holder.mOuttime.setText(dateFormatDetail.format(free.getOut_time()));
             }
 
-            free = null;
         }
 
         @Override
