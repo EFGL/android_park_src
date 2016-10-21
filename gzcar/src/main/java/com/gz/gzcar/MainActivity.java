@@ -26,6 +26,7 @@ import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
+import com.gz.gzcar.server.DownLoadServer;
 import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.FileUtils;
@@ -182,6 +183,8 @@ public class MainActivity extends BaseActivity {
         showLogin();
        Intent intent=new Intent(MainActivity.this,SendService.class);
         startService(intent);
+        Intent intentDon=new Intent(MainActivity.this,DownLoadServer.class);
+        startService(intentDon);
     }
 
     private void initLogin() {

@@ -37,7 +37,7 @@ public class DownloadServerMessage {
 
 	public static String url="http://221.204.11.69:3002/api/v1";
 
-	public static Boolean log=false;
+	public static Boolean log=true;
 
 	/**
 	 * 开始下载全部数据
