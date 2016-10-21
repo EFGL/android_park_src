@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
@@ -176,7 +175,7 @@ public class CarInfoFragment extends Fragment {
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", allData.get(position).getCar_no()).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).findAll();
                 if (all != null) {
                     holder.carwei.setText(all.size() + "个");
                 }

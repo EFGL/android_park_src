@@ -16,7 +16,7 @@ public class CarInfoTable{
     @Column(name = "id", isId = true)
     private int id;
     //组键
-    @Column(name = "codeId", isId = true)
+    @Column(name = "codeId")
     private String codeId;
     //车号
     @Column(name = "car_no")

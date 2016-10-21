@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,6 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -104,9 +104,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
                 String type = mCarType.getText().toString().trim();
-// TODO: 2016/10/12 0012  
                 if (type.equals("所有车")) {
-                    // TODO: 2016/10/12 0012
                     if (TextUtils.isEmpty(carNum)) {
                         try {
                             List<CarInfoTable> all = db.findAll(CarInfoTable.class);
@@ -387,7 +385,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             holder.mId.setText(position + 1 + "");
             holder.mCarNumber.setText(carInfo.getCar_no());
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_number", "=", carInfo.getCar_no()).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no", "=", carInfo.getCar_no()).findAll();
+                Log.e("ende","all========"+all.toString());
                 if (all != null) {
                     holder.mCarWei.setText(all.size() + "个");
                 }
