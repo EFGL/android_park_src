@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
@@ -47,6 +48,8 @@ public class SettingsFragment extends Fragment {
     JellyToggleButton getmTogglebuttonCarNumber;
     @Bind(R.id.btn_save_update)
     Button mSave;
+    @Bind(R.id.textViewDevId)
+    TextView textViewDevId;
     private final String TEMP_CAR_IN = "tempCarIn";// 临时车入场是否确认
     private final String TEMP_CAR_FREE = "tempCarFree";// 零收费车是否确认
     private final String IS_PRINT_CARD = "isPrintCard";// 是否打印小票
@@ -57,7 +60,6 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
-
         ButterKnife.bind(this, v);
         return v;
     }
@@ -73,11 +75,11 @@ public class SettingsFragment extends Fragment {
     private boolean isCardRead;
     private boolean isChina;
     private void initData() {
+        textViewDevId.setText(MyApplication.devID);
         String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
         String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
         String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
         long stallNum = MyApplication.settingInfo.getLong("allCarPlace");
-
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);

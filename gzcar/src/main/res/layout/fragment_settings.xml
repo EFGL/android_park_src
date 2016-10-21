@@ -314,7 +314,24 @@
                     app:jtbTextMarginRight="2dp"
                     app:jtbTextMarginTop="2dp" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设备ID： "
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/textViewDevId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
             <Button
                 android:id="@+id/btn_save_update"
                 android:layout_width="wrap_content"

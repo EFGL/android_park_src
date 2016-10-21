@@ -3,6 +3,7 @@ package com.gz.gzcar;
 import android.app.Application;
 import android.widget.Toast;
 
+import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.SPUtils;
 
 import org.xutils.DbManager;
@@ -14,7 +15,7 @@ import org.xutils.x;
  */
 public class MyApplication extends Application {
 
-    public static String devID = "1FFFFFFFFFFF";
+    public static String devID ;
     public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
@@ -23,6 +24,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        devID = GetImei.getphoneimei(getApplicationContext());
         settingInfo = new SPUtils(this,"config");
         if(settingInfo.getString("serverIp") == null) {
             settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
