@@ -132,7 +132,7 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_nocarnum:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status","=","已入").findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status","=","已入").orderBy("in_time",true).findAll();
                     if (all == null) {
                         T.showShort(this, "未查到相关数据");
                     } else {
@@ -160,7 +160,7 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_no_pass:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status","=","已入").and("car_type","!=","固定车").findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status","=","已入").and("car_type","!=","固定车").orderBy("in_time",true).findAll();
                     if (all != null) {
                         T.showShort(this,"找到"+all.size()+ "条相关数据");
                         allData.addAll(all);
@@ -194,15 +194,16 @@ public class SelectPassOut extends BaseActivity {
 
     private void searchWithTime(int start, int end) {
         Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
-        Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000)));
+        Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000 + 60*1000)));
         Log.e("ende", "befor==" + befor + "：：current==" + current);
         try {
             allData.clear();
             List<TrafficInfoTable> all  = db.selector(TrafficInfoTable.class)
-                    .where("in_time", ">=", befor)
-                    .and("in_time", "<=", current)
+                    .where("in_time", ">", befor)
+                    .and("in_time", "<", current)
                     .and("car_type","!=","固定车")
                     .and("status","=","已入")
+                    .orderBy("in_time",true)
                     .findAll();
             if(all != null){
                 allData.addAll(all);

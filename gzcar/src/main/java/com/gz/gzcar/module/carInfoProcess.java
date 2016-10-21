@@ -53,9 +53,18 @@ public class carInfoProcess {
             return false;
         }
         try {
-            CarInfoTable carInfo = db.selector(CarInfoTable.class).where("car_no", "=", carNumber).findFirst();
+            CarInfoTable carInfo;
+            //是否匹配汉字
+            if(MyApplication.settingInfo.getBoolean("isUseChina"))
+            {
+                 carInfo = db.selector(CarInfoTable.class).where("car_no", "=", carNumber).findFirst();
+            }
+            else
+            {
+                 carInfo = db.selector(CarInfoTable.class).where("car_no", "like", carNumber.replace(carNumber.charAt(0),'%')).findFirst();
+            }
             if(carInfo != null) {
-                Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
+                //Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
                 //固定车
                 if (carInfo.getCar_type().equals("固定车")) {
                     processInRegistCar(carInfo,picBuffer);
@@ -77,7 +86,16 @@ public class carInfoProcess {
             return false;
         }
         try {
-            CarInfoTable carInfo = db.selector(CarInfoTable.class).where("car_no", "=", carNumber).findFirst();
+            CarInfoTable carInfo;
+            //是否匹配汉字
+            if(MyApplication.settingInfo.getBoolean("isUseChina"))
+            {
+                carInfo = db.selector(CarInfoTable.class).where("car_no", "=", carNumber).findFirst();
+            }
+            else
+            {
+                carInfo = db.selector(CarInfoTable.class).where("car_no", "like", carNumber.replace(carNumber.charAt(0),'%')).findFirst();
+            }
             if(carInfo != null) {
                 Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
                 //固定车
@@ -176,7 +194,15 @@ public class carInfoProcess {
         try {
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer);  //保存图片
-            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
+            //是否匹配汉字
+            if(MyApplication.settingInfo.getBoolean("isUseChina"))
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
+            }
+            else
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", carInfo.getCar_no().replace(carInfo.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+            }
             if(trafficInfo != null) {
                 //更新车辆出厂状态
                 trafficInfo.setOut_time(new Date());
@@ -297,7 +323,16 @@ public class carInfoProcess {
         //保存数据
         FileUtils picFileManage = new FileUtils();
         String picPath = picFileManage.savePicture(picBuffer);  //保存图片
-        TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
+        TrafficInfoTable trafficInfo;
+        //是否匹配汉字
+        if(MyApplication.settingInfo.getBoolean("isUseChina"))
+        {
+            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carInfo.getCar_no()).and("status", "=", "已入").findFirst();
+        }
+        else
+        {
+            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", carInfo.getCar_no().replace(carInfo.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+        }
         //修改已有记录标志
         if(trafficInfo != null) {
             trafficInfo.setStatus("已出");
@@ -365,7 +400,16 @@ public class carInfoProcess {
         FileUtils picFileManage = new FileUtils();
         String picPath = picFileManage.savePicture(picBuffer);
         //保存数据
-        TrafficInfoTable trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=",carNumber).and("status", "=", "已入").findFirst();
+        TrafficInfoTable trafficInfo;
+        //是否匹配汉字
+        if(MyApplication.settingInfo.getBoolean("isUseChina"))
+        {
+            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carNumber).and("status", "=", "已入").findFirst();
+        }
+        else
+        {
+            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", carNumber.replace(carNumber.charAt(0),'%')).and("status", "=", "已入").findFirst();
+        }
         if(trafficInfo != null) {
             trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
@@ -518,7 +562,15 @@ public class carInfoProcess {
         String[] dispInfo = new String[]{null, null,null,null};
             //保存记录
             try {
-                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carNumber).and("status", "=", "已入").findFirst();
+                //是否匹配汉字
+                if(MyApplication.settingInfo.getBoolean("isUseChina"))
+                {
+                    trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", carNumber).and("status", "=", "已入").findFirst();
+                }
+                else
+                {
+                    trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", carNumber.replace(carNumber.charAt(0),'%')).and("status", "=", "已入").findFirst();
+                }
                 if(trafficInfo == null) {
                     //初始化显示屏内容
                     dispInfo[0] = "车牌识别  一车一杆  减速慢行";
@@ -664,7 +716,15 @@ public class carInfoProcess {
             //更新通行记录
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer); //保存图片
-            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
+            //是否匹配汉字
+            if(MyApplication.settingInfo.getBoolean("isUseChina"))
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
+            }
+            else
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", mainActivity.outPortLog.getCar_no().replace(mainActivity.outPortLog.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+            }
             if (trafficInfo == null) {
                 return false;
             } else {
@@ -700,7 +760,15 @@ public class carInfoProcess {
             //更新通行记录
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer); //保存图片
-            trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
+            //是否匹配汉字
+            if(MyApplication.settingInfo.getBoolean("isUseChina"))
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
+            }
+            else
+            {
+                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", mainActivity.outPortLog.getCar_no().replace(mainActivity.outPortLog.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+            }
             if (trafficInfo == null) {
                 trafficInfo = new TrafficInfoTable();
                 SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");

@@ -606,7 +606,6 @@ public class MainActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_manual_Pass_Out://选车出场
-                inCamera.manualPassOutFunc();
                 Intent intent = new Intent(this, SelectPassOut.class);
                 startActivityForResult(intent, 101);
                 break;

@@ -178,7 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="150dp"
+                    android:layout_marginLeft="100dp"
                     android:padding="5dp">
 
                     <TextView
