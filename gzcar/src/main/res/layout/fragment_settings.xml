@@ -114,7 +114,7 @@
                     android:textSize="18sp" />
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -127,15 +127,38 @@
 
                 <EditText
                     android:id="@+id/editText_stallNumber"
-                    android:layout_width="match_parent"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
+                    android:textAlignment="center"
                     android:padding="5dp"
                     android:lines="1"
-                    android:singleLine="true"
                     android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="相同车牌过滤时间："
+                    android:textSize="20sp" />
+                <EditText
+                    android:id="@+id/editText_enter_delay"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_white"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center"
+                    android:padding="5dp"
+                    android:lines="1"
+
+                    android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分钟"
+                    android:textSize="20sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -155,7 +178,7 @@
 
                     <com.nightonke.jellytogglebutton.JellyToggleButton
                         android:id="@+id/tb_togglebutton1"
-                        android:layout_width="70dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         app:jtbJelly="itself"
                         app:jtbLeftBackgroundColor="@android:color/white"
@@ -178,7 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="100dp"
+                    android:layout_marginLeft="30dp"
                     android:padding="5dp">
 
                     <TextView
@@ -189,7 +212,7 @@
 
                     <com.nightonke.jellytogglebutton.JellyToggleButton
                         android:id="@+id/tb_togglebutton_carNumber"
-                        android:layout_width="70dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         app:jtbJelly="itself"
                         app:jtbLeftBackgroundColor="@android:color/white"
@@ -219,14 +242,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="零收费车辆是否确认: "
+                    android:text="零收费车辆是否确认： "
                     android:textSize="20sp" />
 
                 <com.nightonke.jellytogglebutton.JellyToggleButton
                     android:id="@+id/tb_togglebutton2"
-                    android:layout_width="70dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     app:jtbJelly="itself"
                     app:jtbLeftBackgroundColor="@android:color/white"
                     app:jtbLeftText="否"
@@ -254,14 +276,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="是 否 打 印 小 票："
+                    android:text="是否打印小票：             "
                     android:textSize="20sp" />
 
                 <com.nightonke.jellytogglebutton.JellyToggleButton
                     android:id="@+id/tb_togglebutton3"
-                    android:layout_width="70dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
                     app:jtbJelly="itself"
                     app:jtbLeftBackgroundColor="@android:color/white"
                     app:jtbLeftText="否"
@@ -289,14 +310,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="使  用  读  卡  器： "
+                    android:text="使用读卡器：                 "
                     android:textSize="20sp" />
 
                 <com.nightonke.jellytogglebutton.JellyToggleButton
                     android:id="@+id/tb_togglebutton4"
-                    android:layout_width="70dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
                     app:jtbJelly="itself"
                     app:jtbLeftBackgroundColor="@android:color/white"
                     app:jtbLeftText="否"

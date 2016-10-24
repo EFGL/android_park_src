@@ -8,6 +8,7 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
+import com.gz.gzcar.utils.GetImei;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,7 +161,7 @@ public class DownloadServerMessage {
 							} catch (DbException e) {
 								e.printStackTrace();
 							}
-							showlog("下载通行记录保存完成");
+							showlog("下载通行记录:"+list.size()+"条");
 						}else {
 							showlog("下载通行记录无更新");	
 						}

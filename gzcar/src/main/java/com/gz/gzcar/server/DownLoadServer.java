@@ -12,7 +12,7 @@ import com.gz.gzcar.MyApplication;
 /**
  * 下载的server
  * 分5个线程，
- *@ClassName: DownLoadServer 
+ *@ClassName: DownLoadServer
  *
  */
 public class DownLoadServer extends Service{

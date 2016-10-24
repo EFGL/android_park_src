@@ -43,14 +43,15 @@ public class SendService extends Service{
 	/**
 	 * DB
 	 */
-	public static DbManager db =x.getDb(MyApplication.daoConfig);
+	private static DbManager db =x.getDb(MyApplication.daoConfig);
 
-	public static String mycontroller_sn="1";
+	private static String mycontroller_sn = MyApplication.devID;
+	private static Boolean log=true;
 
-	public static int handlersendtime=1000*20;
+	private static long sendtime=5000;
 
-	public static Boolean log=true;
-
+	private static  String Myurl="http://221.204.11.69:3002/api/v1/in_out_record_upload"
+;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -71,15 +72,14 @@ public class SendService extends Service{
 							post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
 							while(true){
 								try {
-									Thread.sleep(100);
+									Thread.sleep(20);
 									table=db.selector(TrafficInfoTable.class).where("id", "=", table.getId()).findFirst();
-
 									if(table.isModifeFlage()){
 										break;
 									}
 									else
 									{
-										Thread.sleep(3000);
+										Thread.sleep(sendtime);
 									}
 								} catch (InterruptedException e) {
 									e.printStackTrace();
@@ -87,7 +87,7 @@ public class SendService extends Service{
 							}
 						}else {
 							try {
-								Thread.sleep(10*1000);
+								Thread.sleep(5*1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -128,7 +128,7 @@ public class SendService extends Service{
 		 */
 		public void showlog(String msg){
 			if(log){
-				Log.i("chenghao", msg);
+				Log.i("chenghaosend", msg);
 			}
 		}
 		/**
@@ -181,18 +181,23 @@ public class SendService extends Service{
 		 * @throws IOException
 		 */
 		public void post_in_out_record_upload(String controller_sn,String str,String out_imagename,String in_imagename,String out_imagefile,String in_imagefile,final TrafficInfoTable table) {
-			RequestParams params=new RequestParams("http://221.204.11.69:3002/api/v1/in_out_record_upload");
+			RequestParams params=new RequestParams(Myurl);
 			params.addBodyParameter("controller_sn",controller_sn);
+			showlog("我的设备号："+controller_sn);
 			params.addBodyParameter("str",str);
 			params.addBodyParameter("out_imagename",out_imagename);
 			params.addBodyParameter("in_imagename",in_imagename);
-			params.addBodyParameter("out_imagefile",getbase64msg(out_imagefile));
-			params.addBodyParameter("in_imagefile",getbase64msg(in_imagefile));
+			if(table.getStatus() != null && table.getStatus().equals("已入")){
+				params.addBodyParameter("in_imagefile",getbase64msg(in_imagefile));
+			}else if(table.getStatus() != null && table.getStatus().equals("已出")){
+				params.addBodyParameter("out_imagefile",getbase64msg(out_imagefile));
+			}
 			showlog("开始上传记录，str为＝"+str);
 			showlog("开始上传记录，out_imagename为＝"+out_imagename);
 			showlog("开始上传记录，in_imagename为＝"+in_imagename);
-			//			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
-			//			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
+			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
+			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
+			showlog("开始上传记录");
 			x.http().post(params, new CommonCallback<String>() {
 				@Override
 				public void onCancelled(CancelledException arg0) {
@@ -226,7 +231,9 @@ public class SendService extends Service{
 		 */
 		public void updateBean(TrafficInfoTable table){
 			try {
-				db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
+				//db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
+				table.setModifeFlage(true);
+				db.update(table,"modife_flage");
 			} catch (DbException e) {
 				e.printStackTrace();
 			}
@@ -256,19 +263,22 @@ public class SendService extends Service{
 			uploadBean.setCar_no(table.getCar_no());
 			uploadBean.setIn_time(table.getIn_time()+"");
 			uploadBean.setIn_operator(table.getIn_user());
-			uploadBean.setIn_image(table.getIn_image());
+			uploadBean.setIn_image(getpicname(table.getIn_image()));
 			uploadBean.setStall_code(table.getStall());
 			uploadBean.setOut_time(table.getOut_time()+"");
 			uploadBean.setOut_operator(table.getOut_user());
-			uploadBean.setOut_image(table.getOut_image());
+			uploadBean.setOut_image(getpicname(table.getOut_image()));
 			uploadBean.setStatus(table.getStatus());
 			uploadBean.setFee(table.getReceivable()+"");
 			uploadBean.setFact_fee(table.getActual_money()+"");
 			uploadBean.setCreated_at(table.getUpdateTime()+"");
+			uploadBean.setUpdated_controller_sn(table.getUpdated_controller_sn()+"");
 			uploadBean.setParked_time(table.getStall_time());
 			String str=JSON.toJSONString(uploadBean);
-			showlog("生产的json为＝"+str);
+//			showlog("生产的json为＝"+str);
 			return str;
 		}
+
+
 
 }

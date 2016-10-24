@@ -296,7 +296,6 @@ public class PrizeFragment extends BaseFragment {
 
         public MyHolder(View itemView) {
             super(itemView);
-
             ButterKnife.bind(this, itemView);
         }
     }

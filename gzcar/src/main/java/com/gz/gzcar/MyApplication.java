@@ -43,6 +43,7 @@ public class MyApplication extends Application {
             settingInfo.putLong("outCarCount", 0);
             settingInfo.putLong("chargeCarNumber", 0);
             settingInfo.putString("chargeMoney", "0.00");
+            MyApplication.settingInfo.putInt("enterDelay",3);
         }
         x.Ext.init(this);
 //        x.Ext.init(this);
