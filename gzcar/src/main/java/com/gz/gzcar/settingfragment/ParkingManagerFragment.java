@@ -114,7 +114,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
 
         try {
-            allData = db.selector(CarWeiTable.class).findAll();
+            allData = db.selector(CarWeiTable.class).orderBy("id",true).findAll();
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getActivity(), "查询全部异常");
@@ -158,7 +158,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
                         try {
                             db.deleteById(CarWeiTable.class, id);
                             allData.clear();
-                            allData.addAll(db.findAll(CarWeiTable.class));
+                            allData.addAll(db.selector(CarWeiTable.class).orderBy("id",true).findAll());
                             myAdapter.notifyDataSetChanged();
                         } catch (DbException e) {
                             e.printStackTrace();

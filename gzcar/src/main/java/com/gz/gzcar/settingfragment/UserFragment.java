@@ -74,7 +74,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private void initData() {
 
         try {
-            allData = db.selector(UserTable.class).findAll();
+            allData = db.selector(UserTable.class).orderBy("id",true).findAll();
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询全部异常");

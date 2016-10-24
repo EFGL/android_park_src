@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,10 +185,9 @@ public class RunFragment extends BaseFragment {
         String carNum = mCarNumber.getText().toString().trim();
         String start = mStartTime.getText().toString().trim();
         String end = mEndTime.getText().toString().trim();
-        if (TextUtils.isEmpty(carNum)) {
-            searchWithCarNum(start, end, carNum);
-        }
-        else if (type.equals("所有车")) {
+
+        if (type.equals("所有车")) {
+            if (TextUtils.isEmpty(carNum)) {
                 searchAll(start, end);
         } else {
             searchWithType(start, end, type);
@@ -216,8 +214,8 @@ public class RunFragment extends BaseFragment {
             T.showShort(getContext(), "查询异常");
         }
     }
-    /*按车号查找记录*/
-    private void searchWithCarNum(String start, String end, String carNum) {
+
+    private void searchWithTypeAndCarNum(String start, String end, String type, String carNum) {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
@@ -242,6 +240,27 @@ public class RunFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .findAll();
+            if (allData != null&&all!=null&&all.size()>0) {
+                allData.clear();
+                allData.addAll(all);
+                myAdapter.notifyDataSetChanged();
+            }else {
+                T.showShort(getContext(),"未查到相关数据");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(), "查询异常");
+        }
+    }
+
+    private void searchAllWithCarNum(String start, String end, String number) {
+        try {
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                    .where("update_time", ">", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .and("car_no", "=", number)
+                    .orderBy("id",true)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();
@@ -316,4 +335,5 @@ public class RunFragment extends BaseFragment {
             ButterKnife.bind(this, itemView);
         }
     }
+
 }

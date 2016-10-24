@@ -58,6 +58,7 @@ public class PrizeFragment extends BaseFragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
+//c7edcc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -71,8 +72,8 @@ public class PrizeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
-        Log.e("ende","start=="+start);
-        Log.e("ende","end=="+end);
+        Log.e("ende", "start==" + start);
+        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
         initdata();
@@ -110,9 +111,11 @@ public class PrizeFragment extends BaseFragment {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
                                 .and("status", "=", "已出")
-                                .and("receivable",">",0)
-                                .and("car_type","!=","固定车")
+                                .and("receivable", ">", 0)
+                                .and("car_type", "!=", "固定车")
+                                .orderBy("update_time", true)// true 倒序
                                 .findAll();
+//                        .OrderBy("update_time",true);
                         if (all != null) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
@@ -141,10 +144,11 @@ public class PrizeFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .and("status", "=", "已出")
-                    .and("receivable",">",0)
-                    .and("car_type","!=","固定车")
+                    .and("receivable", ">", 0)
+                    .and("car_type", "!=", "固定车")
+                    .orderBy("id",true)
                     .findAll();
-            if(all != null){
+            if (all != null) {
                 allData.addAll(all);
             }
         } catch (DbException e) {
@@ -177,10 +181,11 @@ public class PrizeFragment extends BaseFragment {
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("status", "=", "已出")
-                                .and("receivable",">",0)
-                                .and("car_type","!=","固定车")
+                                .and("receivable", ">", 0)
+                                .and("car_type", "!=", "固定车")
+                                .orderBy("id",true)
                                 .findAll();
-                        if (all != null ) {
+                        if (all != null) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
@@ -200,11 +205,12 @@ public class PrizeFragment extends BaseFragment {
                                 .where("in_time", ">", dateFormatDetail.parse(start))
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("car_number", "=", carNum)
-                                .and("receivable",">",0)
+                                .and("receivable", ">", 0)
                                 .and("status", "=", "已出")
-                                .and("car_type","!=","固定车")
+                                .and("car_type", "!=", "固定车")
+                                .orderBy("id",true)
                                 .findAll();
-                        if (all != null ) {
+                        if (all != null) {
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumMoney();
@@ -293,6 +299,13 @@ public class PrizeFragment extends BaseFragment {
             ButterKnife.bind(this, itemView);
         }
     }
+
+
+    public String getTime(Date date) {
+
+        return dateFormatDetail.format(date);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

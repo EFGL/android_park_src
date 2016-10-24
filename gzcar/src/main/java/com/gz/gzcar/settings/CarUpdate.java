@@ -152,7 +152,7 @@ public class CarUpdate extends BaseActivity {
                 for (int i = 0; i < all.size(); i++) {
                     String carWei = all.get(i).getStall_code();
                     if (i == 0) {
-                        mCarwei1.setText(carWei);
+                         mCarwei1.setText(carWei);
                         id1 = all.get(i).getId();
                     }
                     if (i == 1) {
@@ -190,6 +190,7 @@ public class CarUpdate extends BaseActivity {
 
             try {
                 CarInfoTable car = db.findById(CarInfoTable.class, id);
+                Log.e("ended","值=="+car);
                 car.setCar_no(mCarnum.getText().toString().trim());
                 car.setCar_type(mType.getText().toString().trim());
                 car.setPerson_name(mPerson.getText().toString().trim());

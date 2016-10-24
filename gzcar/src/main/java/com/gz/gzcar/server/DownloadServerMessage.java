@@ -8,6 +8,7 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
+import com.gz.gzcar.utils.GetImei;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +20,7 @@ import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,43 +31,70 @@ public class DownloadServerMessage {
 	 * DB
 	 */
 	public static DbManager db =x.getDb(MyApplication.daoConfig);
-	public static String mycontroller_sn= MyApplication.devID;
+
+	public static String mycontroller_sn="1";
+
 	public static String url="http://221.204.11.69:3002/api/v1";
-	public static Boolean log=true;
+
+	public static Boolean log=false;
 
 	/**
 	 * 开始下载全部数据
 	 */
-	public void getallmessage(){
+	public void getallmessage(int myindex){
 		try {
 			DownloadTimeBean bean=db.selector(DownloadTimeBean.class).findFirst();
 			if(bean!=null){
-				startdown(bean);
+				startdown(bean,myindex);
 			}else {
 				//初始化新至进去
 				DownloadTimeBean timeBean=new DownloadTimeBean();
-				timeBean.setTime("1970-1-1 01:00:00");
+				timeBean.setHandler_down_info_stall_time("1970-1-1 01:00:00");
+				timeBean.setHandler_down_info_vehicle_time("1970-1-1 01:00:00");
+				timeBean.setHandler_down_record_stall_vehicle_time("1970-1-1 01:00:00");
+				timeBean.setHandler_down_tempfee_time("1970-1-1 01:00:00");
+				timeBean.setHandler_in_out_record_download_time("1970-1-1 01:00:00");
 				db.save(timeBean);
-				startdown(timeBean);
+				startdown(timeBean,myindex);
+
 			}
 		} catch (DbException e) {
 			e.printStackTrace();
 		}
 	}
-	public void startdown(DownloadTimeBean bean){
-		showlog("传入时间为："+bean.getTime());
-		//开始下载
-		try {
-			get_in_out_record_download(url, bean.getTime(), mycontroller_sn);
-			get_down_tempfee(url, bean.getTime(), mycontroller_sn);
-			get_down_info_stall(url, bean.getTime(), mycontroller_sn);
-			get_down_info_vehicle(url, bean.getTime(), mycontroller_sn);
-			get_down_record_stall_vehicle(url, bean.getTime(), mycontroller_sn);
-			//修改时间
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			db.update(DownloadTimeBean.class, WhereBuilder.b("time", "=", bean.getTime()),new KeyValue("time",dateFormat.format(new Date())));
-		} catch (DbException e) {
-			e.printStackTrace();
+	public void startdown(DownloadTimeBean bean,int myindex){
+		String sendtime;
+		switch (myindex) {
+		//下载通行记录
+		case 1:
+			sendtime=bean.getHandler_in_out_record_download_time();
+			showlog("下载通行记录 传入时间:"+sendtime);
+			get_in_out_record_download(url,sendtime, mycontroller_sn);
+			break;
+			//下载临时车收费
+		case 2:
+			sendtime=bean.getHandler_down_tempfee_time();
+			showlog("下载临时车收费 传入时间:"+sendtime);
+			get_down_tempfee(url, sendtime, mycontroller_sn);
+			break;
+			//下载车位表
+		case 3:
+			sendtime=bean.getHandler_down_info_stall_time();
+			showlog("下载车位表 传入时间:"+sendtime);
+			get_down_info_stall(url, sendtime, mycontroller_sn);
+			break;
+			//固定车信息表
+		case 4:
+			sendtime=bean.getHandler_down_info_vehicle_time();
+			showlog("下载固定车 传入时间:"+sendtime);
+			get_down_info_vehicle(url, sendtime, mycontroller_sn);
+			break;
+			//车位和车辆绑定表
+		case 5:
+			sendtime=bean.getHandler_down_record_stall_vehicle_time();
+			showlog("下载车辆和车位绑定 传入时间:"+sendtime);
+			get_down_record_stall_vehicle(url, sendtime, mycontroller_sn);
+			break;
 		}
 	}
 
@@ -120,20 +146,20 @@ public class DownloadServerMessage {
 								table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
 								table.setStall_time(list.get(c).getParked_time()+"");
 								table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
-								table.setUpdated_controller_sn(list.get(c).getUpdated_controller_sn());
 								table.setStatus(list.get(c).getStatus());
-								table.setModifeFlage(true);
+								table.setModifeFlage(false);
 								try {
-									TrafficInfoTable findLog= db.selector(TrafficInfoTable.class).where("pass_no","=",table.getPass_no()).findFirst();
-									if(findLog != null) {
-										db.update(table);
-									}
-									else {
-										db.save(table);
-									}
+									db.save(table);
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
+							}
+							//得到最后一条的更新时间，进行修改数据库
+							String updatetiem=list.get(list.size()-1).getUpdated_at();
+							try {
+								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1),new KeyValue("handler_in_out_record_download_time",updatetiem));
+							} catch (DbException e) {
+								e.printStackTrace();
 							}
 							showlog("下载通行记录:"+list.size()+"条");
 						}else {
@@ -146,6 +172,8 @@ public class DownloadServerMessage {
 			}
 		});
 	}
+
+
 	/**
 	 * 下传临时车收费明细
 	 * @param time   上次记录时间
@@ -194,6 +222,13 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
+							}
+							//得到最后一条的更新时间，进行修改数据库
+							String updatetiem=list.get(list.size()-1).getUpdated_at();
+							try {
+								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1),new KeyValue("handler_down_tempfee_time",updatetiem));
+							} catch (DbException e) {
+								e.printStackTrace();
 							}
 							showlog("下传临时车收费明细保存成功");
 						}else {
@@ -251,6 +286,13 @@ public class DownloadServerMessage {
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
+							}
+							//得到最后一条的更新时间，进行修改数据库
+							String updatetiem=list.get(list.size()-1).getUpdated_at();
+							try {
+								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1),new KeyValue("handler_down_info_stall_time",updatetiem));
+							} catch (DbException e) {
+								e.printStackTrace();
 							}
 							showlog("下传车位表保存成功");
 						}else {
@@ -314,6 +356,13 @@ public class DownloadServerMessage {
 									e.printStackTrace();
 								}
 							}
+							//得到最后一条的更新时间，进行修改数据库
+							String updatetiem=list.get(list.size()-1).getUpdated_at();
+							try {
+								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1),new KeyValue("handler_down_info_vehicle_time",updatetiem));
+							} catch (DbException e) {
+								e.printStackTrace();
+							}
 							showlog("下传固定车信息表保存成功");
 						}else {
 							showlog("下传固定车信息表无更新");	
@@ -373,6 +422,13 @@ public class DownloadServerMessage {
 									e.printStackTrace();
 								}
 							}
+							//得到最后一条的更新时间，进行修改数据库
+							String updatetiem=list.get(list.size()-1).getUpdated_at();
+							try {
+								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1),new KeyValue("handler_down_record_stall_vehicle_time",updatetiem));
+							} catch (DbException e) {
+								e.printStackTrace();
+							}
 							showlog("下传车位和车辆绑定表保存成功");
 						}else {
 							showlog("下传车位和车辆绑定表无更新");
@@ -390,7 +446,7 @@ public class DownloadServerMessage {
 	 */
 	public void showlog(String msg){
 		if(log){
-			Log.i("chenghaodownload", msg);
+			Log.i("chenghao", msg);
 		}
 	}
 }
