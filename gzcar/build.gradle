@@ -7,7 +7,7 @@ android {
         generatedDensities = []
         applicationId "com.gz.gzcar"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }

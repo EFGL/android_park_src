@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,6 +118,7 @@ public class RunFragment extends BaseFragment {
                         Date date = DateUtils.string2DateDetail(today);
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
+                                .orderBy("id",true)
                                 .findAll();
                         if (allData != null&&all!=null) {
                             allData.clear();
@@ -151,6 +151,7 @@ public class RunFragment extends BaseFragment {
         try {
             allData = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
+                    .orderBy("id",true)
                     .findAll();
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
@@ -231,6 +232,7 @@ public class RunFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .orderBy("id",true)
                     .findAll();
             List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
@@ -238,6 +240,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "=", "固定车")
                     .or("car_type", "=", "临时车")
                     .or("car_type", "=", "免费车")
+                    .orderBy("id",true)
                     .findAll();
 
             if (allData != null&&all!=null&&all.size()>0) {
@@ -260,6 +263,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_no","=",carNum)
+                    .orderBy("id",true)
                     .findAll();
             List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
@@ -268,6 +272,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "=", "固定车")
                     .or("car_type", "=", "临时车")
                     .or("car_type", "=", "免费车")
+                    .orderBy("id",true)
                     .findAll();
 
             if (allData != null&&all!=null&&all.size()>0) {
@@ -290,6 +295,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
+                    .orderBy("id",true)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();
@@ -311,6 +317,7 @@ public class RunFragment extends BaseFragment {
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
                     .and("car_no", "=", carNum)
+                    .orderBy("id",true)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();
@@ -330,6 +337,7 @@ public class RunFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .orderBy("id",true)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();
@@ -350,6 +358,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_no", "=", number)
+                    .orderBy("id",true)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();

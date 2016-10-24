@@ -88,6 +88,7 @@ public class UserUpdateActivity extends BaseActivity {
             db.update(user, "userName", "password", "type");
 
             T.showShort(this, "保存成功");
+            finish();
         } catch (DbException e) {
             T.showShort(this, "保存异常");
             e.printStackTrace();

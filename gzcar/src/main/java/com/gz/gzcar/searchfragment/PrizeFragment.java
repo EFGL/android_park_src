@@ -146,6 +146,7 @@ public class PrizeFragment extends BaseFragment {
                     .and("status", "=", "已出")
                     .and("receivable", ">", 0)
                     .and("car_type", "!=", "固定车")
+                    .orderBy("id",true)
                     .findAll();
             if (all != null) {
                 allData.addAll(all);
@@ -182,6 +183,7 @@ public class PrizeFragment extends BaseFragment {
                                 .and("status", "=", "已出")
                                 .and("receivable", ">", 0)
                                 .and("car_type", "!=", "固定车")
+                                .orderBy("id",true)
                                 .findAll();
                         if (all != null) {
                             allData.addAll(all);
@@ -206,6 +208,7 @@ public class PrizeFragment extends BaseFragment {
                                 .and("receivable", ">", 0)
                                 .and("status", "=", "已出")
                                 .and("car_type", "!=", "固定车")
+                                .orderBy("id",true)
                                 .findAll();
                         if (all != null) {
                             allData.addAll(all);

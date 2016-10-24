@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +106,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 if (type.equals("所有车")) {
                     if (TextUtils.isEmpty(carNum)) {
                         try {
-                            List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                            List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
                             if (allData != null && all.size() > 0) {
 
                                 allData.clear();
@@ -123,6 +122,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         try {
                             List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                     .where("car_no", "=", carNum)
+                                    .orderBy("id", true)
                                     .findAll();
                             if (allData != null && all.size() > 0) {
 
@@ -143,6 +143,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                             List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                     .where("car_no", "=", carNum)
                                     .and("car_type", "=", type)
+                                    .orderBy("id",true)
                                     .findAll();
                             if (allData != null && all.size() > 0) {
 
@@ -160,6 +161,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         try {
                             List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                     .where("car_type", "=", type)
+                                    .orderBy("id",true)
                                     .findAll();
                             if (allData != null && all.size() > 0) {
 
@@ -189,7 +191,9 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                                                       // TODO: 2016/10/12 0012
                                                       if (TextUtils.isEmpty(carNum)) {
                                                           try {
-                                                              List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                                                              List<CarInfoTable> all = db.selector(CarInfoTable.class)
+                                                                      .orderBy("id",true)
+                                                                      .findAll();
                                                               if (allData != null && all.size() > 0) {
 
                                                                   allData.clear();
@@ -205,6 +209,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                                                           try {
                                                               List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                                                       .where("car_no", "=", carNum)
+                                                                      .orderBy("id",true)
                                                                       .findAll();
                                                               if (allData != null && all.size() > 0) {
 
@@ -225,6 +230,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                                                               List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                                                       .where("car_no", "=", carNum)
                                                                       .and("car_type", "=", type)
+                                                                      .orderBy("id",true)
                                                                       .findAll();
                                                               if (allData != null && all.size() > 0) {
 
@@ -242,6 +248,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                                                           try {
                                                               List<CarInfoTable> all = db.selector(CarInfoTable.class)
                                                                       .where("car_type", "=", type)
+                                                                      .orderBy("id",true)
                                                                       .findAll();
                                                               if (allData != null && all.size() > 0) {
 
@@ -352,8 +359,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     private void initData() {
 
         try {
-            allData = db.selector(CarInfoTable.class).findAll();
-               //Collections.sort(allData);
+            allData = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
+            //Collections.sort(allData);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -386,7 +393,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             holder.mCarNumber.setText(carInfo.getCar_no());
             try {
                 List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no", "=", carInfo.getCar_no()).findAll();
-                Log.e("ende","all========"+all.toString());
+//                Log.e("ende","all========"+all.toString());
                 if (all != null) {
                     holder.mCarWei.setText(all.size() + "个");
                 }
@@ -490,7 +497,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         try {
                             db.deleteById(CarInfoTable.class, id);
                             allData.clear();
-                            allData.addAll(db.findAll(CarInfoTable.class));
+                            allData.addAll(db.selector(CarInfoTable.class).orderBy("id",true).findAll());
                             myAdapter.notifyDataSetChanged();
                         } catch (DbException e) {
                             e.printStackTrace();

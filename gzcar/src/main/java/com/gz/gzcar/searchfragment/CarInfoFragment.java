@@ -64,7 +64,7 @@ public class CarInfoFragment extends Fragment {
         String carNum = mCarNumber.getText().toString().trim();
         if (!TextUtils.isEmpty(carNum) && carNum.length() > 1) {
             try {
-                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).findAll();
+                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id",true).findAll();
            if (allData!=null){
                allData.clear();
                allData.addAll(carNumList);
@@ -114,7 +114,7 @@ public class CarInfoFragment extends Fragment {
 //                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).findAll();
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
                         if (allData!=null){
 
                             allData.clear();
@@ -144,7 +144,7 @@ public class CarInfoFragment extends Fragment {
 
     private void initData() {
        try {
-            allData = db.selector(CarInfoTable.class).findAll();
+            allData = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -175,7 +175,7 @@ public class CarInfoFragment extends Fragment {
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).orderBy("id",true).findAll();
                 if (all != null) {
                     holder.carwei.setText(all.size() + "个");
                 }
