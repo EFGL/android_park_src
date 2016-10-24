@@ -36,6 +36,8 @@ public class SettingsFragment extends Fragment {
     EditText mOutIp;
     @Bind(R.id.editText_stallNumber)
     EditText stallNumber;
+    @Bind(R.id.editText_enter_delay)
+    EditText editText_enterDelay;
     @Bind(R.id.tb_togglebutton1)
     JellyToggleButton mTogglebutton1;
     @Bind(R.id.tb_togglebutton2)
@@ -74,12 +76,14 @@ public class SettingsFragment extends Fragment {
     private boolean isPrint;
     private boolean isCardRead;
     private boolean isChina;
+    private int enterDelay;
     private void initData() {
         textViewDevId.setText(MyApplication.devID);
         String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
         String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
         String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
         long stallNum = MyApplication.settingInfo.getLong("allCarPlace");
+        enterDelay = MyApplication.settingInfo.getInt("enterDelay");
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
@@ -96,6 +100,7 @@ public class SettingsFragment extends Fragment {
         mTogglebutton3.setChecked(isPrint);
         mTogglebutton4.setChecked(isCardRead);
         getmTogglebuttonCarNumber.setChecked(isChina);
+        editText_enterDelay.setText(String.valueOf(enterDelay));
     }
 
     @Override
@@ -192,6 +197,11 @@ public class SettingsFragment extends Fragment {
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();
         Long stallNum = Long.valueOf(stallNumber.getText().toString().trim());
+        enterDelay = Integer.valueOf(editText_enterDelay.getText().toString().trim());
+        if(enterDelay<1){
+            enterDelay = 1;
+        }
+        MyApplication.settingInfo.putInt("enterDelay",enterDelay);
         MyApplication.settingInfo.putString("serverIp", serverAddress);
         MyApplication.settingInfo.putString("inCameraIp", inCameraIp);
         MyApplication.settingInfo.putString("outCameraIp", outCameraIp);

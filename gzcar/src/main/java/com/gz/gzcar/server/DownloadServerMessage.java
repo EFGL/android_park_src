@@ -8,7 +8,6 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
-import com.gz.gzcar.utils.GetImei;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,15 +120,22 @@ public class DownloadServerMessage {
 								table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
 								table.setStall_time(list.get(c).getParked_time()+"");
 								table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
+								table.setUpdated_controller_sn(list.get(c).getUpdated_controller_sn());
 								table.setStatus(list.get(c).getStatus());
-								table.setModifeFlage(false);
+								table.setModifeFlage(true);
 								try {
-									db.save(table);
+									TrafficInfoTable findLog= db.selector(TrafficInfoTable.class).where("pass_no","=",table.getPass_no()).findFirst();
+									if(findLog != null) {
+										db.update(table);
+									}
+									else {
+										db.save(table);
+									}
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
 							}
-							showlog("下载通行记录保存完成");
+							showlog("下载通行记录:"+list.size()+"条");
 						}else {
 							showlog("下载通行记录无更新");	
 						}
@@ -140,8 +146,6 @@ public class DownloadServerMessage {
 			}
 		});
 	}
-
-
 	/**
 	 * 下传临时车收费明细
 	 * @param time   上次记录时间
@@ -386,7 +390,7 @@ public class DownloadServerMessage {
 	 */
 	public void showlog(String msg){
 		if(log){
-			Log.i("chenghao", msg);
+			Log.i("chenghaodownload", msg);
 		}
 	}
 }

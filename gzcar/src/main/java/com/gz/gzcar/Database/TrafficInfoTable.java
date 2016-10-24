@@ -18,6 +18,9 @@ public class TrafficInfoTable {
     //通行记录号
     @Column(name = "pass_no")
     private String pass_no;
+    //通行设备号
+    @Column(name = "updated_controller_sn")
+    private String updated_controller_sn;
     //车辆类型
     @Column(name = "car_type")
     private String car_type;
@@ -39,7 +42,6 @@ public class TrafficInfoTable {
     //出场图片
     @Column(name = "out_image")
     private String out_image;
-
     //出场操作员
     @Column(name = "out_user")
     private String out_user;
@@ -63,7 +65,7 @@ public class TrafficInfoTable {
     private String status;
     //记录修改标志
     @Column(name = "modife_flage")
-    private boolean modifeFlage;
+    private boolean modife_flage;
     @Override
     public String toString() {
         return "TrafficInfoTable{" +
@@ -81,8 +83,9 @@ public class TrafficInfoTable {
                 ", stall=" + stall +
                 ", stall_time=" + stall_time +
                 ", update_time=" + update_time +
-                ", modifeFlage=" + modifeFlage +
-                '}';
+                ", modife_flage=" + modife_flage +
+                ", updated_controller_sn=" + updated_controller_sn +
+        '}';
     }
 
     public int getId() {
@@ -183,7 +186,11 @@ public class TrafficInfoTable {
 
     public void setStatus(String status) {        this.status = status;    }
 
-    public boolean isModifeFlage() {        return modifeFlage;    }
+    public boolean isModifeFlage() {        return modife_flage;    }
 
-    public void setModifeFlage(boolean modifeFlage) {        this.modifeFlage = modifeFlage;    }
+    public void setModifeFlage(boolean modife_flage) {        this.modife_flage = modife_flage;    }
+
+    public String getUpdated_controller_sn() {        return updated_controller_sn;    }
+
+    public void setUpdated_controller_sn(String updated_controller_sn) {        this.updated_controller_sn = updated_controller_sn;    }
 }

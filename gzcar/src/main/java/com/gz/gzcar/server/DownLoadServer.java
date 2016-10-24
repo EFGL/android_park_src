@@ -14,7 +14,7 @@ import android.os.Message;
  */
 public class DownLoadServer extends Service{
 
-	public static int handlersendtime=1000*30;
+	public static int handlersendtime=1000*5;
 
 	@Override
 	public IBinder onBind(Intent arg0) {

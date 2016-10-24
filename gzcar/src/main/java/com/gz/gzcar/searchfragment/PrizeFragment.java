@@ -290,15 +290,8 @@ public class PrizeFragment extends BaseFragment {
 
         public MyHolder(View itemView) {
             super(itemView);
-
             ButterKnife.bind(this, itemView);
         }
-    }
-
-
-    public String getTime(Date date) {
-
-        return dateFormatDetail.format(date);
     }
     @Override
     public void onDestroyView() {

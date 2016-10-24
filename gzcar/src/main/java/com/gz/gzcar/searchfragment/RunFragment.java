@@ -1,10 +1,12 @@
 package com.gz.gzcar.searchfragment;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -71,8 +73,7 @@ public class RunFragment extends BaseFragment {
         popListItem.add("所有车");
         popListItem.add("固定车");
         popListItem.add("临时车");
-        popListItem.add("免费车");
-        popListItem.add("其他");
+        popListItem.add("特殊车");
         myPullText.setPopList(popListItem);
         myPullText.setText(popListItem.get(0));
     }
@@ -185,105 +186,17 @@ public class RunFragment extends BaseFragment {
         String carNum = mCarNumber.getText().toString().trim();
         String start = mStartTime.getText().toString().trim();
         String end = mEndTime.getText().toString().trim();
-
-        if (type.equals("所有车")) {
-            if (TextUtils.isEmpty(carNum)) {
+        if (TextUtils.isEmpty(carNum)) {
+            searchWithCarNum(start, end, carNum);
+        }
+        else if (type.equals("所有车")) {
                 searchAll(start, end);
-            } else {
-                searchAllWithCarNum(start, end, carNum);
-            }
-            return;
-        } else if (type.equals("固定车")) {
-            if (TextUtils.isEmpty(carNum)) {
-                searchWithType(start, end, "固定车");
-            } else {
-                searchWithTypeAndCarNum(start, end, "固定车", carNum);
-            }
-            return;
-        } else if (type.equals("临时车")) {
-            if (TextUtils.isEmpty(carNum)) {
-                searchWithType(start, end, "临时车");
-            } else {
-                searchWithTypeAndCarNum(start, end, "临时车", carNum);
-            }
-            return;
-        } else if (type.equals("免费车")) {
-            if (TextUtils.isEmpty(carNum)) {
-                searchWithType(start, end, "免费车");
-            } else {
-                searchWithTypeAndCarNum(start, end, "免费车", carNum);
-            }
-        } else if (type.equals("其他")) {
-            if (TextUtils.isEmpty(carNum)) {
-
-                searchWithOther(start,end);
-
-            } else {
-                searchWithOtherAndCarNum(start,end,carNum);
-            }
+        } else {
+            searchWithType(start, end, type);
         }
-
+        return;
     }
-
-    // 先查全部 然后移除  固定 临时 免费的
-    private void searchWithOther(String start, String end) {
-        try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .findAll();
-            List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_type", "=", "固定车")
-                    .or("car_type", "=", "临时车")
-                    .or("car_type", "=", "免费车")
-                    .findAll();
-
-            if (allData != null&&all!=null&&all.size()>0) {
-                all.removeAll(allOther);
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
-        }
-    }
-
-    private void searchWithOtherAndCarNum(String start, String end,String carNum) {
-        try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no","=",carNum)
-                    .findAll();
-            List<TrafficInfoTable> allOther = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no","=",carNum)
-                    .and("car_type", "=", "固定车")
-                    .or("car_type", "=", "临时车")
-                    .or("car_type", "=", "免费车")
-                    .findAll();
-
-            if (allData != null&&all!=null&&all.size()>0) {
-                all.removeAll(allOther);
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
-        }
-    }
-
+    /*按类型查找记录*/
     private void searchWithType(String start, String end, String type) {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
@@ -303,16 +216,15 @@ public class RunFragment extends BaseFragment {
             T.showShort(getContext(), "查询异常");
         }
     }
-
-    private void searchWithTypeAndCarNum(String start, String end, String type, String carNum) {
+    /*按车号查找记录*/
+    private void searchWithCarNum(String start, String end, String carNum) {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_type", "=", type)
                     .and("car_no", "=", carNum)
                     .findAll();
-            if (allData != null&&all!=null&&all.size()>0) {
+            if (all!=null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
@@ -324,32 +236,12 @@ public class RunFragment extends BaseFragment {
             T.showShort(getContext(), "查询异常");
         }
     }
-
+    /*查询所有车*/
     private void searchAll(String start, String end) {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .findAll();
-            if (allData != null&&all!=null&&all.size()>0) {
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
-        }
-    }
-
-    private void searchAllWithCarNum(String start, String end, String number) {
-        try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no", "=", number)
                     .findAll();
             if (allData != null&&all!=null&&all.size()>0) {
                 allData.clear();
@@ -379,16 +271,23 @@ public class RunFragment extends BaseFragment {
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCar_type());
-
             if (traffic.getIn_time() != null) {
                 holder.Starttime.setText(dateFormatDetail.format(traffic.getIn_time()));
             } else {
-                holder.Starttime.setText("未入场");
+                holder.Starttime.setText("无入场记录");
             }
             if (traffic.getOut_time() != null) {
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
+                holder.Endtime.setTextColor(Color.BLACK);
             } else {
-                holder.Endtime.setText("未出场");
+                    if (traffic.getStatus().equals("已出")) {
+                        holder.Endtime.setText("异常出场");
+                        holder.Endtime.setTextColor(Color.RED);
+                    }
+                    else{
+                        holder.Endtime.setText("未出场");
+                        holder.Endtime.setTextColor(Color.BLACK);
+                    }
             }
         }
 
@@ -417,5 +316,4 @@ public class RunFragment extends BaseFragment {
             ButterKnife.bind(this, itemView);
         }
     }
-
 }

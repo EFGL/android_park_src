@@ -54,6 +54,7 @@ public class carInfoProcess {
         }
         try {
             CarInfoTable carInfo;
+            carInfo = db.selector(CarInfoTable.class).where("car_no", "=", carNumber).findFirst();
             //是否匹配汉字
             if(MyApplication.settingInfo.getBoolean("isUseChina"))
             {
@@ -211,7 +212,8 @@ public class carInfoProcess {
                 trafficInfo.setPass_no("已出");
                 trafficInfo.setUpdateTime(new Date());
                 trafficInfo.setModifeFlage(false);
-                db.update(trafficInfo, "out_time","out_image","out_user","update_time","modifeFlage","status");
+                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
+                db.update(trafficInfo, "out_time","out_image","out_user","update_time","updated_controller_sn","modife_flage","status");
             }
             else{
                 trafficInfo = new TrafficInfoTable();
@@ -226,6 +228,7 @@ public class carInfoProcess {
                 trafficInfo.setOut_user(mainActivity.loginUserName);
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
                 trafficInfo.setModifeFlage(false);
                 db.save(trafficInfo);
             }
@@ -338,7 +341,8 @@ public class carInfoProcess {
             trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
             trafficInfo.setModifeFlage(false);
-            db.update(trafficInfo, "update_time", "modifeFlage","status");
+            trafficInfo.setUpdated_controller_sn(MyApplication.devID);
+            db.update(trafficInfo, "update_time", "modife_flage","updated_controller_sn","status");
         }
         //保存通行记录
         trafficInfo = new TrafficInfoTable();
@@ -353,6 +357,7 @@ public class carInfoProcess {
         trafficInfo.setIn_user(mainActivity.loginUserName);
         trafficInfo.setStatus("已入");
         trafficInfo.setUpdateTime(new Date());
+        trafficInfo.setUpdated_controller_sn(MyApplication.devID);
         trafficInfo.setModifeFlage(false);
         db.save(trafficInfo);
         return true;
@@ -364,9 +369,9 @@ public class carInfoProcess {
         inCamera.openGate();
         //初始化显示屏内容
         //车类型
-        dispInfo[0] = " 临时车";
+        dispInfo[0] = "车牌识别";
         //车号
-        dispInfo[1] = "无牌车";
+        dispInfo[1] = " 临时车";
         //有效日期
         dispInfo[2] =  "无牌入场";
         //欢迎观临
@@ -388,6 +393,7 @@ public class carInfoProcess {
         trafficInfo.setStatus("已入");
         trafficInfo.setIn_user(mainActivity.loginUserName);
         trafficInfo.setUpdateTime(new Date());
+        trafficInfo.setUpdated_controller_sn(MyApplication.devID);
         trafficInfo.setModifeFlage(false);
         db.save(trafficInfo);
         return true;
@@ -413,10 +419,11 @@ public class carInfoProcess {
         if(trafficInfo != null) {
             trafficInfo.setStatus("已出");
             trafficInfo.setUpdateTime(new Date());
+            trafficInfo.setUpdated_controller_sn(MyApplication.devID);
             trafficInfo.setModifeFlage(false);
             trafficInfo.setReceivable(0.0);
             trafficInfo.setActual_money(0.0);
-            db.update(trafficInfo,"update_time","receivable","actual_money","modifeFlage","status");
+            db.update(trafficInfo,"update_time","updated_controller_sn","receivable","actual_money","modife_flage","status");
         }
         trafficInfo = new TrafficInfoTable();
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -430,6 +437,7 @@ public class carInfoProcess {
         trafficInfo.setIn_user(mainActivity.loginUserName);
         trafficInfo.setStatus("已入");
         trafficInfo.setUpdateTime(new Date());
+        trafficInfo.setUpdated_controller_sn(MyApplication.devID);
         trafficInfo.setModifeFlage(false);
         db.save(trafficInfo);
         return true;
@@ -736,8 +744,9 @@ public class carInfoProcess {
                 trafficInfo.setStall_time(mainActivity.outPortLog.getStall_time());
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
                 trafficInfo.setModifeFlage(false);
-                db.update(trafficInfo, "out_time","out_image","out_user","update_time","status","stall","stall_time","receivable","actual_money","modifeFlage");
+                db.update(trafficInfo, "out_time","out_image","out_user","update_time","updated_controller_sn","status","stall","stall_time","receivable","actual_money","modife_flage");
             }
             //更收费信息
             if(mainActivity.outPortLog.getReceivable()>0) {
@@ -789,6 +798,7 @@ public class carInfoProcess {
                 trafficInfo.setOut_user(mainActivity.loginUserName);
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
                 trafficInfo.setModifeFlage(false);
                 db.save(trafficInfo);
             } else {
@@ -802,8 +812,9 @@ public class carInfoProcess {
                 trafficInfo.setOut_user(mainActivity.loginUserName);
                 trafficInfo.setStatus("已出");
                 trafficInfo.setUpdateTime(new Date());
+                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
                 trafficInfo.setModifeFlage(false);
-                db.update(trafficInfo,"car_type","out_time","out_image","out_user","update_time","status","stall","stall_time","receivable","actual_money","modifeFlage");
+                db.update(trafficInfo,"car_type","out_time","out_image","out_user","update_time","updated_controller_sn","status","stall","stall_time","receivable","actual_money","modife_flage");
             }
             return true;
         } catch (DbException e) {
