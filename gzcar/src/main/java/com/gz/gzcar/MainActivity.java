@@ -110,8 +110,16 @@ public class MainActivity extends BaseActivity {
         @Override
         public void run() {
             String[] dispInfo = new String[]{null, null,null,null};
+            //设定总车位
+            long value = MyApplication.settingInfo.getLong("allCarPlace");
+            //设定空闲车位
+            try {
+                value = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
             //初始化显示屏内容
-            dispInfo[0] = "车牌识别停车场";
+            dispInfo[0] = "空位:" + value;
             dispInfo[1] = "欢迎光临";
             dispInfo[2] =  "\\DH时\\DM分";
             dispInfo[3] = "车牌识别 一车一杆 减速慢行";
@@ -124,8 +132,16 @@ public class MainActivity extends BaseActivity {
         @Override
         public void run() {
             String[] dispInfo = new String[]{null, null,null,null};
+            //设定总车位
+            long value = MyApplication.settingInfo.getLong("allCarPlace");
+            //设定空闲车位
+            try {
+                value = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
             //初始化显示屏内容
-            dispInfo[0] = "车牌识别停车场";
+            dispInfo[0] = "空位:" + value;
             dispInfo[1] = "欢迎光临";
             dispInfo[2] =  "\\DH时\\DM分";
             dispInfo[3] = "车牌识别 一车一杆 减速慢行";
