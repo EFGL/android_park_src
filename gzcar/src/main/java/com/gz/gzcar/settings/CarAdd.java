@@ -119,7 +119,7 @@ public class CarAdd extends BaseActivity {
     }
 
     public void getData() {
-        String carNum = mCarnumber.getText().toString().trim();
+        String carNum = mCarnumber.getText().toString().trim().toUpperCase();
         String person = mPerson.getText().toString().trim();
         String carType = mCartype.getText().toString().trim();
         String address = mAddress.getText().toString().trim();
@@ -139,15 +139,6 @@ public class CarAdd extends BaseActivity {
             T.showShort(this, "请输入联系人");
             return;
         }
-//        if (TextUtils.isEmpty(address)) {
-//            T.showShort(this, "请输入地址");
-//            return;
-//        }
-
-//        if (TextUtils.isEmpty(phone)) {
-//            T.showShort(this, "请输入电话号码");
-//            return;
-//        }
         if (TextUtils.isEmpty(startTime)) {
             T.showShort(this, "请选择开始时间");
             return;
@@ -160,15 +151,15 @@ public class CarAdd extends BaseActivity {
             CarInfoTable mInfo = new CarInfoTable();
             mInfo.setCar_no(carNum);
             mInfo.setCar_type(carType);
-//        mInfo.setCarWei(carWei);
             mInfo.setPerson_name(person + "");
             mInfo.setPerson_tel(phone + "");
             mInfo.setPerson_address(address + "");
             mInfo.setStart_date(DateUtils.string2Date(startTime));
             mInfo.setStop_date(DateUtils.string2Date(endTime));
-            x.getDb(daoConfig).save(mInfo);
+            db.save(mInfo);
             //保存车位绑定信息
             CarWeiBindTable carBind = new CarWeiBindTable();
+            carBind.setCar_no(carNum);
             String carWei = mCarwei.getText().toString().trim();
             if (!TextUtils.isEmpty(carWei)){
                 carBind.setStall_code(carWei);
@@ -214,7 +205,6 @@ public class CarAdd extends BaseActivity {
                 break;
             case R.id.add_endtime:
                 endTimeShow();
-//                Log.e("ende","当前时间："+year+"-"+month+"-"+day+" "+hours+":"+minute);
                 break;
             case R.id.add_btn_cancle:
                 finish();

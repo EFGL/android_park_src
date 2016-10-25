@@ -231,6 +231,7 @@ public class RunFragment extends BaseFragment {
         try {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
+                    .orderBy("id",true)
                     .findAll();
             if (all!=null){
                 sumBottomCarNum(all.size());
@@ -281,51 +282,32 @@ public class RunFragment extends BaseFragment {
         String carNum = mCarNumber.getText().toString().trim();
         String start = mStartTime.getText().toString().trim();
         String end = mEndTime.getText().toString().trim();
-
         if (type.equals("所有车")) {
             if (TextUtils.isEmpty(carNum)) {
                 searchAll(start, end);
-            } else {
-                searchWithType(start, end, type);
             }
-            return;
+            else
+            {
+                searchAllWithCarNum(start,end,carNum);
+            }
+        } else {
+            searchWithType(start, end, type);
         }
+        return;
     }
     /*按类型查找记录*/
     private void searchWithType(String start, String end, String type) {
         try {
-           all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_type", "=", type)
-                    .findAll();
-            updaterecycltviewadapter();
-//            if (allData != null&&all!=null&&all.size()>0) {
-//                allData.clear();
-//                allData.addAll(all);
-//                myAdapter.notifyDataSetChanged();
-//                sumBottomCarNum(allData.size());
-//            }else {
-//                T.showShort(getContext(),"未查到相关数据");
-//            }
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
-        }
-    }
-
-    private void searchWithTypeAndCarNum(String start, String end, String type, String carNum) {
-        try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no", "=", carNum)
+                    .and("car_type", "=", type)
+                    .orderBy("id",true)
                     .findAll();
-            if (all!=null) {
+            if (all != null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
-                sumBottomCarNum(allData.size());
             }else {
                 T.showShort(getContext(),"未查到相关数据");
             }
@@ -340,6 +322,7 @@ public class RunFragment extends BaseFragment {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .orderBy("id",true)
                     .findAll();
             updaterecycltviewadapter();
 

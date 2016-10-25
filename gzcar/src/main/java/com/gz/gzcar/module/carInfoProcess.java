@@ -2,11 +2,13 @@ package com.gz.gzcar.module;
 
 import android.net.rtp.AudioStream;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.renderscript.Sampler;
 import android.util.Log;
 
 import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.Database.FreeInfoTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -41,6 +43,28 @@ public class carInfoProcess {
         this.inCamera = inCamera;
         this.outCamera = outCamera;
         mainActivity = inCamera.mainActivity;
+    }
+    //查询有无空闲车位，有则返回车位组键，无则返回null,未分配车位则返回“null”
+    private String findEmptyStall(String carNumber){
+        String stall = null;
+        try {
+            //查找车位
+            List<CarWeiBindTable> bindTable =  db.selector(CarWeiBindTable.class).where("car_no","=",carNumber).findAll();
+            if(bindTable == null || bindTable.size()==0){
+                stall =  "未分配";
+            }else
+            {
+                for (CarWeiBindTable item:bindTable){
+                    TrafficInfoTable log = db.selector(TrafficInfoTable.class).where("stall","=",item.getStall_code().toString()).and("car_no","!=",carNumber).and("status","=","已入").findFirst();
+                    if (log == null){
+                        return item.getStall_code().toString();
+                    }
+                }
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return stall;
     }
      /**
      * @param carNumber 车号
@@ -190,6 +214,13 @@ public class carInfoProcess {
             outCamera.openGate();
             //显示
             outCamera.ledDisplay(dispInfo);
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    outCamera.playAudio(camera.AudioList.get("一路顺风"));
+                }}, 5000);
         }
         //保存数据
         try {
@@ -246,12 +277,37 @@ public class carInfoProcess {
         mainActivity.outPortLog.setReceivable(0.0);
         mainActivity.outPortLog.setCar_type("固定车");
         mainActivity.outPortLog.setCar_no(trafficInfo.getCar_no());
-        mainActivity.outPortLog.setStall(timeFormat);
+        mainActivity.outPortLog.setStall_time(timeFormat);
         return true;
     }
     //处理入口固定车
     private boolean processInRegistCar(CarInfoTable carInfo,byte[] picBuffer) throws DbException {
         String[] dispInfo = new String[]{null, null,null,null};
+        //检测有无空闲车位
+        String emptyStall = findEmptyStall(carInfo.getCar_no());
+        if (emptyStall ==  null)
+        {
+            //过期车
+            //初始化显示屏内容
+            //车类型
+            dispInfo[0] = " " + carInfo.getCar_type();
+            //车号
+            dispInfo[1] = carInfo.getCar_no();
+            //有效日期
+            dispInfo[2] =  "车位已满";
+            //欢迎观临
+            dispInfo[3] = "需其它车辆出场后方可进入    ";
+            //显示
+            inCamera.ledDisplay(dispInfo);
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    inCamera.playAudio(camera.AudioList.get("车位已满"));
+                }}, 5000);
+            return false;
+        }
         //判断有限期
         Date nowDate = new Date();
         long userDate = (carInfo.getStop_date().getTime() - nowDate.getTime())/(24*60*60*1000);
@@ -322,6 +378,13 @@ public class carInfoProcess {
             inCamera.openGate();
             //显示
             inCamera.ledDisplay(dispInfo);
+            //延时播放语音
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    inCamera.playAudio(camera.AudioList.get("欢迎光临"));
+                }}, 5000);
         }
         //保存数据
         FileUtils picFileManage = new FileUtils();
@@ -353,7 +416,7 @@ public class carInfoProcess {
         trafficInfo.setIn_time(new Date());
         trafficInfo.setIn_image(picPath);
         trafficInfo.setOut_time(null);
-        trafficInfo.setStall(null);
+        trafficInfo.setStall(emptyStall);
         trafficInfo.setIn_user(mainActivity.loginUserName);
         trafficInfo.setStatus("已入");
         trafficInfo.setUpdateTime(new Date());

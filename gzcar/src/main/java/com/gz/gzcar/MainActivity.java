@@ -440,9 +440,14 @@ public class MainActivity extends BaseActivity {
 
     //确认收费
     private void enterChangeFunc() {
-        String ParkTime = chargeParkTime.getText().toString().toString();
-        if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0) {
+        String ParkTime = chargeParkTime.getText().toString();
+        if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0 || chargeCarType.getText().toString().equals("固定车")) {
             T.showShort(context, "无可收费车辆");
+            //更新出口收费信息
+            chargeCarNumber.setText("");
+            chargeCarType.setText("");
+            chargeParkTime.setText("");
+            chargeMoney.setText("待通行");
             return;
         }
         //如开启0元收费自动放行，则点本按钮无效
@@ -514,6 +519,7 @@ public class MainActivity extends BaseActivity {
                     T.showShort(context, "无可确认通行车辆");
                     return;
                 }
+                inCamera.playAudio(camera.AudioList.get("欢迎光临"));
                 carProcess.saveInTempCar(plateTextIn.getText().toString(), picBuffer);
             } catch (DbException e) {
                 e.printStackTrace();
@@ -618,7 +624,8 @@ public class MainActivity extends BaseActivity {
                         if(log != null ) {
                             long delay = new Date().getTime() - log.getUpdateTime().getTime();
                             if(delay < MyApplication.settingInfo.getInt("enterDelay")*60*1000) {
-                                T.showShort(context, "该车出频繁，请稍后通行");
+                                if(delay>5*1000){
+                                T.showShort(context, "该车出频繁，请稍后通行");}
                                 return;
                             }
                         }

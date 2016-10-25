@@ -53,7 +53,6 @@ public class CarWeiBindTable {
                 ", status='" + status + '\'' +
                 '}';
     }
-
     public int getId() {
         return id;
     }

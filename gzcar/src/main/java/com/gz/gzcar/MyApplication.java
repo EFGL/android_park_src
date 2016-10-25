@@ -46,11 +46,8 @@ public class MyApplication extends Application {
             MyApplication.settingInfo.putInt("enterDelay",3);
         }
         x.Ext.init(this);
-//        x.Ext.init(this);
-//        File file=new File(Environment.getExternalStorageDirectory().getPath());
         daoConfig = new DbManager.DaoConfig()
                 .setDbName(mDBName)
-//                .setDbDir(file)
                 .setDbVersion(1)
                 .setAllowTransaction(true)
                 .setTableCreateListener(new DbManager.TableCreateListener() {
