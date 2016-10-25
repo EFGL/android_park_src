@@ -63,13 +63,13 @@ public class RunFragment extends BaseFragment {
     private MyPullText myPullText;
     private RecyclerView.LayoutManager lm;
     private List<TrafficInfoTable> all;
-    private  String TAG="chenghao";
+    private String TAG = "chenghao";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      if(view==null){
-          view = inflater.inflate(R.layout.fragment_search_run, container, false);
-      }
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_search_run, container, false);
+        }
         return view;
     }
 
@@ -100,8 +100,8 @@ public class RunFragment extends BaseFragment {
 
                 LinearLayoutManager manager = (LinearLayoutManager) lm;
                 int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
-                Log.e("ende","lastVisibleItemPosition....."+lastVisibleItemPosition);
-                if(newState==0 && lastVisibleItemPosition==(allData.size()-1)){
+                Log.e("ende", "lastVisibleItemPosition....." + lastVisibleItemPosition);
+                if (newState == 0 && lastVisibleItemPosition == (allData.size() - 1)) {
                     setallmessage();
                 }
             }
@@ -109,25 +109,25 @@ public class RunFragment extends BaseFragment {
     }
 
 
-    public void staartThreadgetmessage(){
-        final Timer timer=new Timer();
+    public void staartThreadgetmessage() {
+        final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Message message=new Message();
+                Message message = new Message();
                 message.obj = timer;
                 handler.sendMessage(message);
             }
-        },0);
+        }, 0);
     }
 
-    android.os.Handler handler=new android.os.Handler(){
+    android.os.Handler handler = new android.os.Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             //来收数据
-            Log.e("chenghao","shoudaoxiaoxi");
-            Timer timer=(Timer)msg.obj;
+            Log.e("chenghao", "shoudaoxiaoxi");
+            Timer timer = (Timer) msg.obj;
             timer.cancel();
             initData();
             if (allData != null) {
@@ -138,20 +138,39 @@ public class RunFragment extends BaseFragment {
     };
 
 
-    public void setallmessage(){
+    public void setallmessage() {
 
-        if(allData!=null && all!=null && all.size()!=0){
-        int alldatesize=allData.size();
-            Log.e("ende", "setallmessage:chufa alldatesize="+alldatesize );
-            if(alldatesize==0){
-                for(int c=0;c<100;c++){
-                    allData.add(all.get(c));
+        if (allData != null && all != null && all.size() != 0) {
+            if(allData.size()==all.size()){
+                T.showShort(getContext(),"已经全部加载完");
+                return;
+            }
+            int alldatesize = allData.size();
+            int myallsize=all.size();
+            Log.e("ende", "setallmessage:chufa alldatesize=" + alldatesize);
+            if (alldatesize == 0) {
+                if((alldatesize+100)>myallsize){
+                    int index=myallsize-alldatesize;
+                    for (int i = alldatesize; i < alldatesize + index; i++) {
+                        allData.add(all.get(i));
+                    }
+                }else {
+                    for (int c = 0; c < 100; c++) {
+                        allData.add(all.get(c));
+                    }
                 }
-            }else{
-                for (int i = alldatesize; i <alldatesize+100 ; i++) {
-                    allData.add(all.get(i));
-                }
+            } else {
 
+                if((alldatesize+100)>myallsize){
+                    int index=myallsize-alldatesize;
+                    for (int i = alldatesize; i < alldatesize + index; i++) {
+                        allData.add(all.get(i));
+                    }
+                }else {
+                    for (int i = alldatesize; i < alldatesize + 100; i++) {
+                        allData.add(all.get(i));
+                    }
+                }
             }
             //走更新方法
             myAdapter.notifyDataSetChanged();
@@ -171,16 +190,15 @@ public class RunFragment extends BaseFragment {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
     }
 
     private void initViews() {
-        allData=new ArrayList<TrafficInfoTable>();
-        allData=new ArrayList<TrafficInfoTable>();
-        if (db == null){
+        allData = new ArrayList<TrafficInfoTable>();
+        allData = new ArrayList<TrafficInfoTable>();
+        if (db == null) {
             db = org.xutils.x.getDb(MyApplication.daoConfig);
         }
         //时间选择器
@@ -207,13 +225,13 @@ public class RunFragment extends BaseFragment {
                         List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                 .where("update_time", ">", date)
                                 .findAll();
-                        if (allData != null&&all!=null) {
+                        if (allData != null && all != null) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                             sumBottomCarNum(allData.size());
-                        }else {
-                            T.showShort(getContext(),"未查到相关数据");
+                        } else {
+                            T.showShort(getContext(), "未查到相关数据");
                         }
 
                     } catch (DbException e) {
@@ -231,9 +249,9 @@ public class RunFragment extends BaseFragment {
         try {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
-                    .orderBy("id",true)
+                    .orderBy("id", true)
                     .findAll();
-            if (all!=null){
+            if (all != null) {
                 sumBottomCarNum(all.size());
             }
 
@@ -243,16 +261,17 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    public void updaterecycltviewadapter(){
-        if(all.size()!=0){
+    public void updaterecycltviewadapter() {
+        Log.e("chenghao", "updaterecycltviewadapter: changdu="+all.size());
+        if (all.size() != 0) {
             allData.clear();
             setallmessage();
             sumBottomCarNum(all.size());
-        }else{
+        } else {
             allData.clear();
             myAdapter.notifyDataSetChanged();
             sumBottomCarNum(0);
-            T.showShort(getContext(),"未查到相关数据");
+            T.showShort(getContext(), "未查到相关数据");
         }
     }
 
@@ -285,44 +304,50 @@ public class RunFragment extends BaseFragment {
         if (type.equals("所有车")) {
             if (TextUtils.isEmpty(carNum)) {
                 searchAll(start, end);
-            }
-            else
-            {
-                searchAllWithCarNum(start,end,carNum);
+            } else {
+                searchAllWithCarNum(start, end, carNum);
             }
         } else {
-            searchWithType(start, end, type);
+            if (TextUtils.isEmpty(carNum)) {
+                searchWithType(start, end, type);
+            } else {
+                searchAllWithCarNum(start, end, carNum);
+            }
         }
         return;
     }
+
     /*按类型查找记录*/
     private void searchWithType(String start, String end, String type) {
         try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+            all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
-                    .orderBy("id",true)
+                    .orderBy("id", true)
                     .findAll();
-            if (all != null) {
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
+
+            updaterecycltviewadapter();
+//            if (all != null) {
+//                allData.clear();
+//                allData.addAll(all);
+//                myAdapter.notifyDataSetChanged();
+//            } else {
+//                T.showShort(getContext(), "未查到相关数据");
+//            }
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询异常");
         }
     }
+
     /*查询所有车*/
     private void searchAll(String start, String end) {
         try {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .orderBy("id",true)
+                    .orderBy("id", true)
                     .findAll();
             updaterecycltviewadapter();
 
@@ -343,21 +368,23 @@ public class RunFragment extends BaseFragment {
 
     private void searchAllWithCarNum(String start, String end, String number) {
         try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+            all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_no", "=", number)
-                    .orderBy("id",true)
+                    .orderBy("id", true)
                     .findAll();
 
-            if (allData != null&&all!=null&&all.size()>0) {
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-                sumBottomCarNum(allData.size());
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
+            updaterecycltviewadapter();
+
+//            if (allData != null && all != null && all.size() > 0) {
+//                allData.clear();
+//                allData.addAll(all);
+//                myAdapter.notifyDataSetChanged();
+//                sumBottomCarNum(allData.size());
+//            } else {
+//                T.showShort(getContext(), "未查到相关数据");
+//            }
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询异常");
@@ -389,14 +416,13 @@ public class RunFragment extends BaseFragment {
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
                 holder.Endtime.setTextColor(Color.BLACK);
             } else {
-                    if (traffic.getStatus().equals("已出")) {
-                        holder.Endtime.setText("异常出场");
-                        holder.Endtime.setTextColor(Color.RED);
-                    }
-                    else{
-                        holder.Endtime.setText("未出场");
-                        holder.Endtime.setTextColor(Color.BLACK);
-                    }
+                if (traffic.getStatus().equals("已出")) {
+                    holder.Endtime.setText("异常出场");
+                    holder.Endtime.setTextColor(Color.RED);
+                } else {
+                    holder.Endtime.setText("未出场");
+                    holder.Endtime.setTextColor(Color.BLACK);
+                }
             }
         }
 
@@ -425,7 +451,7 @@ public class RunFragment extends BaseFragment {
         }
     }
 
-    private void sumBottomCarNum(int size){
-        mBottomCarNumber.setText("车辆总数:"+size+"辆");
+    private void sumBottomCarNum(int size) {
+        mBottomCarNumber.setText("车辆总数:" + size + "辆");
     }
 }
