@@ -143,7 +143,22 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/search_car_info_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#5999" />
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="right"
+            android:text="车辆总数:0辆"
+            android:textSize="25sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -35,7 +35,7 @@ import butterknife.OnClick;
 
 /**
  * Created by Endeavor on 2016/8/8.
- *
+ * <p>
  * 车辆信息查询
  */
 public class CarInfoFragment extends Fragment {
@@ -44,6 +44,8 @@ public class CarInfoFragment extends Fragment {
     EditText mCarNumber;
     @Bind(R.id.btn_search_car)
     Button mSearchButton;
+    @Bind(R.id.tv_number)
+    TextView mBottomCarNumber;
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private RecyclerView rcy;
     private View view;
@@ -64,18 +66,19 @@ public class CarInfoFragment extends Fragment {
         String carNum = mCarNumber.getText().toString().trim();
         if (!TextUtils.isEmpty(carNum) && carNum.length() > 0) {
             try {
-                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id",true).findAll();
-           if (allData!=null){
-               allData.clear();
-               allData.addAll(carNumList);
-               myAdapter.notifyDataSetChanged();
-           }
+                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id", true).findAll();
+                if (allData != null) {
+                    allData.clear();
+                    allData.addAll(carNumList);
+                    myAdapter.notifyDataSetChanged();
+                    sumBottomCarNum(allData.size());
+                }
             } catch (DbException e) {
                 T.showShort(getActivity(), "查询异常");
                 e.printStackTrace();
             }
         } else {
-            T.showShort(getActivity(),"请输入正确的车牌号码");
+            T.showShort(getActivity(), "请输入正确的车牌号码");
         }
     }
 
@@ -113,11 +116,12 @@ public class CarInfoFragment extends Fragment {
                 String carNum = mCarNumber.getText().toString().trim();
                 if (carNum.length() == 0) {
                     try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
-                        if (allData!=null){
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
+                        if (allData != null) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
+                            sumBottomCarNum(allData.size());
                         }
 
                     } catch (DbException e) {
@@ -131,17 +135,18 @@ public class CarInfoFragment extends Fragment {
         rcy = (RecyclerView) view.findViewById(R.id.search_car_info_recyclerview);
         RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
-        if (allData!=null){
+        if (allData != null) {
 
             myAdapter = new MyAdapter();
             rcy.setAdapter(myAdapter);
+            sumBottomCarNum(allData.size());
         }
 
     }
 
     private void initData() {
-       try {
-            allData = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
+        try {
+            allData = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -167,11 +172,11 @@ public class CarInfoFragment extends Fragment {
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
-            holder.id.setText(position+1+"");
+            holder.id.setText(position + 1 + "");
             holder.carNum.setText(allData.get(position).getCar_no());
             holder.cartype.setText(allData.get(position).getCar_type());
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).orderBy("id",true).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).orderBy("id", true).findAll();
                 if (all != null) {
                     holder.carwei.setText(all.size() + "个");
                 }
@@ -182,11 +187,11 @@ public class CarInfoFragment extends Fragment {
             holder.phone.setText(allData.get(position).getPerson_tel());
             Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();
-            if (start_date!=null){
+            if (start_date != null) {
 
                 holder.startTime.setText(DateUtils.date2String(start_date));
             }
-            if (stop_date!=null){
+            if (stop_date != null) {
 
                 holder.endTime.setText(DateUtils.date2String(stop_date));
             }
@@ -222,5 +227,10 @@ public class CarInfoFragment extends Fragment {
             endTime = (TextView) itemView.findViewById(R.id.search_carinfo_endtime);
             id = (TextView) itemView.findViewById(R.id.search_carinfo_id);
         }
+    }
+
+
+    private void sumBottomCarNum(int size){
+        mBottomCarNumber.setText("车辆总数:"+size+"辆");
     }
 }
