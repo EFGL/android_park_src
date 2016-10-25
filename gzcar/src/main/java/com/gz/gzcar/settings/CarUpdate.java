@@ -191,7 +191,7 @@ public class CarUpdate extends BaseActivity {
             try {
                 CarInfoTable car = db.findById(CarInfoTable.class, id);
                 Log.e("ended","值=="+car);
-                car.setCar_no(mCarnum.getText().toString().trim());
+                car.setCar_no(mCarnum.getText().toString().trim().toUpperCase());
                 car.setCar_type(mType.getText().toString().trim());
                 car.setPerson_name(mPerson.getText().toString().trim());
                 car.setPerson_tel(mPhone.getText().toString().trim());

@@ -151,12 +151,12 @@ public class RunFragment extends BaseFragment {
         try {
             allData = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
+                    .orderBy("id",true)
                     .findAll();
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -185,10 +185,14 @@ public class RunFragment extends BaseFragment {
         String carNum = mCarNumber.getText().toString().trim();
         String start = mStartTime.getText().toString().trim();
         String end = mEndTime.getText().toString().trim();
-
         if (type.equals("所有车")) {
             if (TextUtils.isEmpty(carNum)) {
                 searchAll(start, end);
+            }
+            else
+            {
+                searchAllWithCarNum(start,end,carNum);
+            }
         } else {
             searchWithType(start, end, type);
         }
@@ -201,28 +205,9 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
+                    .orderBy("id",true)
                     .findAll();
-            if (allData != null&&all!=null&&all.size()>0) {
-                allData.clear();
-                allData.addAll(all);
-                myAdapter.notifyDataSetChanged();
-            }else {
-                T.showShort(getContext(),"未查到相关数据");
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
-        }
-    }
-
-    private void searchWithTypeAndCarNum(String start, String end, String type, String carNum) {
-        try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no", "=", carNum)
-                    .findAll();
-            if (all!=null) {
+            if (allData != null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
@@ -240,8 +225,9 @@ public class RunFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .orderBy("id",true)
                     .findAll();
-            if (allData != null&&all!=null&&all.size()>0) {
+            if (all!=null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
@@ -262,7 +248,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_no", "=", number)
                     .orderBy("id",true)
                     .findAll();
-            if (allData != null&&all!=null&&all.size()>0) {
+            if (all != null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
