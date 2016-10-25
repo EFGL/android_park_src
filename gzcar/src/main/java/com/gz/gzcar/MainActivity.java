@@ -440,8 +440,8 @@ public class MainActivity extends BaseActivity {
 
     //确认收费
     private void enterChangeFunc() {
-        String ParkTime = chargeParkTime.getText().toString().toString();
-        if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0) {
+        String ParkTime = chargeParkTime.getText().toString();
+        if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0 || chargeCarType.getText().toString().equals("固定车")) {
             T.showShort(context, "无可收费车辆");
             //更新出口收费信息
             chargeCarNumber.setText("");
