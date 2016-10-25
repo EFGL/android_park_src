@@ -62,7 +62,7 @@ public class CarInfoFragment extends Fragment {
     @OnClick(R.id.btn_search_car)
     public void onClick() {
         String carNum = mCarNumber.getText().toString().trim();
-        if (!TextUtils.isEmpty(carNum) && carNum.length() > 1) {
+        if (!TextUtils.isEmpty(carNum) && carNum.length() > 0) {
             try {
                 List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id",true).findAll();
            if (allData!=null){
@@ -111,17 +111,14 @@ public class CarInfoFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
-//                Toast.makeText(getActivity(),"carNum111="+carNum,Toast.LENGTH_SHORT).show();
                 if (carNum.length() == 0) {
                     try {
                         List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
                         if (allData!=null){
-
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
                         }
-//                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
 
                     } catch (DbException e) {
                         e.printStackTrace();
@@ -162,7 +159,6 @@ public class CarInfoFragment extends Fragment {
 
         @Override
         public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = View.inflate(getActivity(), R.layout.search_car_info, false);
             View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_search_car_info, parent, false);
             MyHolder myHolder = new MyHolder(itemView);
             return myHolder;

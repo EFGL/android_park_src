@@ -35,19 +35,19 @@ public class DownLoadServer extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		start_down_server(handler_in_out_record_download);
-		start_down_server(handler_down_tempfee);
-		start_down_server(handler_down_info_stall);
-		start_down_server(handler_down_info_vehicle);
-		start_down_server(handler_down_record_stall_vehicle);
+		start_down_server(1,handler_in_out_record_download);
+		start_down_server(2,handler_down_tempfee);
+		start_down_server(3,handler_down_info_stall);
+		start_down_server(4,handler_down_info_vehicle);
+		start_down_server(5,handler_down_record_stall_vehicle);
 	}
-	private void start_down_server(final int sendtime) {
+	private void start_down_server(final int id,final int sendtime) {
 		Runnable runnable=new Runnable() {
 			@Override
 			public void run() {
 				do{
 					Message message=new Message();
-					message.arg1=sendtime;
+					message.arg1=id;
 					handler.sendMessage(message);
 					try {
 						Thread.sleep(sendtime);
@@ -71,22 +71,22 @@ public class DownLoadServer extends Service{
 			super.handleMessage(msg);
 			int getmsg_arg=msg.arg1;
 			DownloadServerMessage message=new DownloadServerMessage();
-			if(getmsg_arg==handler_in_out_record_download){
+			if(getmsg_arg==1){
 				message.getallmessage(1);
 				showlog("执行下载通行记录");
-			}else if(getmsg_arg==handler_down_tempfee){
+			}else if(getmsg_arg==2){
 				showlog("执行下载临时车收费");
 				message.getallmessage(2);
 			}
-			else if(getmsg_arg==handler_down_info_stall){
+			else if(getmsg_arg==3){
 				showlog("执行下载下传车位表");
 				message.getallmessage(3);
 			}
-			else if(getmsg_arg==handler_down_info_vehicle){
+			else if(getmsg_arg==4){
 				showlog("执行下载下传固定车信息表");
 				message.getallmessage(4);
 			}
-			else if(getmsg_arg==handler_down_record_stall_vehicle){
+			else if(getmsg_arg==5){
 				showlog("执行下载下传车位和车辆绑定表");
 				message.getallmessage(5);
 			}

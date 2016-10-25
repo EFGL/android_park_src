@@ -8,7 +8,6 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
-import com.gz.gzcar.utils.GetImei;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +31,11 @@ public class DownloadServerMessage {
 	 */
 	public static DbManager db =x.getDb(MyApplication.daoConfig);
 
-	public static String mycontroller_sn="1";
+	public static String mycontroller_sn = MyApplication.devID;
 
 	public static String url="http://221.204.11.69:3002/api/v1";
 
-	public static Boolean log=false;
+	public static Boolean log=true;
 
 	/**
 	 * 开始下载全部数据

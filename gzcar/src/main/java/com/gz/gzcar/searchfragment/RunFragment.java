@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +55,8 @@ public class RunFragment extends BaseFragment {
     private MyAdapter myAdapter;
     private List<TrafficInfoTable> allData;
     private MyPullText myPullText;
+    private RecyclerView.LayoutManager lm;
+    private List<TrafficInfoTable> all;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +65,58 @@ public class RunFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_search_run, container, false);
         ButterKnife.bind(this, view);
         initSpinner();
+        initViews();
+        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
+        String end = DateUtils.getCurrentDataDetailStr();
+        mStartTime.setText(start);
+        mEndTime.setText(end);
+        initData();
+        Log.e("ende","1111111111");
+        lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rcy.setLayoutManager(lm);
+        if (allData != null) {
+            setallmessage();
+            myAdapter = new MyAdapter();
+            rcy.setAdapter(myAdapter);
+        }
+        rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                LinearLayoutManager manager = (LinearLayoutManager) lm;
+                int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
+//                Log.e("ende","onScrollStateChanged....."+newState);
+                Log.e("ende","lastVisibleItemPosition....."+lastVisibleItemPosition);
+                if(newState==0 && lastVisibleItemPosition==(allData.size()-1)){
+                    setallmessage();
+                }
+            }
+        });
+
         return view;
+    }
+
+
+
+    public void setallmessage(){
+
+        if(allData!=null){
+        int alldatesize=allData.size();
+            Log.e("ende", "setallmessage:chufa alldatesize="+alldatesize );
+            if(alldatesize==0){
+                for(int c=0;c<100;c++){
+                    allData.add(all.get(c));
+                }
+            }else{
+                for (int i = alldatesize; i <alldatesize+30 ; i++) {
+                    allData.add(all.get(i));
+                }
+                //走更新方法
+                myAdapter.notifyDataSetChanged();
+            }
+
+        }
     }
 
     private void initSpinner() {
@@ -81,20 +134,21 @@ public class RunFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
-        String end = DateUtils.getCurrentDataDetailStr();
-        mStartTime.setText(start);
-        mEndTime.setText(end);
-        initData();
+//        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
+//        String end = DateUtils.getCurrentDataDetailStr();
+//        mStartTime.setText(start);
+//        mEndTime.setText(end);
+//        initData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initViews();
+//        initViews();
     }
 
     private void initViews() {
+        allData=new ArrayList<TrafficInfoTable>();
 
         //时间选择器
         initDetailTime(getContext(), mStartTime, mEndTime);
@@ -149,10 +203,11 @@ public class RunFragment extends BaseFragment {
         String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
         Date date = DateUtils.string2DateDetail(today);
         try {
-            allData = db.selector(TrafficInfoTable.class)
+            all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
                     .orderBy("id",true)
                     .findAll();
+            Log.e("ende","allData=="+allData.size());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
@@ -207,7 +262,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "=", type)
                     .orderBy("id",true)
                     .findAll();
-            if (allData != null) {
+            if (all != null) {
                 allData.clear();
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
@@ -272,6 +327,7 @@ public class RunFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
+//            Log.e("ende", "onBindViewHolder: "+position);
             TrafficInfoTable traffic = allData.get(position);
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
