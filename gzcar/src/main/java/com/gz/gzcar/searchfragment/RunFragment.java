@@ -249,7 +249,7 @@ public class RunFragment extends BaseFragment {
         try {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", date)
-                    .orderBy("id", true)
+                    .orderBy("update_time", true)
                     .findAll();
             if (all != null) {
                 sumBottomCarNum(all.size());
@@ -324,7 +324,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
-                    .orderBy("id", true)
+                    .orderBy("update_time", true)
                     .findAll();
 
             updaterecycltviewadapter();
@@ -402,7 +402,6 @@ public class RunFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
-//            Log.e("ende", "onBindViewHolder: "+position);
             TrafficInfoTable traffic = allData.get(position);
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());

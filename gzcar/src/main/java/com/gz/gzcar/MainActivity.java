@@ -228,6 +228,11 @@ public class MainActivity extends BaseActivity {
                 enterChangeFunc();
             }
         });
+
+        outPortLog.setReceivable(0.0);
+        outPortLog.setCar_no("");
+        outPortLog.setCar_type("");
+        outPortLog.setStall_time("待通行");
         showLogin();
         startmyserver();
     }
@@ -270,7 +275,7 @@ public class MainActivity extends BaseActivity {
             m.setFee_code(String.valueOf(i+1));
             m.setFee_detail_code(null);
             m.setMoney(i/2 +1);
-            m.setFee_name(String.format("%.1f小时－%.1f小时",i*0.5,(double)(i*0.5)+0.5));
+            m.setFee_name(String.format("固定车",i*0.5,(double)(i*0.5)+0.5));
             m.setParked_min_time(i*30);
             m.setParked_max_time((i+1)*30);
             try {
@@ -439,7 +444,7 @@ public class MainActivity extends BaseActivity {
     //确认收费
     private void enterChangeFunc() {
         String ParkTime = chargeParkTime.getText().toString();
-        if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0 || chargeCarType.getText().toString().equals("固定车")) {
+        if (ParkTime.indexOf("无入场记录") > 0 ) {
             T.showShort(context, "无可收费车辆");
             //更新出口收费信息
             chargeCarNumber.setText("");
@@ -453,14 +458,17 @@ public class MainActivity extends BaseActivity {
             boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
             if (!tempCarFree) {
                T.showShort(context,"该车无需收费，已放行！");
-                //更新出口收费信息
-                chargeCarNumber.setText("");
-                chargeCarType.setText("");
-                chargeParkTime.setText("");
-                chargeMoney.setText("待通行");
-                upStatusInfoDisp();
-                return ;
             }
+            else{
+                T.showShort(context, "无可收费车辆");
+            }
+            //更新出口收费信息
+            chargeCarNumber.setText("");
+            chargeCarType.setText("");
+            chargeParkTime.setText("");
+            chargeMoney.setText("待通行");
+            upStatusInfoDisp();
+            return ;
         }
         if (carProcess.saveOutTempCar(outPortPicBuffer)) {
             outCamera.playAudio(camera.AudioList.get("一路顺风"));

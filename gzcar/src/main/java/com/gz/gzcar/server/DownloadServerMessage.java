@@ -97,11 +97,16 @@ public class DownloadServerMessage {
     public void startdown() {
         String sendtime;
         DownloadTimeBean bean = null;
+        //取所有信息最后一次下载时间;
+        try {
+            bean = db.selector(DownloadTimeBean.class).findFirst();
+        } catch (DbException e2) {
+            e2.printStackTrace();
+        }
         //开机下载一次收费记录表,并下载所有记录
         sendtime = bean.getHandler_down_tempfee_time();
         showlog("下载临时车收费 传入时间:" + sendtime);
         get_down_tempfee(url, sendtime, mycontroller_sn);
-
         while (true) {
             showlog("进入循环");
             for(int i=0;i<4;i++) {
