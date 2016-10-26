@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 获取手机的imei -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name=".MyApplication"
         android:label="@string/app_name"
@@ -23,8 +24,9 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".settings.SettingActivity" />
-        <activity android:name=".SrarchActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name=".SrarchActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".settings.CarAdd" />
         <activity android:name=".settings.CarUpdate" />
         <activity android:name=".settings.ParkingAddActivity" />
@@ -33,10 +35,14 @@
             android:label="@string/title_activity_user_add"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".settings.UserUpdateActivity" />
-        <activity android:name=".SelectPassOut"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
-        <service android:name=".server.SendService"></service>
-        <service android:name=".server.DownLoadServer"></service>
+        <activity
+            android:name=".SelectPassOut"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service android:name=".server.SendService" />
+        <service android:name=".server.DownLoadServer" />
+
+        <activity android:name=".searchfragment.ImageDetailActivity"></activity>
     </application>
 
 </manifest>
