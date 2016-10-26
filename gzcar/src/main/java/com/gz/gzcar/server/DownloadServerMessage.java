@@ -283,7 +283,7 @@ public class DownloadServerMessage {
 						if (result.length() != 2) {
 							//清空原有记录
 							try {
-								db.delete(MoneyTable.class,WhereBuilder.b("fee_detail_code","=",null));
+								db.delete(MoneyTable.class);
 							} catch (DbException e) {
 								e.printStackTrace();
 							}
