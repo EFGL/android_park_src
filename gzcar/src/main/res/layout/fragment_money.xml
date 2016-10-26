@@ -54,7 +54,15 @@
                     android:layout_weight="1"
                     android:background="@mipmap/ic_text_bg"
                     android:gravity="center"
-                    android:text="停车时长"
+                    android:text="最小时长"
+                    android:textSize="18sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@mipmap/ic_text_bg"
+                    android:gravity="center"
+                    android:text="最大时长"
                     android:textSize="18sp" />
 
                 <TextView

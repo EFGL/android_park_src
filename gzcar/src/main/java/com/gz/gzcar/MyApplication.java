@@ -53,7 +53,7 @@ public class MyApplication extends Application {
                 .setTableCreateListener(new DbManager.TableCreateListener() {
                     @Override
                     public void onTableCreated(DbManager db, TableEntity<?> table) {
-                        Toast.makeText(getApplicationContext(), table.getName() + "创建了...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), table.getName() + "创建了...", Toast.LENGTH_SHORT).show();
 
                     }
                 })

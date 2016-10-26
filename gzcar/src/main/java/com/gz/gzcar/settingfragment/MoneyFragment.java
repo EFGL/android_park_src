@@ -182,21 +182,20 @@ public class MoneyFragment extends Fragment {
                 }
             }
             holder.mId.setText(position + 1 + "");
+            holder.mType.setText(allData.get(position).getCar_type_name().toString());
             holder.mMoney.setText(allData.get(position).getMoney() + "元");
-            holder.mTime.setText(allData.get(position).getFee_name());
+            holder.mTime_min.setText(String.format("%.1f小时",allData.get(position).getParked_min_time()/60.0));
+            holder.mTime_max.setText(String.format("%.1f小时",allData.get(position).getParked_max_time()/60.0));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     clickItem=position;
                     myAdapter.notifyDataSetChanged();
-
                     id = allData.get(position).getId();
                     mNewMoney.requestFocus();
                     InputMethodManager imm = (InputMethodManager) mNewMoney.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-
-                    String time = holder.mTime.getText().toString().trim();
+                    String time = holder.mTime_min.getText().toString().trim() + "-" + holder.mTime_max.getText().toString().trim() ;
                     mTime.setText(time + "");
 
                 }
@@ -213,8 +212,12 @@ public class MoneyFragment extends Fragment {
 
         @Bind(R.id.item_money_id)
         TextView mId;
-        @Bind(R.id.item_money_time)
-        TextView mTime;
+        @Bind(R.id.item_money_type)
+        TextView mType;
+        @Bind(R.id.item_money_time_min)
+        TextView mTime_min;
+        @Bind(R.id.item_money_time_max)
+        TextView mTime_max;
         @Bind(R.id.item_money_free)
         TextView mMoney;
         @Bind(R.id.item_root)
@@ -239,7 +242,7 @@ public class MoneyFragment extends Fragment {
     private void initData() {
 
         try {
-            allData = db.findAll(MoneyTable.class);
+            allData = db.selector(MoneyTable.class).orderBy("parked_min_time").findAll();
         } catch (DbException e) {
             e.printStackTrace();
         }

@@ -59,7 +59,6 @@ import static com.gz.gzcar.MyApplication.settingInfo;
 public class MainActivity extends BaseActivity {
     final  int ledDisplayDelay = 30*1000;
     DbManager db = x.getDb(daoConfig);
-    // public static FreeInfoTable chargeInfo = new FreeInfoTable();
     public TrafficInfoTable outPortLog =  new TrafficInfoTable();
     public FileUtils picFileManage = new FileUtils();
     public String loginUserName;
@@ -231,15 +230,14 @@ public class MainActivity extends BaseActivity {
         });
         showLogin();
         startmyserver();
-
     }
 
     /**
      * 启动我的服务
      */
     public void startmyserver(){
-        Intent intent=new Intent(MainActivity.this,SendService.class);
-        startService(intent);
+       // Intent intent=new Intent(MainActivity.this,SendService.class);
+       // startService(intent);
         Intent intentDon=new Intent(MainActivity.this,DownLoadServer.class);
         startService(intentDon);
     }
@@ -270,7 +268,7 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i < 48; i++) {
             m = new MoneyTable();
             m.setFee_code(String.valueOf(i+1));
-            m.setFee_detail_code(String.valueOf(i+1));
+            m.setFee_detail_code(null);
             m.setMoney(i/2 +1);
             m.setFee_name(String.format("%.1f小时－%.1f小时",i*0.5,(double)(i*0.5)+0.5));
             m.setParked_min_time(i*30);
@@ -490,6 +488,9 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
+        inLedTimer.cancel();
+        inLedTimer = new Timer();
+        inLedTimer.schedule(inLedTimerTask,10000);
         upStatusInfoDisp();
     }
 

@@ -32,7 +32,6 @@ public class DownloadServerMessage {
      * DB
      */
     public static DbManager db = x.getDb(MyApplication.daoConfig);
-
     /**
      * 设备号
      */
@@ -46,32 +45,16 @@ public class DownloadServerMessage {
     /**
      * 是否打印log
      */
-    public static Boolean log = false;
-
-    /**
-     * 是否去服务器找数据，（外循环）
-     */
-    public Boolean ifexecutetogetmessage = true;
-
-    /**
-     * 标识位，判断走那个方法
-     */
-    public int startitemtosend = 0;
-
+    public static Boolean log = true;
     /**
      * 判断方法是否执行完成，（内循环）
      */
     public Boolean ifinteriorok = true;
 
     /**
-     * 检测时间
-     */
-    public long checktime = 100 * 20;
-
-    /**
      * 检查完所以，开始休息一次
      */
-    public long sleeptime = 1000 * 30;
+    public long sleeptime = 1000 * 60;
 
     /**
      * 执行次数
@@ -113,78 +96,61 @@ public class DownloadServerMessage {
      */
     public void startdown() {
         String sendtime;
+        DownloadTimeBean bean = null;
+        //开机下载一次收费记录表,并下载所有记录
+        sendtime = bean.getHandler_down_tempfee_time();
+        showlog("下载临时车收费 传入时间:" + sendtime);
+        get_down_tempfee(url, sendtime, mycontroller_sn);
+
         while (true) {
-            if (ifexecutetogetmessage) {
-                DownloadTimeBean bean = null;
+            showlog("进入循环");
+            for(int i=0;i<4;i++) {
+                //取所有信息最后一次下载时间;
                 try {
                     bean = db.selector(DownloadTimeBean.class).findFirst();
                 } catch (DbException e2) {
                     e2.printStackTrace();
                 }
-                showlog("进入循环");
-                ifexecutetogetmessage = false;
-                switch (startitemtosend) {
+                //起动对应下载任务
+                switch (i) {
                     case 0:
                         sendtime = bean.getHandler_in_out_record_download_time();
                         showlog("下载通行记录 传入时间:" + sendtime);
                         get_in_out_record_download(url, sendtime, mycontroller_sn);
-                        count++;
                         break;
                     case 1:
-                        sendtime = bean.getHandler_down_tempfee_time();
-                        showlog("下载临时车收费 传入时间:" + sendtime);
-                        get_down_tempfee(url, sendtime, mycontroller_sn);
-                        count++;
-                        break;
-                    case 2:
                         sendtime = bean.getHandler_down_info_stall_time();
                         showlog("下载车位表 传入时间:" + sendtime);
                         get_down_info_stall(url, sendtime, mycontroller_sn);
-                        count++;
                         break;
-                    case 3:
+                    case 2:
                         sendtime = bean.getHandler_down_info_vehicle_time();
                         showlog("下载固定车 传入时间:" + sendtime);
                         get_down_info_vehicle(url, sendtime, mycontroller_sn);
-                        count++;
                         break;
-                    case 4:
+                    case 3:
                         sendtime = bean.getHandler_down_record_stall_vehicle_time();
                         showlog("下载车辆和车位绑定 传入时间:" + sendtime);
                         get_down_record_stall_vehicle(url, sendtime, mycontroller_sn);
-                        count++;
                         break;
-                    case 5:
-                        showlog("所有的接口都循环执行了一次，可以休息一个很长很长的时间了 目前执行次数count＝" + count);
-                        ifinteriorok = false;
-                        try {
-                            Thread.sleep(sleeptime);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-                        ifinteriorok = true;
-                        startitemtosend = 0;
-                        break;
-                }
-                //在这监听内部事件是否处理完成
-                while (true) {
-                    if (ifinteriorok) {
-                        showlog("跳出循环");
-                        ifexecutetogetmessage = true;
-                        break;
-                    } else {
-                        showlog("走else");
-                        try {
-                            Thread.sleep(checktime);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                }//end switch
+                //待待接收完成
+                while(ifinteriorok == false) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
+            }//end for
+            showlog("所有的接口都循环执行了一次，延时："+sleeptime + "ms");
+            try {
+                Thread.sleep(sleeptime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }
+        }//end while
     }
-
     /**
      * 下载通行记录
      *
@@ -253,13 +219,12 @@ public class DownloadServerMessage {
                             } catch (DbException e) {
                                 e.printStackTrace();
                             }
-                            showlog("下载通行记录保存完成");
+                            showlog("下载通行记录："+list.size()+"条");
                         } else {
                             showlog("下载通行记录无更新");
                         }
                     }
                     ifinteriorok = true;
-                    startitemtosend = 1;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -301,41 +266,56 @@ public class DownloadServerMessage {
                     if ("0".equals(ref)) {
                         String result = object.getString("result");
                         if (result.length() != 2) {
+                            //清空原有记录
+                            try {
+                                db.delete(MoneyTable.class,WhereBuilder.b("fee_detail_code","=",null));
+                            } catch (DbException e) {
+                                e.printStackTrace();
+                            }
                             List<DownTemFeeBean> list = new ArrayList<DownTemFeeBean>();
                             list = com.alibaba.fastjson.JSONObject.parseArray(result, DownTemFeeBean.class);
                             //下一步根据list来存数据库
                             for (int c = 0; c < list.size(); c++) {
-                                MoneyTable table = new MoneyTable();
-                                table.setFee_detail_code(list.get(c).getFee_detail_code());
-                                table.setFee_code(list.get(c).getFee_code());
-                                table.setFee_name(list.get(c).getFee_name());
-                                table.setParked_min_time(list.get(c).getParked_min_time());
-                                table.setParked_max_time(list.get(c).getParked_max_time());
-                                table.setMoney(DownUtils.getstringtodouble(list.get(c).getMoney()));
-                                table.setCreated_at(DownUtils.getstringtodate(list.get(c).getCreated_at()));
-                                table.setUpdated_at(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
-                                table.setCar_type_code(list.get(c).getCar_type_code());
-                                table.setCar_type_name(list.get(c).getCar_type_name());
                                 try {
-                                    db.save(table);
+                                    MoneyTable table = db.selector(MoneyTable.class).where("fee_detail_code","=",list.get(c).getFee_detail_code()).findFirst();
+                                    if(table == null) {
+                                        //新增记录
+                                        table = new MoneyTable();
+                                        table.setFee_detail_code(list.get(c).getFee_detail_code());
+                                        table.setFee_code(list.get(c).getFee_code());
+                                        table.setFee_name(list.get(c).getFee_name());
+                                        table.setParked_min_time(list.get(c).getParked_min_time());
+                                        table.setParked_max_time(list.get(c).getParked_max_time());
+                                        table.setMoney(DownUtils.getstringtodouble(list.get(c).getMoney()));
+                                        table.setCreated_at(DownUtils.getstringtodate(list.get(c).getCreated_at()));
+                                        table.setUpdated_at(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
+                                        table.setCar_type_code(list.get(c).getCar_type_code());
+                                        table.setCar_type_name(list.get(c).getCar_type_name());
+                                        db.save(table);
+                                    }
+                                    else{
+                                        //修改记录
+                                        table.setFee_code(list.get(c).getFee_code());
+                                        table.setFee_name(list.get(c).getFee_name());
+                                        table.setParked_min_time(list.get(c).getParked_min_time());
+                                        table.setParked_max_time(list.get(c).getParked_max_time());
+                                        table.setMoney(DownUtils.getstringtodouble(list.get(c).getMoney()));
+                                        table.setCreated_at(DownUtils.getstringtodate(list.get(c).getCreated_at()));
+                                        table.setUpdated_at(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
+                                        table.setCar_type_code(list.get(c).getCar_type_code());
+                                        table.setCar_type_name(list.get(c).getCar_type_name());
+                                        db.update(table);
+                                    }
                                 } catch (DbException e) {
                                     e.printStackTrace();
                                 }
                             }
-                            //得到最后一条的更新时间，进行修改数据库
-                            String updatetiem = list.get(list.size() - 1).getUpdated_at();
-                            try {
-                                db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1), new KeyValue("handler_down_tempfee_time", updatetiem));
-                            } catch (DbException e) {
-                                e.printStackTrace();
-                            }
-                            showlog("下传临时车收费明细保存成功");
+                            showlog("下传临时车收费明细："+list.size()+"条");
                         } else {
                             showlog("下传临时车收费明细无更新");
                         }
                     }
                     ifinteriorok = true;
-                    startitemtosend = 2;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -400,13 +380,12 @@ public class DownloadServerMessage {
                             } catch (DbException e) {
                                 e.printStackTrace();
                             }
-                            showlog("下传车位表保存成功");
+                            showlog("下传车位表："+list.size()+"条");
                         } else {
                             showlog("下传车位表无更新");
                         }
                     }
                     ifinteriorok = true;
-                    startitemtosend = 3;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -477,13 +456,12 @@ public class DownloadServerMessage {
                             } catch (DbException e) {
                                 e.printStackTrace();
                             }
-                            showlog("下传固定车信息表保存成功");
+                            showlog("下传固定车信息："+list.size()+"条");
                         } else {
                             showlog("下传固定车信息表无更新");
                         }
                     }
                     ifinteriorok = true;
-                    startitemtosend = 4;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -551,20 +529,18 @@ public class DownloadServerMessage {
                             } catch (DbException e) {
                                 e.printStackTrace();
                             }
-                            showlog("下传车位和车辆绑定表保存成功");
+                            showlog("下传车位和车辆绑定表："+list.size()+"条");
                         } else {
                             showlog("下传车位和车辆绑定表无更新");
                         }
                     }
                     ifinteriorok = true;
-                    startitemtosend = 5;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
-
     /**
      * 打印log
      *
