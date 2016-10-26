@@ -10,6 +10,7 @@ public class DownInfoStallBean {
 	      "print_code": "string",                        //车位编号
 	      "created_at": "2016-08-29 16:29:22",           //创建时间
 	      "updated_at": "2016-08-29 16:29:22"            //时间戳
+	      status
 	 */
 
 	private String stall_code;
@@ -17,6 +18,14 @@ public class DownInfoStallBean {
 	private String print_code;
 	private String created_at;
 	private String updated_at;
+	private String status;
+
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getStall_code() {
 		return stall_code;
 	}
