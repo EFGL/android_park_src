@@ -405,7 +405,6 @@ public class RunFragment extends BaseFragment {
         public void onBindViewHolder(MyHolder holder, int position) {
 //            Log.e("ende", "onBindViewHolder: "+position);
             final TrafficInfoTable traffic = allData.get(position);
-            TrafficInfoTable traffic = allData.get(position);
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCar_type());
