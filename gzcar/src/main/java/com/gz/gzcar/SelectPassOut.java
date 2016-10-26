@@ -2,7 +2,6 @@ package com.gz.gzcar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
@@ -27,11 +27,8 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,6 +49,7 @@ public class SelectPassOut extends BaseActivity {
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private int clickItem = -1;
     private MyAdapter myAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +65,9 @@ public class SelectPassOut extends BaseActivity {
 
     private void initData() {
         try {
-            List<TrafficInfoTable> all= db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status","=","已入").findAll();
-            if(all != null){
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status", "=", "已入").orderBy("id", true).findAll();
+
+            if (all != null) {
                 allData.addAll(all);
             }
             initViews();
@@ -101,8 +100,8 @@ public class SelectPassOut extends BaseActivity {
                 String carNum = outCarnum.getText().toString().trim();
                 if (TextUtils.isEmpty(carNum)) {
                     try {
-                        List<TrafficInfoTable> all  = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status","=","已入").findAll();
-                        if(all != null){
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status", "=", "已入").findAll();
+                        if (all != null) {
                             allData.addAll(all);
                         }
                         myAdapter.notifyDataSetChanged();
@@ -111,8 +110,8 @@ public class SelectPassOut extends BaseActivity {
                     }
                 } else {
                     try {
-                        List<TrafficInfoTable> all  = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status","=","已入").findAll();
-                        if(all != null){
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status", "=", "已入").findAll();
+                        if (all != null) {
                             allData.addAll(all);
                         }
                         myAdapter.notifyDataSetChanged();
@@ -132,11 +131,11 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_nocarnum:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status","=","已入").orderBy("in_time",true).findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status", "=", "已入").orderBy("in_time", true).findAll();
                     if (all == null) {
                         T.showShort(this, "未查到相关数据");
                     } else {
-                        T.showShort(this,"找到"+all.size()+ "条相关数据");
+                        T.showShort(this, "找到" + all.size() + "条相关数据");
                         allData.addAll(all);
                     }
                     myAdapter.notifyDataSetChanged();
@@ -160,9 +159,9 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_no_pass:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status","=","已入").and("car_type","!=","固定车").orderBy("in_time",true).findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "!=", "固定车").orderBy("in_time", true).findAll();
                     if (all != null) {
-                        T.showShort(this,"找到"+all.size()+ "条相关数据");
+                        T.showShort(this, "找到" + all.size() + "条相关数据");
                         allData.addAll(all);
                     } else {
                         T.showShort(this, "未查到相关数据");
@@ -182,11 +181,11 @@ public class SelectPassOut extends BaseActivity {
                     return;
                 } else {
                     id = allData.get(clickItem).getId();
-                        intent = new Intent();
-                        intent.putExtra("id", id);
-                        //通过Intent对象返回结果，调用setResult方法
-                        setResult(1,intent);
-                        finish();//结束当前的activity的生命周期
+                    intent = new Intent();
+                    intent.putExtra("id", id);
+                    //通过Intent对象返回结果，调用setResult方法
+                    setResult(1, intent);
+                    finish();//结束当前的activity的生命周期
                 }
                 break;
         }
@@ -194,22 +193,21 @@ public class SelectPassOut extends BaseActivity {
 
     private void searchWithTime(int start, int end) {
         Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
-        Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000 + 60*1000)));
+        Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000 + 60 * 1000)));
         Log.e("ende", "befor==" + befor + "：：current==" + current);
         try {
             allData.clear();
-            List<TrafficInfoTable> all  = db.selector(TrafficInfoTable.class)
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("in_time", ">", befor)
                     .and("in_time", "<", current)
-                    .and("car_type","!=","固定车")
-                    .and("status","=","已入")
-                    .orderBy("in_time",true)
+                    .and("car_type", "!=", "固定车")
+                    .and("status", "=", "已入")
+                    .orderBy("in_time", true)
                     .findAll();
-            if(all != null){
+            if (all != null) {
                 allData.addAll(all);
-                T.showShort(this,"找到"+allData.size()+ "条相关数据");
-            }
-            else{
+                T.showShort(this, "找到" + allData.size() + "条相关数据");
+            } else {
                 T.showShort(this, "未查到相关数据");
             }
             myAdapter.notifyDataSetChanged();
@@ -218,6 +216,7 @@ public class SelectPassOut extends BaseActivity {
             e.printStackTrace();
         }
     }
+
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -226,6 +225,7 @@ public class SelectPassOut extends BaseActivity {
             MyViewHolder myViewHolder = new MyViewHolder(itemView);
             return myViewHolder;
         }
+
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
@@ -243,8 +243,21 @@ public class SelectPassOut extends BaseActivity {
                 public void onClick(View v) {
                     clickItem = position;
                     myAdapter.notifyDataSetChanged();
-                    String picPath = allData.get(position).getIn_image();
-                    Glide.with(SelectPassOut.this).load(picPath).error(R.drawable.ic_img_car).into(outPhoto);
+                    String picPath = allData.get(position).getIn_image() + "";
+                    if (!TextUtils.isEmpty(picPath)) {
+
+                        if (picPath.length() < 30&&picPath.length()>10) {
+                            // 网络图片
+                            String path = picPath.substring(0, 10);
+                            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + picPath;
+                            L.showlogError("serverPath==" + serverPath);
+                            Glide.with(SelectPassOut.this).load(serverPath).error(R.drawable.ic_img_car).into(outPhoto);
+
+                        } else {
+                            // 本地图片
+                            Glide.with(SelectPassOut.this).load(picPath).error(R.drawable.ic_img_car).into(outPhoto);
+                        }
+                    }
                     outPhCarnum.setText(allData.get(position).getCar_no() + "");
                 }
             });
@@ -255,6 +268,7 @@ public class SelectPassOut extends BaseActivity {
             return allData.size();
         }
     }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_pass_out_carnum)

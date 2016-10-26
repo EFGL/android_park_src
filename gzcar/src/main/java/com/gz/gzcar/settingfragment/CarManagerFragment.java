@@ -360,7 +360,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         try {
             allData = db.selector(CarInfoTable.class).orderBy("id",true).findAll();
-            //Collections.sort(allData);
+//            L.showlogError("aaaa==="+allData.size());
         } catch (DbException e) {
             e.printStackTrace();
         }

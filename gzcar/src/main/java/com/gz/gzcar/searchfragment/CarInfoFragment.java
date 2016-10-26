@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.CarInfoTable;
@@ -51,6 +52,7 @@ public class CarInfoFragment extends Fragment {
     private View view;
     private List<CarInfoTable> allData;
     private MyAdapter myAdapter;
+//    private int clickItem = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -170,31 +172,68 @@ public class CarInfoFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(MyHolder holder, int position) {
-
+        public void onBindViewHolder(final MyHolder holder, final int position) {
+//            if(clickItem!=-1){
+//                if(clickItem==position){
+//                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+//                }else{
+//                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+//                }
+//            }
+            final CarInfoTable carInfo = allData.get(position);
             holder.id.setText(position + 1 + "");
-            holder.carNum.setText(allData.get(position).getCar_no());
-            holder.cartype.setText(allData.get(position).getCar_type());
+            holder.carNum.setText(carInfo.getCar_no());
+            holder.cartype.setText(carInfo.getCar_type());
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", allData.get(position).getCar_no()).orderBy("id", true).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", carInfo.getCar_no()).orderBy("id", true).findAll();
                 if (all != null) {
                     holder.carwei.setText(all.size() + "个");
                 }
             } catch (DbException e) {
                 e.printStackTrace();
             }
-            holder.person.setText(allData.get(position).getPerson_name());
-            holder.phone.setText(allData.get(position).getPerson_tel());
-            Date start_date = allData.get(position).getStart_date();
-            Date stop_date = allData.get(position).getStop_date();
+            holder.person.setText(carInfo.getPerson_name());
+            holder.phone.setText(carInfo.getPerson_tel());
+            Date start_date = carInfo.getStart_date();
+            Date stop_date = carInfo.getStop_date();
+//            Date created_at = carInfo.getCreated_at();
+//            Date updated_at = carInfo.getUpdated_at();
+
+//            final Intent intent = new Intent(getContext(), ImageDetailActivity.class);
+//            intent.putExtra("carNumber", carInfo.getCar_no());
+//            intent.putExtra("carType", carInfo.getCar_type());
+//            intent.putExtra("personName", carInfo.getPerson_name());
+
+//            if (created_at != null)
+//                intent.putExtra("createTime", DateUtils.date2String(created_at));// 创建时间
+//            else
+//                intent.putExtra("createTime", "");
+//            if (updated_at != null)
+//                intent.putExtra("updateTime", DateUtils.date2String(updated_at));// 更新时间
+//            else
+//                intent.putExtra("createTime", "");
+
+
             if (start_date != null) {
 
                 holder.startTime.setText(DateUtils.date2String(start_date));
+//                intent.putExtra("startTime", DateUtils.date2String(start_date));
             }
+
             if (stop_date != null) {
 
                 holder.endTime.setText(DateUtils.date2String(stop_date));
+//                intent.putExtra("endTime", DateUtils.date2String(stop_date));
             }
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+////                    clickItem=position;
+////                    myAdapter.notifyDataSetChanged();
+//
+//                    startActivity(intent);
+//                }
+//            });
 
         }
 
@@ -214,10 +253,12 @@ public class CarInfoFragment extends Fragment {
         private TextView startTime;
         private TextView endTime;
         private TextView id;
+        private LinearLayout mRoot;
 
         public MyHolder(View itemView) {
             super(itemView);
 
+            mRoot = (LinearLayout) itemView.findViewById(R.id.root);
             carNum = (TextView) itemView.findViewById(R.id.search_carinfo_carnum);
             cartype = (TextView) itemView.findViewById(R.id.search_carinfo_cartype);
             carwei = (TextView) itemView.findViewById(R.id.search_carinfo_carwei);
@@ -230,7 +271,7 @@ public class CarInfoFragment extends Fragment {
     }
 
 
-    private void sumBottomCarNum(int size){
-        mBottomCarNumber.setText("车辆总数:"+size+"辆");
+    private void sumBottomCarNum(int size) {
+        mBottomCarNumber.setText("车辆总数:" + size + "辆");
     }
 }

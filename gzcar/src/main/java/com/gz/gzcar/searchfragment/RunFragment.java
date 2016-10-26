@@ -1,6 +1,7 @@
 package com.gz.gzcar.searchfragment;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
@@ -141,32 +142,32 @@ public class RunFragment extends BaseFragment {
     public void setallmessage() {
 
         if (allData != null && all != null && all.size() != 0) {
-            if(allData.size()==all.size()){
-                T.showShort(getContext(),"已经全部加载完");
+            if (allData.size() == all.size()) {
+                T.showShort(getContext(), "已经全部加载完");
                 return;
             }
             int alldatesize = allData.size();
-            int myallsize=all.size();
+            int myallsize = all.size();
             Log.e("ende", "setallmessage:chufa alldatesize=" + alldatesize);
             if (alldatesize == 0) {
-                if((alldatesize+100)>myallsize){
-                    int index=myallsize-alldatesize;
+                if ((alldatesize + 100) > myallsize) {
+                    int index = myallsize - alldatesize;
                     for (int i = alldatesize; i < alldatesize + index; i++) {
                         allData.add(all.get(i));
                     }
-                }else {
+                } else {
                     for (int c = 0; c < 100; c++) {
                         allData.add(all.get(c));
                     }
                 }
             } else {
 
-                if((alldatesize+100)>myallsize){
-                    int index=myallsize-alldatesize;
+                if ((alldatesize + 100) > myallsize) {
+                    int index = myallsize - alldatesize;
                     for (int i = alldatesize; i < alldatesize + index; i++) {
                         allData.add(all.get(i));
                     }
-                }else {
+                } else {
                     for (int i = alldatesize; i < alldatesize + 100; i++) {
                         allData.add(all.get(i));
                     }
@@ -262,7 +263,7 @@ public class RunFragment extends BaseFragment {
     }
 
     public void updaterecycltviewadapter() {
-        Log.e("chenghao", "updaterecycltviewadapter: changdu="+all.size());
+        Log.e("chenghao", "updaterecycltviewadapter: changdu=" + all.size());
         if (all.size() != 0) {
             allData.clear();
             setallmessage();
@@ -402,7 +403,8 @@ public class RunFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
-            TrafficInfoTable traffic = allData.get(position);
+//            Log.e("ende", "onBindViewHolder: "+position);
+            final TrafficInfoTable traffic = allData.get(position);
             holder.Id.setText(position + 1 + "");
             holder.Carnum.setText(traffic.getCar_no());
             holder.Type.setText(traffic.getCar_type());
@@ -423,6 +425,32 @@ public class RunFragment extends BaseFragment {
                     holder.Endtime.setTextColor(Color.BLACK);
                 }
             }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ImageDetailActivity.class);
+                    intent.putExtra("in_image",traffic.getIn_image()+"");
+                    intent.putExtra("out_image",traffic.getOut_time()+"");
+
+                    intent.putExtra("carNumber", traffic.getCar_no()+"");
+                    intent.putExtra("carType", traffic.getCar_type()+"");
+
+                    intent.putExtra("stall", traffic.getStall()+"");//占用车位
+                    intent.putExtra("receivable", traffic.getReceivable()+"");//应收费用
+                    intent.putExtra("actual_money", traffic.getActual_money()+"");//实收费用
+                    intent.putExtra("status", traffic.getStatus()+"");  //通行状态
+                    intent.putExtra("out_user", traffic.getOut_user()+"");
+                    intent.putExtra("in_user", traffic.getIn_user()+"");
+
+
+                    intent.putExtra("in_time", DateUtils.date2StringDetail(traffic.getIn_time()));
+                    intent.putExtra("out_time", DateUtils.date2StringDetail(traffic.getOut_time()));
+                    intent.putExtra("stall_time", traffic.getStall_time()+"");//停车时长
+                    intent.putExtra("update_time", DateUtils.date2StringDetail(traffic.getUpdateTime()));
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
