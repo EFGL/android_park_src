@@ -383,7 +383,7 @@ public class DownloadServerMessage {
 										CarWeiTable mytable=db.selector(CarWeiTable.class).where("stall_code", "=", list.get(c).getStall_code()).findFirst();
 										if(mytable!=null){
 											//修改
-											db.update(CarWeiTable.class, WhereBuilder.b("stall_code", "=", list.get(c).getStall_code()), 
+											db.update(CarWeiTable.class, WhereBuilder.b("stall_code", "=", list.get(c).getStall_code()),
 													new KeyValue("stall_code",list.get(c).getStall_code()),
 													new KeyValue("area_code", list.get(c).getArea_code()),
 													new KeyValue("print_code", list.get(c).getPrint_code()),
@@ -479,7 +479,7 @@ public class DownloadServerMessage {
 										CarInfoTable mytable=db.selector(CarInfoTable.class).where("codeId", "=", list.get(c).getId()).findFirst();
 										if(mytable!=null){
 											//修改
-											db.update(CarInfoTable.class, WhereBuilder.b("codeId", "=", list.get(c).getId()), 
+											db.update(CarInfoTable.class, WhereBuilder.b("codeId", "=", list.get(c).getId()),
 													new KeyValue("codeId",list.get(c).getId()),
 													new KeyValue("car_no", list.get(c).getCar_no()),
 													new KeyValue("car_type", list.get(c).getCar_type()),
@@ -586,7 +586,7 @@ public class DownloadServerMessage {
 										CarWeiBindTable mytable=db.selector(CarWeiBindTable.class).where("code", "=", list.get(c).getCode()).findFirst();
 										if(mytable!=null){
 											//修改
-											db.update(CarWeiBindTable.class, WhereBuilder.b("code", "=", list.get(c).getCode()), 
+											db.update(CarWeiBindTable.class, WhereBuilder.b("code", "=", list.get(c).getCode()),
 													new KeyValue("code",list.get(c).getCode()),
 													new KeyValue("car_no", list.get(c).getCar_no()),
 													new KeyValue("stall_code", list.get(c).getStall_code()),

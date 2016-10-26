@@ -112,7 +112,6 @@ public class PrizeFragment extends BaseFragment {
                                 .where("update_time", ">", date)
                                 .and("status", "=", "已出")
                                 .and("receivable", ">", 0)
-                                .and("car_type", "!=", "固定车")
                                 .orderBy("update_time", true)// true 倒序
                                 .findAll();
 //                        .OrderBy("update_time",true);
@@ -145,8 +144,7 @@ public class PrizeFragment extends BaseFragment {
                     .where("update_time", ">", date)
                     .and("status", "=", "已出")
                     .and("receivable", ">", 0)
-                    .and("car_type", "!=", "固定车")
-                    .orderBy("id",true)
+                    .orderBy("update_time",true)
                     .findAll();
             if (all != null) {
                 allData.addAll(all);
@@ -182,8 +180,7 @@ public class PrizeFragment extends BaseFragment {
                                 .and("out_time", "<", dateFormatDetail.parse(end))
                                 .and("status", "=", "已出")
                                 .and("receivable", ">", 0)
-                                .and("car_type", "!=", "固定车")
-                                .orderBy("id",true)
+                                .orderBy("update_time",true)
                                 .findAll();
                         if (all != null) {
                             allData.addAll(all);
@@ -207,8 +204,7 @@ public class PrizeFragment extends BaseFragment {
                                 .and("car_number", "=", carNum)
                                 .and("receivable", ">", 0)
                                 .and("status", "=", "已出")
-                                .and("car_type", "!=", "固定车")
-                                .orderBy("id",true)
+                                .orderBy("update_time",true)
                                 .findAll();
                         if (all != null) {
                             allData.addAll(all);

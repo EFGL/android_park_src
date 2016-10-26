@@ -88,12 +88,9 @@ public class carInfoProcess {
             {
                  carInfo = db.selector(CarInfoTable.class).where("car_no", "like", carNumber.replace(carNumber.charAt(0),'%')).findFirst();
             }
+            //不为空则是固定车
             if(carInfo != null) {
-                //Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
-                //固定车
-                if (carInfo.getCar_type().equals("固定车")) {
                     processInRegistCar(carInfo,picBuffer);
-                }
                 return true;
             }else{
                 //处理临时车
@@ -124,10 +121,7 @@ public class carInfoProcess {
             if(carInfo != null) {
                 Log.i("log","find:"+carNumber + "type:" + carInfo.getCar_type());
                 //固定车
-                if (carInfo.getCar_type().equals("固定车")) {
-                    return(processOutRegistCar(carInfo,picBuffer));
-                }
-                return false;
+                return(processOutRegistCar(carInfo,picBuffer));
             }else{
                 //处理临时车
                 return(processOutTempCar(carNumber,picBuffer));
@@ -154,7 +148,11 @@ public class carInfoProcess {
             //过期车
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = " " + carInfo.getCar_type();
+            if(carInfo.getCar_type().length()<4)
+            {
+                dispInfo[0] = " ";
+            }
+            dispInfo[0] +=  carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -170,7 +168,11 @@ public class carInfoProcess {
                 public void run() {
                     outCamera.playAudio(camera.AudioList.get("有效期到") + " " + camera.AudioList.get("请缴费"));
                 }}, 5000);
-            return false;
+            mainActivity.outPortLog.setReceivable(0.0);
+            mainActivity.outPortLog.setCar_type(carInfo.getCar_type());
+            mainActivity.outPortLog.setCar_no(carInfo.getCar_no());
+            mainActivity.outPortLog.setStall_time("费用到期");
+            return true;
         }
         if (startDate >= 0 && userDate < 10 && userDate >0) {
             //续费提示
@@ -182,7 +184,11 @@ public class carInfoProcess {
             final String AudioString = buffer.toString();
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = " " + carInfo.getCar_type();
+            if(carInfo.getCar_type().length()<4)
+            {
+                dispInfo[0] = " ";
+            }
+            dispInfo[0] +=  carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -275,8 +281,8 @@ public class carInfoProcess {
             timeFormat = "无入场记录";
         }
         mainActivity.outPortLog.setReceivable(0.0);
-        mainActivity.outPortLog.setCar_type("固定车");
-        mainActivity.outPortLog.setCar_no(trafficInfo.getCar_no());
+        mainActivity.outPortLog.setCar_type(carInfo.getCar_type());
+        mainActivity.outPortLog.setCar_no(carInfo.getCar_no());
         mainActivity.outPortLog.setStall_time(timeFormat);
         return true;
     }
@@ -290,7 +296,11 @@ public class carInfoProcess {
             //过期车
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = " " + carInfo.getCar_type();
+            if(carInfo.getCar_type().length()<4)
+            {
+                dispInfo[0] = " ";
+            }
+            dispInfo[0] += carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -317,7 +327,11 @@ public class carInfoProcess {
             //过期车
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = " " + carInfo.getCar_type();
+            if(carInfo.getCar_type().length()<4)
+            {
+                dispInfo[0] = " ";
+            }
+            dispInfo[0] +=  carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -367,7 +381,11 @@ public class carInfoProcess {
         else if (startDate >= 0 && userDate >= 10)  {
             //初始化显示屏内容
             //车类型
-            dispInfo[0] = " " + carInfo.getCar_type();
+            if(carInfo.getCar_type().length()<4)
+            {
+                dispInfo[0] = " ";
+            }
+            dispInfo[0] +=  carInfo.getCar_type();
             //车号
             dispInfo[1] = carInfo.getCar_no();
             //有效日期
@@ -611,14 +629,24 @@ public class carInfoProcess {
        return (buffer.toString());
    }
     //根据停车时长计算收费金额
-    private double moneyCount(double time)
+    private double moneyCount(String type,double time)
     {
         double res = 0;
         int day = (int) time/24/60;
         int minute = (int)time % (24*60);
         try {
-                res = day * db.selector(MoneyTable.class).orderBy("money",true).findFirst().getMoney();
-                res += db.selector(MoneyTable.class).where("parked_min_time","<=",minute).and("parked_max_time",">",minute).findFirst().getMoney();
+            MoneyTable maxTable = db.selector(MoneyTable.class).where("car_type_name","=",type).orderBy("money",true).findFirst();
+            if(maxTable == null)
+            {
+                return res;
+            }
+            MoneyTable dayTable = db.selector(MoneyTable.class).where("car_type_name","=",type).and("parked_min_time","<=",minute).and("parked_max_time",">",minute).findFirst();
+            if(dayTable == null)
+            {
+                return res;
+            }
+            res = day * maxTable.getMoney();
+            res += dayTable.getMoney();
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -680,7 +708,7 @@ public class carInfoProcess {
                 {
                     timeLong = 1;
                 }
-                Double money = moneyCount(timeLong);
+                Double money = moneyCount("临时车",timeLong);
                 mainActivity.outPortLog.setReceivable(money);
                 String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
                 mainActivity.outPortLog.setStall_time(timeFormat);
@@ -747,7 +775,7 @@ public class carInfoProcess {
             {
                 timeLong = 1;
             }
-            Double money = moneyCount(timeLong);
+            Double money = moneyCount(mainActivity.outPortLog.getCar_type(),timeLong);
             mainActivity.outPortLog.setReceivable(money);
             String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
             mainActivity.outPortLog.setStall_time(timeFormat);
@@ -833,13 +861,15 @@ public class carInfoProcess {
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer); //保存图片
             //是否匹配汉字
-            if(MyApplication.settingInfo.getBoolean("isUseChina"))
-            {
-                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
-            }
-            else
-            {
-                trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", mainActivity.outPortLog.getCar_no().replace(mainActivity.outPortLog.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+            if(mainActivity.outPortLog.getCar_no() != null){
+                if(MyApplication.settingInfo.getBoolean("isUseChina"))
+                {
+                    trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "=", mainActivity.outPortLog.getCar_no()).and("status", "=", "已入").findFirst();
+                }
+                else
+                {
+                    trafficInfo = db.selector(TrafficInfoTable.class).where("car_no", "like", mainActivity.outPortLog.getCar_no().replace(mainActivity.outPortLog.getCar_no().charAt(0),'%')).and("status", "=", "已入").findFirst();
+                }
             }
             if (trafficInfo == null) {
                 trafficInfo = new TrafficInfoTable();
