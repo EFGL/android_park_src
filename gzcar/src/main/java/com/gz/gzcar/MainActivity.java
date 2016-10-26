@@ -27,7 +27,6 @@ import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.server.DownLoadServer;
-import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.FileUtils;
 import com.gz.gzcar.utils.SPUtils;
