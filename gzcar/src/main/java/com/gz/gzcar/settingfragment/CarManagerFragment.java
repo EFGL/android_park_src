@@ -72,11 +72,10 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
         ArrayList<String> typeList = new ArrayList<>();
         typeList.add("所有车");
         typeList.add("固定车");
-        typeList.add("探亲车");
+        typeList.add("其它车");
         mCarType.setPopList(typeList);
         mCarType.setText(typeList.get(0));
         initData();
@@ -103,83 +102,37 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
                 String type = mCarType.getText().toString().trim();
-                if (type.equals("所有车")) {
+                try {
                     if (TextUtils.isEmpty(carNum)) {
-                        try {
-                            List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
-                            if (allData != null && all.size() > 0) {
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
+                        if (allData != null && all.size() > 0) {
 
-                                allData.clear();
-                                allData.addAll(all);
-                                myAdapter.notifyDataSetChanged();
-                            } else {
-                                T.showShort(getContext(), "未查到相关数据");
-                            }
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
-                                    .where("car_no", "=", carNum)
-                                    .orderBy("id", true)
-                                    .findAll();
-                            if (allData != null && all.size() > 0) {
-
-                                allData.clear();
-                                allData.addAll(all);
-                                myAdapter.notifyDataSetChanged();
-                            } else {
-                                T.showShort(getContext(), "未查到相关数据");
-                            }
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-
-                    if (!TextUtils.isEmpty(carNum)) {
-                        try {
-                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
-                                    .where("car_no", "=", carNum)
-                                    .and("car_type", "=", type)
-                                    .orderBy("id",true)
-                                    .findAll();
-                            if (allData != null && all.size() > 0) {
-
-                                allData.clear();
-                                allData.addAll(all);
-                                myAdapter.notifyDataSetChanged();
-                            } else {
-                                T.showShort(getContext(), "未查到相关数据");
-                            }
-                        } catch (DbException e) {
-                            e.printStackTrace();
+                            allData.clear();
+                            allData.addAll(all);
+                            myAdapter.notifyDataSetChanged();
+                        } else {
+                            T.showShort(getContext(), "未查到相关数据");
                         }
                     } else {
 
-                        try {
-                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
-                                    .where("car_type", "=", type)
-                                    .orderBy("id",true)
-                                    .findAll();
-                            if (allData != null && all.size() > 0) {
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class)
+                                .where("car_no", "like", carNum)
+                                .orderBy("id", true)
+                                .findAll();
+                        if (allData != null && all.size() > 0) {
 
-                                allData.clear();
-                                allData.addAll(all);
-                                myAdapter.notifyDataSetChanged();
-                            } else {
-                                T.showShort(getContext(), "未查到相关数据");
-                            }
-                        } catch (DbException e) {
-                            e.printStackTrace();
+                            allData.clear();
+                            allData.addAll(all);
+                            myAdapter.notifyDataSetChanged();
+                        } else {
+                            T.showShort(getContext(), "未查到相关数据");
                         }
                     }
+                }catch (DbException e) {
+                    e.printStackTrace();
                 }
-//晋A8888    临时车
             }
         });
-
         // 根据类型查询
         mCarType.setOnTextChangedListener(new MyPullText.OnTextChangedListener() {
                                               @Override
@@ -267,85 +220,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                                           }
 
         );
-        // 根据类型查询
-//        mCarType.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                String carNum = mCarNumber.getText().toString().trim();
-//                String type = mCarType.getText().toString().trim();
-//
-//                if (!TextUtils.isEmpty(type)) {
-//                    if (!TextUtils.isEmpty(carNum)) {
-//                        try {
-//                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
-//                                    .where("car_no", "=", carNum)
-//                                    .and("car_type", "=", type)
-//                                    .findAll();
-//                            if (allData != null) {
-//
-//                                allData.clear();
-//                                allData.addAll(all);
-//                                myAdapter.notifyDataSetChanged();
-//                            }
-//                        } catch (DbException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//
-//                        try {
-//                            List<CarInfoTable> all = db.selector(CarInfoTable.class)
-//                                    .where("car_type", "=", type)
-//                                    .findAll();
-//                            if (allData != null) {
-//
-//                                allData.clear();
-//                                allData.addAll(all);
-//                            }
-////                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
-//
-//                            myAdapter.notifyDataSetChanged();
-//                        } catch (DbException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                } else if (!TextUtils.isEmpty(carNum)) {
-//                    try {
-//                        List<CarInfoTable> all = db.selector(CarInfoTable.class)
-//                                .where("car_no", "=", carNum)
-//                                .findAll();
-//                        allData.clear();
-//                        allData.addAll(all);
-////                        Toast.makeText(getContext(),"all="+all.size()+";;allData="+allData.size(),Toast.LENGTH_SHORT).show();
-//
-//                        myAdapter.notifyDataSetChanged();
-//                    } catch (DbException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    try {
-//                        List<CarInfoTable> all = db.selector(CarInfoTable.class).findAll();
-//                        allData.clear();
-//                        allData.addAll(all);
-//                        myAdapter.notifyDataSetChanged();
-//                    } catch (DbException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//
-//            }
-//        });
-
         RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
         myAdapter = new
@@ -400,12 +274,14 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             } catch (DbException e) {
                 e.printStackTrace();
             }
-
-            holder.mType.setText(carInfo.getCar_type());
-//            holder.mCarWei.setText(carInfo.getCarWei());
+            if( carInfo.getVehicle_type().equals("固定车")) {
+                holder.mType.setText(carInfo.getCar_type());
+            }
+            else{
+                holder.mType.setText(carInfo.getFee_type());
+            }
             holder.mPerson.setText(carInfo.getPerson_name());
             holder.mPhone.setText(carInfo.getPerson_tel());
-//            holder.mAddress.setText(carInfo.getPerson_address());
 
             final Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();

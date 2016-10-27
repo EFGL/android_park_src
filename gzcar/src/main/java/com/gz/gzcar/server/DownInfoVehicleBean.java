@@ -20,6 +20,9 @@ public class DownInfoVehicleBean {
 	private String id;
 	private String car_no;
 	private String car_type;
+	private String vehicle_type;
+	private String	fee_type;
+
 	private String person_name;
 	private String person_tel;
 	private String person_address;
@@ -46,6 +49,23 @@ public class DownInfoVehicleBean {
 	public void setCar_type(String car_type) {
 		this.car_type = car_type;
 	}
+
+	public String getVehicle_type() {
+		return vehicle_type;
+	}
+
+	public void setVehicle_type(String vehicle_type) {
+		this.vehicle_type = vehicle_type;
+	}
+
+	public String getFee_type() {
+		return fee_type;
+	}
+
+	public void setFee_type(String fee_type) {
+		this.fee_type = fee_type;
+	}
+
 	public String getPerson_name() {
 		return person_name;
 	}

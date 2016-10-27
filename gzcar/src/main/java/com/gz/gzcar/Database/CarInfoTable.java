@@ -21,9 +21,13 @@ public class CarInfoTable{
     //车号
     @Column(name = "car_no")
     private String car_no;
-    //车辆类型
+    //固定车类型  月租或年租之类
     @Column(name = "car_type")
     private String car_type;
+    //车辆类型 固定车 或者 特殊车
+    private  String vehicle_type;
+    //收费类型
+    private String fee_type;
     //车辆所有人姓名
     @Column(name = "person_name")
     private String person_name;
@@ -55,6 +59,8 @@ public class CarInfoTable{
                 "id=" + id +
                 ", car_no='" + car_no + '\'' +
                ", car_type='" + car_type + '\'' +
+                ", vehicle_type='" + vehicle_type + '\'' +
+                ", fee_type='" + fee_type + '\'' +
                 ", person_name='" + person_name + '\'' +
                 ", person_tel='" + person_tel + '\'' +
                 ", person_address='" + person_address + '\'' +
@@ -103,6 +109,18 @@ public class CarInfoTable{
 
     public void setCar_type(String car_type) {
         this.car_type = car_type;
+    }
+
+    public String getVehicle_type() {  return vehicle_type;    }
+
+    public void setVehicle_type(String vehicle_type) {        this.vehicle_type = vehicle_type;    }
+
+    public String getFee_type() {
+        return fee_type;
+    }
+
+    public void setFee_type(String fee_type) {
+        this.fee_type = fee_type;
     }
 
     public String getPerson_name() {

@@ -116,13 +116,8 @@ public class MainActivity extends BaseActivity {
             } catch (DbException e) {
                 e.printStackTrace();
             }
-            //初始化显示屏内容
-            dispInfo[0] = "空位:" + value;
-            dispInfo[1] = "欢迎光临";
-            dispInfo[2] =  "\\DH时\\DM分";
-            dispInfo[3] = "车牌识别 一车一杆 减速慢行";
             //显示
-            inCamera.ledDisplay(dispInfo);
+            inCamera.ledDisplay("空位:" + value,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行");
         }
     };
     //出口更新显示定时器超时任务
@@ -138,13 +133,8 @@ public class MainActivity extends BaseActivity {
             } catch (DbException e) {
                 e.printStackTrace();
             }
-            //初始化显示屏内容
-            dispInfo[0] = "空位:" + value;
-            dispInfo[1] = "欢迎光临";
-            dispInfo[2] =  "\\DH时\\DM分";
-            dispInfo[3] = "车牌识别 一车一杆 减速慢行";
             //显示
-            outCamera.ledDisplay(dispInfo);
+            outCamera.ledDisplay("空位:" + value,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行");
         }
     };
     @Override
@@ -495,9 +485,9 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        inLedTimer.cancel();
-        inLedTimer = new Timer();
-        inLedTimer.schedule(inLedTimerTask,10000);
+        //inLedTimer.cancel();
+       // inLedTimer = new Timer();
+        //inLedTimer.schedule(inLedTimerTask,10000);
         upStatusInfoDisp();
     }
 

@@ -91,7 +91,6 @@ public class SPUtils {
     public int getInt(String key, int defaultValue) {
         return sp.getInt(key, defaultValue);
     }
-
     /**
      * SP中写入long类型value
      *

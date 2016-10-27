@@ -49,8 +49,6 @@ public class MoneyFragment extends Fragment {
     EditText mNewMoney;
     @Bind(R.id.money_temp)
     MyPullText mTemp;
-    @Bind(R.id.money_friends)
-    MyPullText mFriends;
     @Bind(R.id.tb_free)
     JellyToggleButton tbFree;
     @Bind(R.id.tb_hour_add)
@@ -70,37 +68,22 @@ public class MoneyFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_money, container, false);
         ButterKnife.bind(this, v);
-
         ArrayList<String> templist = new ArrayList<>();
         templist.add("30");
         templist.add("60");
         templist.add("120");
         templist.add("180");
         mTemp.setPopList(templist);
-        mTemp.setText(templist.get(0));
-
-        ArrayList<String> friendlist = new ArrayList<>();
-        friendlist.add("30");
-        friendlist.add("60");
-        friendlist.add("120");
-        friendlist.add("180");
-        mFriends.setPopList(friendlist);
-        mFriends.setText(friendlist.get(1));
-
         return v;
     }
 
     private void saveConfig() {
-        String temp = mTemp.getText();
-        String friend = mFriends.getText().toString().trim();
+        String temp = mTemp.getText().trim();
         if (spUtils == null) {
 
             spUtils = new SPUtils(getContext(), "config");
         }
-
-        //                    spUtils.putBoolean(IS_USE_CARD_HELP, false);
-        spUtils.putString("tempFree", temp + "");
-        spUtils.putString("friendsFree", friend + "");
+        spUtils.putInt("tempFree",Integer.valueOf(temp));
         spUtils.putBoolean("isFree", isFreeTemp);
         spUtils.putBoolean("isHourAdd", isHourAddTemp);
         T.showShort(getContext(), "保存成功");
@@ -111,16 +94,13 @@ public class MoneyFragment extends Fragment {
 
             spUtils = new SPUtils(getContext(), "config");
         }
-        String tempFree = spUtils.getString("tempFree", "");// 临时车免费时长
-        String friendsFree = spUtils.getString("friendsFree", "");// 探亲车免费时长
-        boolean isFree = spUtils.getBoolean("isFree");// 核减免费
+        final int tempFree = spUtils.getInt("tempFree");// 临时车免费时长
+        final boolean isFree = spUtils.getBoolean("isFree");// 核减免费
         final boolean isHourAdd = spUtils.getBoolean("isHourAdd");// 24h累加
 
-        mTemp.setText(tempFree);
-        mFriends.setText(friendsFree);
+        mTemp.setText(String.valueOf(tempFree));
         tbFree.setChecked(isFree);
         tbHourAdd.setChecked(isHourAdd);
-
         tbFree.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
             @Override
             public void onStateChange(float process, State state, JellyToggleButton jtb) {

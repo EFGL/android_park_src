@@ -43,7 +43,8 @@ public class MyApplication extends Application {
             settingInfo.putLong("outCarCount", 0);
             settingInfo.putLong("chargeCarNumber", 0);
             settingInfo.putString("chargeMoney", "0.00");
-            MyApplication.settingInfo.putInt("enterDelay",3);
+            settingInfo.putInt("enterDelay",1);
+            settingInfo.putInt("tempFree",30);
         }
         x.Ext.init(this);
         daoConfig = new DbManager.DaoConfig()

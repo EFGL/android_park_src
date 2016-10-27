@@ -118,7 +118,7 @@ public class CarInfoFragment extends Fragment {
                 String carNum = mCarNumber.getText().toString().trim();
                 if (carNum.length() == 0) {
                     try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no","like",carNum).orderBy("id", true).findAll();
                         if (allData != null) {
                             allData.clear();
                             allData.addAll(all);
@@ -183,7 +183,12 @@ public class CarInfoFragment extends Fragment {
             final CarInfoTable carInfo = allData.get(position);
             holder.id.setText(position + 1 + "");
             holder.carNum.setText(carInfo.getCar_no());
-            holder.cartype.setText(carInfo.getCar_type());
+            if( carInfo.getVehicle_type().equals("固定车")) {
+                holder.cartype.setText(carInfo.getCar_type());
+            }
+            else{
+                holder.cartype.setText(carInfo.getFee_type());
+            }
             try {
                 List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", carInfo.getCar_no()).orderBy("id", true).findAll();
                 if (all != null) {

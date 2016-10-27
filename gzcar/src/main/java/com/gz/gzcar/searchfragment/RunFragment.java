@@ -431,7 +431,7 @@ public class RunFragment extends BaseFragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ImageDetailActivity.class);
                     intent.putExtra("in_image",traffic.getIn_image()+"");
-                    intent.putExtra("out_image",traffic.getOut_time()+"");
+                    intent.putExtra("out_image",traffic.getOut_image()+"");
 
                     intent.putExtra("carNumber", traffic.getCar_no()+"");
                     intent.putExtra("carType", traffic.getCar_type()+"");

@@ -100,6 +100,13 @@ public class DownloadServerMessage {
 		String mysendtime = bean.getHandler_down_tempfee_time();
 		showlog("下载临时车收费 传入时间:" + mysendtime);
 		get_down_tempfee(url, mysendtime, mycontroller_sn);
+		while(ifinteriorok == false) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -115,14 +122,14 @@ public class DownloadServerMessage {
 		DownloadTimeBean bean = null;
 		sendonfirst(bean);
 		while (true) {
+			//取所有信息最后一次下载时间;
+			try {
+				bean = db.selector(DownloadTimeBean.class).findFirst();
+			} catch (DbException e2) {
+				e2.printStackTrace();
+			}
 			for(int i=0;i<4;i++) {
 				showlog("进入循环");
-				//取所有信息最后一次下载时间;
-				try {
-					bean = db.selector(DownloadTimeBean.class).findFirst();
-				} catch (DbException e2) {
-					e2.printStackTrace();
-				}
 				//起动对应下载任务
 				switch (i) {
 				case 0:
@@ -483,6 +490,8 @@ public class DownloadServerMessage {
 													new KeyValue("codeId",list.get(c).getId()),
 													new KeyValue("car_no", list.get(c).getCar_no()),
 													new KeyValue("car_type", list.get(c).getCar_type()),
+													new KeyValue("vehicle_type", list.get(c).getVehicle_type()),
+													new KeyValue("fee_type", list.get(c).getFee_type()),
 													new KeyValue("person_name", list.get(c).getPerson_name()),
 													new KeyValue("person_tel", list.get(c).getPerson_tel()),
 													new KeyValue("person_address", list.get(c).getPerson_address()),
@@ -498,6 +507,8 @@ public class DownloadServerMessage {
 											table.setCodeId(list.get(c).getId());
 											table.setCar_no(list.get(c).getCar_no());
 											table.setCar_type(list.get(c).getCar_type());
+											table.setVehicle_type(list.get(c).getVehicle_type());
+											table.setFee_type(list.get(c).getFee_type());
 											table.setPerson_name(list.get(c).getPerson_name());
 											table.setPerson_tel(list.get(c).getPerson_tel());
 											table.setPerson_address(list.get(c).getPerson_address());
