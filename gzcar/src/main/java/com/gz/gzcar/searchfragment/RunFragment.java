@@ -430,23 +430,49 @@ public class RunFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ImageDetailActivity.class);
-                    intent.putExtra("in_image",traffic.getIn_image()+"");
-                    intent.putExtra("out_image",traffic.getOut_time()+"");
+                    intent.putExtra("in_image", traffic.getIn_image() + "");
+                    intent.putExtra("out_image", traffic.getOut_image() + "");
 
-                    intent.putExtra("carNumber", traffic.getCar_no()+"");
-                    intent.putExtra("carType", traffic.getCar_type()+"");
+                    intent.putExtra("carNumber", traffic.getCar_no() + "");
 
-                    intent.putExtra("stall", traffic.getStall()+"");//占用车位
-                    intent.putExtra("receivable", traffic.getReceivable()+"");//应收费用
-                    intent.putExtra("actual_money", traffic.getActual_money()+"");//实收费用
-                    intent.putExtra("status", traffic.getStatus()+"");  //通行状态
-                    intent.putExtra("out_user", traffic.getOut_user()+"");
-                    intent.putExtra("in_user", traffic.getIn_user()+"");
+                    if (traffic.getCar_type() == null)
+                        intent.putExtra("carType", "未知");
+                    else
+                        intent.putExtra("carType", traffic.getCar_type() + "");
+
+                    if (traffic.getStall() == null)
+                        intent.putExtra("stall", "无");//占用车位
+                    else
+                        intent.putExtra("stall", traffic.getStall() + "");//占用车位
+                    if (traffic.getReceivable() == null)
+                        intent.putExtra("receivable", "未出场");//应收费用
+                    else
+                        intent.putExtra("receivable", traffic.getReceivable() + "");//应收费用
+                    if (traffic.getActual_money() == null)
+                        intent.putExtra("actual_money", "未出场");//实收费用
+                    else
+                        intent.putExtra("actual_money", traffic.getActual_money() + "");//实收费用
+                    intent.putExtra("status", traffic.getStatus() + "");  //通行状态
+                    if (traffic.getOut_user() == null)
+                        intent.putExtra("out_user", "未知");
+                    else
+                        intent.putExtra("out_user", traffic.getOut_user() + "");
+                    if (traffic.getIn_user() == null)
+                        intent.putExtra("in_user", "未知");
+                    else
+                        intent.putExtra("in_user", traffic.getIn_user() + "");
 
 
                     intent.putExtra("in_time", DateUtils.date2StringDetail(traffic.getIn_time()));
-                    intent.putExtra("out_time", DateUtils.date2StringDetail(traffic.getOut_time()));
-                    intent.putExtra("stall_time", traffic.getStall_time()+"");//停车时长
+                    if (traffic.getOut_time() == null)
+                        intent.putExtra("out_time", "未出场");
+                    else
+                        intent.putExtra("out_time", DateUtils.date2StringDetail(traffic.getOut_time()));
+
+                    if (traffic.getStall_time() == null)
+                        intent.putExtra("stall_time", "未知");//停车时长
+                    else
+                        intent.putExtra("stall_time", traffic.getStall_time() + "");//停车时长
                     intent.putExtra("update_time", DateUtils.date2StringDetail(traffic.getUpdateTime()));
                     startActivity(intent);
                 }

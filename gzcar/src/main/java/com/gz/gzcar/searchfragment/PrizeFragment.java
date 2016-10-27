@@ -1,6 +1,7 @@
 package com.gz.gzcar.searchfragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -249,7 +250,7 @@ public class PrizeFragment extends BaseFragment {
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
-            TrafficInfoTable free = allData.get(position);
+            final TrafficInfoTable free = allData.get(position);
             holder.mId.setText(position + 1 + "");
             holder.mCarNum.setText(free.getCar_no());
             holder.mMoney.setText(free.getActual_money() + "");
@@ -263,6 +264,58 @@ public class PrizeFragment extends BaseFragment {
 
                 holder.mOuttime.setText(dateFormatDetail.format(free.getOut_time()));
             }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ImageDetailActivity.class);
+                    intent.putExtra("in_image", free.getIn_image() + "");
+                    intent.putExtra("out_image", free.getOut_image() + "");
+
+                    intent.putExtra("carNumber", free.getCar_no() + "");
+
+                    if (free.getCar_type() == null)
+                        intent.putExtra("carType", "未知");
+                    else
+                        intent.putExtra("carType", free.getCar_type() + "");
+
+                    if (free.getStall() == null)
+                        intent.putExtra("stall", "无");//占用车位
+                    else
+                        intent.putExtra("stall", free.getStall() + "");//占用车位
+                    if (free.getReceivable() == null)
+                        intent.putExtra("receivable", "未出场");//应收费用
+                    else
+                        intent.putExtra("receivable", free.getReceivable() + "");//应收费用
+                    if (free.getActual_money() == null)
+                        intent.putExtra("actual_money", "未出场");//实收费用
+                    else
+                        intent.putExtra("actual_money", free.getActual_money() + "");//实收费用
+                    intent.putExtra("status", free.getStatus() + "");  //通行状态
+                    if (free.getOut_user() == null)
+                        intent.putExtra("out_user", "未知");
+                    else
+                        intent.putExtra("out_user", free.getOut_user() + "");
+                    if (free.getIn_user() == null)
+                        intent.putExtra("in_user", "未知");
+                    else
+                        intent.putExtra("in_user", free.getIn_user() + "");
+
+
+                    intent.putExtra("in_time", DateUtils.date2StringDetail(free.getIn_time()));
+                    if (free.getOut_time() == null)
+                        intent.putExtra("out_time", "未出场");
+                    else
+                        intent.putExtra("out_time", DateUtils.date2StringDetail(free.getOut_time()));
+
+                    if (free.getStall_time() == null)
+                        intent.putExtra("stall_time", "未知");//停车时长
+                    else
+                        intent.putExtra("stall_time", free.getStall_time() + "");//停车时长
+                    intent.putExtra("update_time", DateUtils.date2StringDetail(free.getUpdateTime()));
+                    startActivity(intent);
+                }
+            });
 
         }
 

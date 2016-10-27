@@ -1,13 +1,12 @@
 package com.gz.gzcar.settings;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.view.Window;
 import android.widget.RadioButton;
 
+import com.gz.gzcar.BaseActivity;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settingfragment.CarManagerFragment;
 import com.gz.gzcar.settingfragment.MoneyFragment;
@@ -15,7 +14,7 @@ import com.gz.gzcar.settingfragment.ParkingManagerFragment;
 import com.gz.gzcar.settingfragment.SettingsFragment;
 import com.gz.gzcar.settingfragment.UserFragment;
 
-public class SettingActivity extends FragmentActivity implements View.OnClickListener {
+public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
     private RadioButton back;
     private RadioButton r1;
@@ -32,7 +31,6 @@ public class SettingActivity extends FragmentActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_setting);
 
         initViews();

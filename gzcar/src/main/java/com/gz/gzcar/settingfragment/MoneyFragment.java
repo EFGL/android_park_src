@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ import butterknife.OnClick;
 
 /**
  * Created by Endeavor on 2016/8/8.
- * <p>
+ *
  * 收费规则
  */
 public class MoneyFragment extends Fragment {
