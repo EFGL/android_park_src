@@ -27,6 +27,7 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,9 +51,9 @@ public class CarInfoFragment extends Fragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private RecyclerView rcy;
     private View view;
-    private List<CarInfoTable> allData;
+    private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
-//    private int clickItem = -1;
+    private int pageIndex = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,19 +85,35 @@ public class CarInfoFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        initData();
+    private void initData() {
+        loadMore(pageIndex);
+    }
+
+    private void loadMore(int pageIndex) {
+        try {
+            List<CarInfoTable> more = db.selector(CarInfoTable.class).limit(30).offset(pageIndex * 30).orderBy("id", true).findAll();
+            if (more.size() > 0) {
+                allData.addAll(more);
+                if (myAdapter != null)
+                    myAdapter.notifyDataSetChanged();
+            } else {
+                T.showShort(getContext(), "没有更多数据了");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-
+        pageIndex = 0;
+        allData.clear();
+        if (myAdapter != null)
+            myAdapter.notifyDataSetChanged();
+        initData();
         initViews();
     }
 
@@ -135,22 +152,26 @@ public class CarInfoFragment extends Fragment {
         });
 
         rcy = (RecyclerView) view.findViewById(R.id.search_car_info_recyclerview);
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
+        rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                int lastVisibleItemPosition = lm.findLastVisibleItemPosition();
+                if (lastVisibleItemPosition == (allData.size() - 1) && newState == 0) {
+                    pageIndex += 1;
+                    loadMore(pageIndex);
+                }
+
+            }
+        });
         if (allData != null) {
 
             myAdapter = new MyAdapter();
             rcy.setAdapter(myAdapter);
             sumBottomCarNum(allData.size());
-        }
-
-    }
-
-    private void initData() {
-        try {
-            allData = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
-        } catch (DbException e) {
-            e.printStackTrace();
         }
 
     }

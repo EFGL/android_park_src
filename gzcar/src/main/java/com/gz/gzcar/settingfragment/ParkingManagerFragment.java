@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.CarWeiTable;
@@ -23,6 +24,7 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -40,10 +42,12 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
     Button mAdd;
     @Bind(R.id.recyclerview)
     RecyclerView rcy;
+    @Bind(R.id.pb)
+    ProgressBar mProgressBar;
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    private List<CarWeiTable> allData;
+    private List<CarWeiTable> allData = new ArrayList<CarWeiTable>();
     private MyAdapter myAdapter;
 
     @Override
@@ -57,12 +61,64 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
     private void initViews() {
 
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final RecyclerView.LayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
 
         myAdapter = new MyAdapter();
         rcy.setAdapter(myAdapter);
 
+        rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                LinearLayoutManager manager = (LinearLayoutManager) lm;
+                int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
+                if (newState == 0 && lastVisibleItemPosition == (allData.size() - 1)) {
+                    pageIndex += 1;
+                    loadMore(pageIndex);
+
+                }
+            }
+        });
+
+    }
+
+    private void initData() {
+        loadMore(pageIndex);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pageIndex = 0;
+        allData.clear();
+        initData();
+        initViews();
+    }
+
+    int pageIndex = 0;
+
+    private void loadMore(int pageIndex) {
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        try {
+            List<CarWeiTable> more = db.selector(CarWeiTable.class).orderBy("id", true).limit(50).offset(pageIndex * 50).findAll();
+            if (more.size() > 0) {
+
+                allData.addAll(more);
+                if (myAdapter != null)
+                    myAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
+
+            } else {
+                mProgressBar.setVisibility(View.GONE);
+
+                T.showShort(getContext(), "没有更多数据了");
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -110,29 +166,6 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private void initData() {
-
-
-        try {
-            allData = db.selector(CarWeiTable.class).orderBy("id",true).findAll();
-        } catch (DbException e) {
-            e.printStackTrace();
-            T.showShort(getActivity(), "查询全部异常");
-        }
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        initData();
-        if (allData != null) {
-
-            initViews();
-        }
-    }
-
 
     @Override
     public void onDestroyView() {
@@ -158,7 +191,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
                         try {
                             db.deleteById(CarWeiTable.class, id);
                             allData.clear();
-                            allData.addAll(db.selector(CarWeiTable.class).orderBy("id",true).findAll());
+                            allData.addAll(db.selector(CarWeiTable.class).orderBy("id", true).findAll());
                             myAdapter.notifyDataSetChanged();
                         } catch (DbException e) {
                             e.printStackTrace();
