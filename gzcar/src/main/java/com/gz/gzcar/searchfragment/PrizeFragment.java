@@ -3,12 +3,11 @@ package com.gz.gzcar.searchfragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
@@ -59,7 +59,13 @@ public class PrizeFragment extends BaseFragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
-//c7edcc
+    private int pageIndex = 0;
+    private int TAG = 0;
+    private String searchNumber;
+    private String searchStart;
+    private String searchEnd;
+
+    //c7edcc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -73,16 +79,23 @@ public class PrizeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
-        Log.e("ende", "start==" + start);
-        Log.e("ende", "end==" + end);
+//        Log.e("ende", "start==" + start);
+//        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
-        initdata();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        TAG = 0;
+        pageIndex = 0;
+        allData.clear();
+        if (myAdapter != null)
+            myAdapter.notifyDataSetChanged();
+
+        initdata();
         initViews();
     }
 
@@ -91,69 +104,131 @@ public class PrizeFragment extends BaseFragment {
         //时间选择器
         initDetailTime(getContext(), mStartTime, mEndTime);
 
-        mCarNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String carNum = mCarNumber.getText().toString().trim();
-                if (carNum.length() == 0) {
-                    try {
-                        String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-                        Date date = DateUtils.string2DateDetail(today);
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("update_time", ">", date)
-                                .and("status", "=", "已出")
-                                .and("receivable", ">", 0)
-                                .orderBy("update_time", true)// true 倒序
-                                .findAll();
-//                        .OrderBy("update_time",true);
-                        if (all != null) {
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                            sumMoney();
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();
         rcy.setAdapter(myAdapter);
-        sumMoney();
+        rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            int oldY = -1;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                L.showlogError("dy=="+dy);
+                oldY = dy;
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                int lastVisibleItemPosition = lm.findLastVisibleItemPosition();
+                if (newState == 0 && lastVisibleItemPosition == (allData.size() - 1)) {
+                    pageIndex += 1;
+                    loadMore(pageIndex);
+
+                }
+            }
+        });
+
+
     }
 
     private void initdata() {
-        try {
-            String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-            Date date = DateUtils.string2DateDetail(today);
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", date)
-                    .and("status", "=", "已出")
-                    .and("receivable", ">", 0)
-                    .orderBy("update_time",true)
-                    .findAll();
-            if (all != null) {
-                allData.addAll(all);
-            }
-        } catch (DbException e) {
-            T.showShort(getContext(), "全部查询异常");
-            e.printStackTrace();
+        searchNumber = mCarNumber.getText().toString().trim();
+        if (!TextUtils.isEmpty(searchNumber)){
+            TAG = 2;
         }
+        searchStart = mStartTime.getText().toString().trim();
+        searchEnd = mEndTime.getText().toString().trim();
+        loadMore(pageIndex);
+        sumMoney();
+
+    }
+
+    private void loadMore(int pageIndex) {
+        L.showlogError("TAG===" + TAG);
+//        if (TAG == 0) {// 初始加载数据
+//            L.showlogError("===初始加载数据===");
+//            try {
+//                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+//                Date date = DateUtils.string2DateDetail(today);
+////                searchStart = mStartTime.getText().toString().trim();
+////                searchEnd = mEndTime.getText().toString().trim();
+//                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+//                        .where("update_time", ">", date)
+//                        .and("status", "=", "已出")
+//                        .and("receivable", ">", 0)
+//                        .limit(50)
+//                        .offset(50 * pageIndex)
+//                        .orderBy("update_time", true)
+//                        .findAll();
+//                if (all.size() > 0) {
+//                    allData.addAll(all);
+//                    if (myAdapter != null)
+//                        myAdapter.notifyDataSetChanged();
+//                } else {
+//                    T.showShort(getContext(), "没有更多数据了");
+//                }
+//            } catch (DbException e) {
+//                T.showShort(getContext(), "全部查询异常");
+//                e.printStackTrace();
+//            }
+//        } else
+        if (TAG == 0) {// 时间查询
+            L.showlogError("====时间查询===");
+            try {
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                        .and("status", "=", "已出")
+                        .and("receivable", ">", 0)
+                        .limit(50)
+                        .offset(50 * pageIndex)
+                        .orderBy("update_time", true)
+                        .findAll();
+                if (all.size() > 0) {
+                    allData.addAll(all);
+                    if (myAdapter != null)
+                        myAdapter.notifyDataSetChanged();
+                } else {
+                    T.showShort(getContext(), "没有更多数据了");
+                }
+
+            } catch (DbException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else if (TAG == 2) {// 车号&时间查询
+            L.showlogError("====车号&时间查询===");
+            try {
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                        .and("car_number", "=", searchNumber)
+                        .and("receivable", ">", 0)
+                        .and("status", "=", "已出")
+                        .limit(50)
+                        .offset(50 * pageIndex)
+                        .orderBy("update_time", true)
+                        .findAll();
+                if (all.size() > 0) {
+                    allData.addAll(all);
+                    if (myAdapter != null)
+                        myAdapter.notifyDataSetChanged();
+                } else {
+                    T.showShort(getContext(), "没有更多数据了");
+                }
+
+            } catch (DbException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
@@ -170,73 +245,141 @@ public class PrizeFragment extends BaseFragment {
 
             case R.id.btn_money_search:
 
-                String carNum = mCarNumber.getText().toString().trim();
-                String start = mStartTime.getText().toString().trim();
-                String end = mEndTime.getText().toString().trim();
-                allData.clear();
-                if (TextUtils.isEmpty(carNum)) {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormatDetail.parse(start))
-                                .and("out_time", "<", dateFormatDetail.parse(end))
-                                .and("status", "=", "已出")
-                                .and("receivable", ">", 0)
-                                .orderBy("update_time",true)
-                                .findAll();
-                        if (all != null) {
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                            sumMoney();
-                        } else {
-                            T.showShort(getContext(), "未查到相关数据");
-                            sumMoney();
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                .where("in_time", ">", dateFormatDetail.parse(start))
-                                .and("out_time", "<", dateFormatDetail.parse(end))
-                                .and("car_number", "=", carNum)
-                                .and("receivable", ">", 0)
-                                .and("status", "=", "已出")
-                                .orderBy("update_time",true)
-                                .findAll();
-                        if (all != null) {
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                            sumMoney();
-                        } else {
-                            T.showShort(getContext(), "未查到相关数据");
-                            sumMoney();
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+                search();
 
                 break;
         }
     }
 
-    private void sumMoney() {
-        double toteMoney = 0;
-        for (int i = 0; i < allData.size(); i++) {
+    private void search() {
+        searchNumber = mCarNumber.getText().toString().trim();
+        searchStart = mStartTime.getText().toString().trim();
+        searchEnd = mEndTime.getText().toString().trim();
+        pageIndex = 0;
+        allData.clear();
+        myAdapter.notifyDataSetChanged();
 
-            double money = allData.get(i).getActual_money();
-            toteMoney += money;
+        if (TextUtils.isEmpty(searchNumber)) {
+            TAG = 0;
+            loadMore(pageIndex);
+            sumMoney();
+
+        } else {
+            TAG = 2;
+            loadMore(pageIndex);
+            sumMoney();
+
         }
-        mMoney.setText("合计金额:" + toteMoney);
     }
+
+    private void sumMoney() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                switch (TAG) {
+//                    case 0:
+//                        try {
+//                            String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
+//                            Date date = DateUtils.string2DateDetail(today);
+//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+//                                    .where("update_time", ">", date)
+//                                    .and("status", "=", "已出")
+//                                    .and("receivable", ">", 0)
+//                                    .orderBy("update_time", true)
+//                                    .findAll();
+//
+//                            double toteMoney = 0;
+//                            for (int i = 0; i < all.size(); i++) {
+//
+//                                double money = all.get(i).getActual_money();
+//                                toteMoney += money;
+//                            }
+//
+//                            Message message = Message.obtain();
+//                            message.obj = toteMoney;
+//                            handler.sendMessage(message);
+//                        } catch (DbException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+                    case 0:
+
+                        try {
+                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
+                                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                                    .and("status", "=", "已出")
+                                    .and("receivable", ">", 0)
+                                    .orderBy("update_time", true)
+                                    .findAll();
+
+                            double toteMoney = 0;
+                            for (int i = 0; i < all.size(); i++) {
+
+                                double money = all.get(i).getActual_money();
+                                toteMoney += money;
+                            }
+
+                            Message message = Message.obtain();
+                            message.obj = toteMoney;
+                            handler.sendMessage(message);
+
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        break;
+                    case 2:
+
+                        try {
+                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
+                                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                                    .and("car_number", "=", searchNumber)
+                                    .and("receivable", ">", 0)
+                                    .and("status", "=", "已出")
+                                    .orderBy("update_time", true)
+                                    .findAll();
+                            double toteMoney = 0;
+                            for (int i = 0; i < all.size(); i++) {
+
+                                double money = all.get(i).getActual_money();
+                                toteMoney += money;
+                            }
+
+                            Message message = Message.obtain();
+                            message.obj = toteMoney;
+                            handler.sendMessage(message);
+
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+
+            }
+        }.start();
+
+
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            double toteMoney = (double) msg.obj;
+
+            mMoney.setText("合计金额:" + toteMoney + " 元");
+
+        }
+    };
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
@@ -347,12 +490,6 @@ public class PrizeFragment extends BaseFragment {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-    }
-
-
-    public String getTime(Date date) {
-
-        return dateFormatDetail.format(date);
     }
 
     @Override

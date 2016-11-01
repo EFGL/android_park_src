@@ -293,6 +293,6 @@ public class CarInfoFragment extends Fragment {
 
 
     private void sumBottomCarNum(int size) {
-        mBottomCarNumber.setText("车辆总数:" + size + "辆");
+        mBottomCarNumber.setText("车辆总数:" + size + " 辆");
     }
 }
