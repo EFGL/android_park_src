@@ -181,7 +181,7 @@ public class MoneyFragment extends Fragment {
                 }
             }
             holder.mId.setText(position + 1 + "");
-            holder.mType.setText(allData.get(position).getCar_type_name().toString());
+//            holder.mType.setText(allData.get(position).getCar_type_name().toString());
             holder.mMoney.setText(allData.get(position).getMoney() + "元");
             holder.mTime_min.setText(String.format("%.1f小时",allData.get(position).getParked_min_time()/60.0));
             holder.mTime_max.setText(String.format("%.1f小时",allData.get(position).getParked_max_time()/60.0));

@@ -159,6 +159,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         if (allData != null && allData.size() > 0) {
             initViews();
         }
+        MySumTask mySumTask = new MySumTask();
+        mySumTask.execute();
     }
 
     class MySumTask extends AsyncTask<Void, Void, String> {
