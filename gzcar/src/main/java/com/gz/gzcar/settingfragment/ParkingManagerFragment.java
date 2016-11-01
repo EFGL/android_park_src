@@ -2,11 +2,13 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,8 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
     RecyclerView rcy;
     @Bind(R.id.pb)
     ProgressBar mProgressBar;
+    @Bind(R.id.tv_bottom)
+    TextView mBottom;
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
@@ -95,6 +99,9 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
         allData.clear();
         initData();
         initViews();
+
+        MySumTask sum = new MySumTask();
+        sum.execute();
     }
 
     int pageIndex = 0;
@@ -118,6 +125,32 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
             }
         } catch (DbException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    class MySumTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            try {
+                List<CarWeiTable> all = db.findAll(CarWeiTable.class);
+
+                return all.size()+"";
+            } catch (DbException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String size) {
+            super.onPostExecute(size);
+
+            if (!TextUtils.isEmpty(size)){
+                mBottom.setText("车位总数:"+size +" 个");
+            }
         }
 
     }

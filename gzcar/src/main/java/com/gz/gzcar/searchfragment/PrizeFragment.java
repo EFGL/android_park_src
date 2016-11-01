@@ -136,7 +136,6 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void initdata() {
-        searchNumber = mCarNumber.getText().toString().trim();
         if (!TextUtils.isEmpty(searchNumber)){
             TAG = 2;
         }
@@ -149,33 +148,7 @@ public class PrizeFragment extends BaseFragment {
 
     private void loadMore(int pageIndex) {
         L.showlogError("TAG===" + TAG);
-//        if (TAG == 0) {// 初始加载数据
-//            L.showlogError("===初始加载数据===");
-//            try {
-//                String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-//                Date date = DateUtils.string2DateDetail(today);
-////                searchStart = mStartTime.getText().toString().trim();
-////                searchEnd = mEndTime.getText().toString().trim();
-//                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-//                        .where("update_time", ">", date)
-//                        .and("status", "=", "已出")
-//                        .and("receivable", ">", 0)
-//                        .limit(50)
-//                        .offset(50 * pageIndex)
-//                        .orderBy("update_time", true)
-//                        .findAll();
-//                if (all.size() > 0) {
-//                    allData.addAll(all);
-//                    if (myAdapter != null)
-//                        myAdapter.notifyDataSetChanged();
-//                } else {
-//                    T.showShort(getContext(), "没有更多数据了");
-//                }
-//            } catch (DbException e) {
-//                T.showShort(getContext(), "全部查询异常");
-//                e.printStackTrace();
-//            }
-//        } else
+
         if (TAG == 0) {// 时间查询
             L.showlogError("====时间查询===");
             try {
@@ -278,31 +251,7 @@ public class PrizeFragment extends BaseFragment {
             public void run() {
                 super.run();
                 switch (TAG) {
-//                    case 0:
-//                        try {
-//                            String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-//                            Date date = DateUtils.string2DateDetail(today);
-//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-//                                    .where("update_time", ">", date)
-//                                    .and("status", "=", "已出")
-//                                    .and("receivable", ">", 0)
-//                                    .orderBy("update_time", true)
-//                                    .findAll();
-//
-//                            double toteMoney = 0;
-//                            for (int i = 0; i < all.size(); i++) {
-//
-//                                double money = all.get(i).getActual_money();
-//                                toteMoney += money;
-//                            }
-//
-//                            Message message = Message.obtain();
-//                            message.obj = toteMoney;
-//                            handler.sendMessage(message);
-//                        } catch (DbException e) {
-//                            e.printStackTrace();
-//                        }
-//                        break;
+
                     case 0:
 
                         try {

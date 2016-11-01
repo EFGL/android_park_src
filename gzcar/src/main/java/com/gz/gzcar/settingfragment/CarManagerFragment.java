@@ -3,6 +3,7 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -53,6 +54,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     MyPullText mCarType;
     @Bind(R.id.setting_carmanager_recyclerview)
     RecyclerView rcy;
+    @Bind(R.id.tv_bottom)
+    TextView mBottomCarNumber;
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
@@ -316,6 +319,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         }
 
     }
+
+
 
     @OnClick({R.id.car_add})
     public void onClick(View view) {
