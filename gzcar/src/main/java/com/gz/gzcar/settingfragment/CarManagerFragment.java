@@ -3,6 +3,7 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -89,6 +90,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             myAdapter.notifyDataSetChanged();
         initData();
         initViews();
+        new SumTask().execute();
     }
 
     private void initViews() {
@@ -112,6 +114,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     pageIndex = 0;
                     initData();
 
+                    new SumTask().execute();
                 } else {
                     try {
 
@@ -121,10 +124,12 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                             allData.addAll(all);
                             if (myAdapter != null)
                                 myAdapter.notifyDataSetChanged();
+                            mBottomCarNumber.setText("车辆总数:" + all.size() + " 辆");
                         } else {
                             allData.clear();
                             if (myAdapter != null)
                                 myAdapter.notifyDataSetChanged();
+                            mBottomCarNumber.setText("车辆总数:0 辆");
                         }
                     } catch (DbException e) {
                         e.printStackTrace();
@@ -146,9 +151,11 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                          if (type == "所有车") {
                              TAG = 0;
                              initData();
+                             new SumTask().execute();
                          } else {
                              TAG = 1;
                              initData();
+                             new SumTask().execute();
                          }
 
                      }
@@ -183,7 +190,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         loadMore(pageIndex);
     }
 
-    int pageIndex = 0;
+    private int pageIndex = 0;
 
     private void loadMore(int pageIndex) {
 
@@ -212,13 +219,42 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             } catch (DbException e) {
                 e.printStackTrace();
             }
-
-
         }
-
-
     }
 
+
+    class SumTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            if (TAG == 0) {
+                try {
+                    List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                    return all.size() + "";
+                } catch (DbException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+            } else {
+                try {
+                    List<CarInfoTable> all = db.selector(CarInfoTable.class)
+                            .where("car_type", "=", type).findAll();
+                    return all.size() + "";
+                } catch (DbException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            if (!TextUtils.isEmpty(s))
+                mBottomCarNumber.setText("车辆总数:" + s + " 辆");
+        }
+    }
 
     @OnClick({R.id.car_add})
     public void onClick(View view) {
@@ -351,8 +387,14 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         try {
                             db.deleteById(CarInfoTable.class, id);
                             allData.clear();
-                            allData.addAll(db.selector(CarInfoTable.class).orderBy("id", true).findAll());
-                            myAdapter.notifyDataSetChanged();
+//                            allData.addAll(db.selector(CarInfoTable.class).orderBy("id", true).findAll());
+//                            myAdapter.notifyDataSetChanged();
+
+                            TAG = 0;
+                            pageIndex = 0;
+                            initData();
+                            new SumTask().execute();
+
                         } catch (DbException e) {
                             e.printStackTrace();
                         }

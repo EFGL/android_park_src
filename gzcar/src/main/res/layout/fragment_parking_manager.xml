@@ -90,6 +90,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e4e4e4"/>
         <TextView
             android:id="@+id/tv_bottom"
             android:layout_width="match_parent"

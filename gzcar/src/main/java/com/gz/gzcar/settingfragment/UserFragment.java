@@ -213,6 +213,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             allData.clear();
                             allData.addAll(db.findAll(UserTable.class));
                             myAdapter.notifyDataSetChanged();
+                            new MySumTask().execute();
                         } catch (DbException e) {
                             e.printStackTrace();
                         }

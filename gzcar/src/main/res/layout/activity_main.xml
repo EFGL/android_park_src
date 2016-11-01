@@ -92,6 +92,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_bg_message"
                     android:text="重新识别"
+                    android:layout_marginLeft="10dp"
                     android:textSize="17sp" />
 
                 <Button

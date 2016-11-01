@@ -3,93 +3,129 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="#fff"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item_setting_carmanager_id"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/item_setting_carmanager_id"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/item_setting_carmanager_carnumber"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textSize="17sp" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_type"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="17sp" />
+        <TextView
+            android:id="@+id/item_setting_carmanager_carnumber"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="17sp" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_carwei"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="17sp" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_person"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.7"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/item_setting_carmanager_type"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="17sp" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_phone"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="17sp" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
 
+        <TextView
+            android:id="@+id/item_setting_carmanager_carwei"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="17sp" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_startdate"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="18sp" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
 
-    <TextView
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:id="@+id/item_setting_carmanager_enddate"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@mipmap/ic_text_bg"
-        android:gravity="center"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/item_setting_carmanager_person"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
+
+        <TextView
+            android:id="@+id/item_setting_carmanager_phone"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
+
+        <TextView
+            android:id="@+id/item_setting_carmanager_startdate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4" />
+
+        <TextView
+            android:id="@+id/item_setting_carmanager_enddate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e4e4e4" />
 </LinearLayout>

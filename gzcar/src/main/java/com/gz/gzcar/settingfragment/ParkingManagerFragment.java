@@ -224,8 +224,12 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
                         try {
                             db.deleteById(CarWeiTable.class, id);
                             allData.clear();
-                            allData.addAll(db.selector(CarWeiTable.class).orderBy("id", true).findAll());
-                            myAdapter.notifyDataSetChanged();
+//                            allData.addAll(db.selector(CarWeiTable.class).orderBy("id", true).findAll());
+//                            myAdapter.notifyDataSetChanged();
+
+                            pageIndex = 0;
+                            initData();
+                            new MySumTask().execute();
                         } catch (DbException e) {
                             e.printStackTrace();
                         }
