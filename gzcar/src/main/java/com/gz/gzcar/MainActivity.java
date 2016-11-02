@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
+import com.google.gson.Gson;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
@@ -28,7 +29,11 @@ import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.server.DownLoadServer;
 import com.gz.gzcar.settings.SettingActivity;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
+import com.gz.gzcar.utils.L;
+import com.gz.gzcar.utils.PrintBean;
+import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.SPUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
@@ -56,14 +61,14 @@ import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
 public class MainActivity extends BaseActivity {
-    final  int ledDisplayDelay = 30*1000;
+    final int ledDisplayDelay = 30 * 1000;
     DbManager db = x.getDb(daoConfig);
-    public TrafficInfoTable outPortLog =  new TrafficInfoTable();
+    public TrafficInfoTable outPortLog = new TrafficInfoTable();
     public FileUtils picFileManage = new FileUtils();
     public String loginUserName;
     //摄像机IP
-    camera inCamera = new camera(this,"in", settingInfo.getString("inCameraIp"));
-    camera outCamera = new camera(this,"out", settingInfo.getString("outCameraIp"));
+    camera inCamera = new camera(this, "in", settingInfo.getString("inCameraIp"));
+    camera outCamera = new camera(this, "out", settingInfo.getString("outCameraIp"));
     //实始化车辆处理模块
     carInfoProcess carProcess = new carInfoProcess(db, inCamera, outCamera);
     TextView plateTextIn; //入口车牌
@@ -77,8 +82,8 @@ public class MainActivity extends BaseActivity {
     Button buttonAgainIdentOut;   //出口重新识别
     Button buttonManualInOpen;    //入口手动起杆
     Button ButtonManualOutOpen;//选车出场
-    public  TextView chargeCarNumber;        //收费信息车号
-    public  TextView chargeCarType;          //收费信息车类型
+    public TextView chargeCarNumber;        //收费信息车号
+    public TextView chargeCarType;          //收费信息车类型
     TextView chargeParkTime;         //收费信息停车时长
     TextView chargeMoney;            //收费信息收费金额
     Button enterCharge;              //确认收费按钮
@@ -261,12 +266,13 @@ public class MainActivity extends BaseActivity {
         MoneyTable m;
         for (int i = 0; i < 48; i++) {
             m = new MoneyTable();
-            m.setFee_code(String.valueOf(i+1));
+            m.setFee_code(String.valueOf(i + 1));
             m.setFee_detail_code(null);
-            m.setMoney(i/2 +1);
-            m.setFee_name(String.format("固定车",i*0.5,(double)(i*0.5)+0.5));
-            m.setParked_min_time(i*30);
-            m.setParked_max_time((i+1)*30);
+            m.setMoney(i / 2 + 1);
+            m.setFee_name("临时车");
+            m.setCar_type_name("临时车");
+            m.setParked_min_time(i * 30);
+            m.setParked_max_time((i + 1) * 30);
             try {
                 db.save(m);
             } catch (DbException e) {
@@ -469,6 +475,64 @@ public class MainActivity extends BaseActivity {
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
         upStatusInfoDisp();
+
+        // 打印
+        print();
+    }
+
+    private void print() {
+
+        boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
+        L.showlogError("是否打印::" + isPrint);
+
+        if (isPrint) {
+            Gson gson = new Gson();
+            PrintBean printBean = new PrintBean();
+            printBean.carNumber = outPortLog.getCar_no();
+            printBean.inTime = DateUtils.date2StringDetail(outPortLog.getIn_time());
+            if (outPortLog.getActual_money() == null)
+                printBean.money = 0.00;
+            else
+                printBean.money = outPortLog.getActual_money();
+            printBean.outTime = DateUtils.date2StringDetail(outPortLog.getOut_time());
+            printBean.parkTime = outPortLog.getStall_time();
+            printBean.type = outPortLog.getCar_type();
+
+            String json = gson.toJson(printBean);
+            L.showlogError("Json==" + json);
+
+            PrintUtils.print(this, json, outPortLog.getOut_user(), "刚正");
+
+            showPrintDialog();
+        }
+
+    }
+
+    private void showPrintDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.print_diglog, null);
+        final AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(false);
+        dialog.show();
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+        Button print = (Button) view.findViewById(R.id.print);
+        Button cancle = (Button) view.findViewById(R.id.cancel);
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        print.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                print();
+            }
+        });
     }
 
     //无牌入场
@@ -485,9 +549,9 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        //inLedTimer.cancel();
-       // inLedTimer = new Timer();
-        //inLedTimer.schedule(inLedTimerTask,10000);
+//        inLedTimer.cancel();
+        //      inLedTimer = new Timer();
+        //    inLedTimer.schedule(inLedTimerTask,10000);
         upStatusInfoDisp();
     }
 

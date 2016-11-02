@@ -68,12 +68,25 @@ public class MoneyFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_money, container, false);
         ButterKnife.bind(this, v);
+
         ArrayList<String> templist = new ArrayList<>();
+        templist.add("0");
         templist.add("30");
         templist.add("60");
         templist.add("120");
         templist.add("180");
         mTemp.setPopList(templist);
+        mTemp.setText(templist.get(0));
+
+        ArrayList<String> friendlist = new ArrayList<>();
+        friendlist.add("0");
+        friendlist.add("30");
+        friendlist.add("60");
+        friendlist.add("120");
+        friendlist.add("180");
+        mFriends.setPopList(friendlist);
+        mFriends.setText(friendlist.get(1));
+
         return v;
     }
 
