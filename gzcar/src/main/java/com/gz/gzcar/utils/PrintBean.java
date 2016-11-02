@@ -7,7 +7,7 @@ package com.gz.gzcar.utils;
 public class PrintBean {
     public String carNumber;
     public String inTime;
-    public String money;
+    public double money;
     public String outTime;
     public String parkTime;
     public String type;
