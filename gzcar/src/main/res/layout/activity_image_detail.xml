@@ -37,6 +37,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:scaleType="fitXY"
             android:id="@+id/in_image"
             android:layout_width="665dp"
             android:layout_height="375dp"
@@ -45,6 +46,7 @@
             android:src="@drawable/ic_img_car" />
 
         <ImageView
+            android:scaleType="fitXY"
             android:id="@+id/out_image"
             android:layout_width="665dp"
             android:layout_height="375dp"

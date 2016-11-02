@@ -99,7 +99,7 @@ public class ImageDetailActivity extends BaseActivity {
             // 网络图片
             String path = in_image.substring(0, 10);
             String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + in_image;
-            L.showlogError("serverPath==" + serverPath);
+            L.showlogError("in_image serverPath==" + serverPath);
             Glide.with(ImageDetailActivity.this).load(serverPath).error(R.drawable.ic_img_car).into(inImage);
 
         } else {
@@ -111,7 +111,7 @@ public class ImageDetailActivity extends BaseActivity {
             // 网络图片
             String path = out_image.substring(0, 10);
             String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + out_image;
-            L.showlogError("serverPath==" + serverPath);
+            L.showlogError("out_image serverPath==" + serverPath);
             Glide.with(ImageDetailActivity.this).load(serverPath).error(R.drawable.ic_img_car).into(outImage);
 
         } else {

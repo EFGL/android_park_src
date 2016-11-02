@@ -20,27 +20,27 @@ public class BaseActivity extends AppCompatActivity {
     protected BaseAnimatorSet mBasOut;
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_beas);
-
         mBasIn = new BounceTopEnter();
         mBasOut = new SlideBottomExit();
 
 
     }
 
-    protected void startTimeShow(){
+    protected void startTimeShow() {
         pvTime.show();
     }
 
-    protected void endTimeShow(){
+    protected void endTimeShow() {
         pvTime2.show();
     }
 
-    protected void initTime(final TextView star, final TextView end){
+    protected void initTime(final TextView star, final TextView end) {
         //时间选择器
         pvTime = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
         pvTime.setTime(new Date());
@@ -61,7 +61,7 @@ public class BaseActivity extends AppCompatActivity {
 //        int year = calendar.get(Calendar.YEAR);
 //        int month = calendar.get(Calendar.MONTH)+1;
 //        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear()+1)+"-"+DateUtils.getCurrentMonth()+"-"+DateUtils.getCurrentDay()));
+        pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear() + 1) + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay()));
         pvTime2.setCyclic(true);
         pvTime2.setCancelable(true);
         //时间选择后回调
@@ -81,4 +81,6 @@ public class BaseActivity extends AppCompatActivity {
     public void setBasOut(BaseAnimatorSet bas_out) {
         this.mBasOut = bas_out;
     }
+
+//
 }
