@@ -207,7 +207,26 @@
                     android:layout_height="30dp"
                     android:layout_marginLeft="5dp" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="探亲车免费时长(分):"
+                    android:textSize="18sp" />
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/money_friends"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="5dp" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

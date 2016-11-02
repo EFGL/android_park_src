@@ -48,6 +48,8 @@ public class MoneyFragment extends Fragment {
     EditText mNewMoney;
     @Bind(R.id.money_temp)
     MyPullText mTemp;
+    @Bind(R.id.money_friends)
+    MyPullText mFriends;
     @Bind(R.id.tb_free)
     JellyToggleButton tbFree;
     @Bind(R.id.tb_hour_add)
