@@ -81,13 +81,13 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:singleLine="true"
                     android:id="@+id/et_in_ip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionNext"
                     android:padding="5dp"
+                    android:singleLine="true"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -113,6 +113,7 @@
                     android:singleLine="true"
                     android:textSize="18sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -132,16 +133,18 @@
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"
-                    android:padding="5dp"
                     android:lines="1"
+                    android:padding="5dp"
+                    android:textAlignment="center"
                     android:textSize="18sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
                     android:text="相同车牌过滤时间："
                     android:textSize="20sp" />
+
                 <EditText
                     android:id="@+id/editText_enter_delay"
                     android:layout_width="100dp"
@@ -149,27 +152,30 @@
                     android:background="@drawable/shape_white"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"
-                    android:padding="5dp"
                     android:lines="1"
-
+                    android:padding="5dp"
+                    android:textAlignment="center"
                     android:textSize="18sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="分钟"
                     android:textSize="20sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="5dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="5dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -197,11 +203,12 @@
                         app:jtbTextMarginRight="2dp"
                         app:jtbTextMarginTop="2dp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginLeft="30dp"
+                    android:orientation="horizontal"
                     android:padding="5dp">
 
                     <TextView
@@ -231,6 +238,7 @@
                         app:jtbTextMarginRight="2dp"
                         app:jtbTextMarginTop="2dp" />
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -265,6 +273,24 @@
                     app:jtbTextMarginLeft="2dp"
                     app:jtbTextMarginRight="2dp"
                     app:jtbTextMarginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text="单位名称："
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/company"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_white"
+                    android:ellipsize="end"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -334,6 +360,7 @@
                     app:jtbTextMarginRight="2dp"
                     app:jtbTextMarginTop="2dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -345,6 +372,7 @@
                     android:layout_height="wrap_content"
                     android:text="设备ID： "
                     android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/textViewDevId"
                     android:layout_width="match_parent"
@@ -352,6 +380,7 @@
                     android:textSize="20sp" />
 
             </LinearLayout>
+
             <Button
                 android:id="@+id/btn_save_update"
                 android:layout_width="wrap_content"

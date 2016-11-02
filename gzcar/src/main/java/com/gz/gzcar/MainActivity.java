@@ -512,7 +512,7 @@ public class MainActivity extends BaseActivity {
             String json = gson.toJson(printBean);
             L.showlogError("Json==" + json);
 
-            PrintUtils.print(this, json, outPortLog.getOut_user(), "刚正");
+            PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
 
             showPrintDialog();
         }
