@@ -371,7 +371,7 @@ public class RunFragment extends BaseFragment {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no", "=", number)
+                    .and("car_no", "like", "%"+number+"%")
                     .orderBy("id", true)
                     .findAll();
 

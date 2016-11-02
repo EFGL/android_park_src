@@ -69,7 +69,7 @@ public class CarInfoFragment extends Fragment {
         String carNum = mCarNumber.getText().toString().trim();
         if (!TextUtils.isEmpty(carNum) && carNum.length() > 0) {
             try {
-                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id", true).findAll();
+                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "like", "%"+carNum+"%").orderBy("id", true).findAll();
                 if (allData != null) {
                     allData.clear();
                     allData.addAll(carNumList);

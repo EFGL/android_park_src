@@ -119,7 +119,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 } else {
                     try {
 
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", carNum).orderBy("id", true).findAll();
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%"+carNum+"%").orderBy("id", true).findAll();
                         if (all != null) {
                             allData.clear();
                             allData.addAll(all);
