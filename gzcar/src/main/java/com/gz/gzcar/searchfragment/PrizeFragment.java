@@ -111,10 +111,11 @@ public class PrizeFragment extends BaseFragment {
         rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             int oldY = -1;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                L.showlogError("dy=="+dy);
+                L.showlogError("dy==" + dy);
                 oldY = dy;
 
             }
@@ -136,7 +137,7 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void initdata() {
-        if (!TextUtils.isEmpty(searchNumber)){
+        if (!TextUtils.isEmpty(searchNumber)) {
             TAG = 2;
         }
         searchStart = mStartTime.getText().toString().trim();
@@ -161,7 +162,7 @@ public class PrizeFragment extends BaseFragment {
                         .offset(15 * pageIndex)
                         .orderBy("update_time", true)
                         .findAll();
-                if (all!=null&&all.size() > 0) {
+                if (all != null && all.size() > 0) {
                     allData.addAll(all);
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
@@ -180,14 +181,14 @@ public class PrizeFragment extends BaseFragment {
                 List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                         .where("update_time", ">", dateFormatDetail.parse(searchStart))
                         .and("update_time", "<", dateFormatDetail.parse(searchEnd))
-                        .and("car_number", "=", searchNumber)
+                        .and("car_number", "like", "%" + searchNumber + "%")
                         .and("receivable", ">", 0)
                         .and("status", "=", "已出")
                         .limit(15)
                         .offset(15 * pageIndex)
                         .orderBy("update_time", true)
                         .findAll();
-                if (all!=null&&all.size() > 0) {
+                if (all != null && all.size() > 0) {
                     allData.addAll(all);
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
@@ -264,7 +265,7 @@ public class PrizeFragment extends BaseFragment {
                                     .findAll();
 
                             double toteMoney = 0;
-                            if (all!=null){
+                            if (all != null) {
 
                                 for (int i = 0; i < all.size(); i++) {
 
@@ -291,13 +292,13 @@ public class PrizeFragment extends BaseFragment {
                             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                     .where("update_time", ">", dateFormatDetail.parse(searchStart))
                                     .and("update_time", "<", dateFormatDetail.parse(searchEnd))
-                                    .and("car_number", "=", searchNumber)
+                                    .and("car_number", "like", "%"+searchNumber+"%")
                                     .and("receivable", ">", 0)
                                     .and("status", "=", "已出")
                                     .orderBy("update_time", true)
                                     .findAll();
                             double toteMoney = 0;
-                            if (all!=null){
+                            if (all != null) {
 
                                 for (int i = 0; i < all.size(); i++) {
 
