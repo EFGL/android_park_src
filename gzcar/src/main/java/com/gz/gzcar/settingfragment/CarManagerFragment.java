@@ -77,11 +77,10 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
         ArrayList<String> typeList = new ArrayList<>();
         typeList.add("所有车");
         typeList.add("固定车");
-        typeList.add("探亲车");
+        typeList.add("其它车");
         mCarType.setPopList(typeList);
         mCarType.setText(typeList.get(0));
         pageIndex = 0;
@@ -136,6 +135,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         e.printStackTrace();
                     }
                 }
+//晋A8888    临时车
             }
         });
 
@@ -293,12 +293,14 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             } catch (DbException e) {
                 e.printStackTrace();
             }
-
-            holder.mType.setText(carInfo.getCar_type());
-//            holder.mCarWei.setText(carInfo.getCarWei());
+            if( carInfo.getVehicle_type().equals("固定车")) {
+                holder.mType.setText(carInfo.getCar_type());
+            }
+            else{
+                holder.mType.setText(carInfo.getFee_type());
+            }
             holder.mPerson.setText(carInfo.getPerson_name());
             holder.mPhone.setText(carInfo.getPerson_tel());
-//            holder.mAddress.setText(carInfo.getPerson_address());
 
             final Date start_date = allData.get(position).getStart_date();
             Date stop_date = allData.get(position).getStop_date();

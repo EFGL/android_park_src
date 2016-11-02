@@ -100,6 +100,13 @@ public class DownloadServerMessage {
 		String mysendtime = bean.getHandler_down_tempfee_time();
 		showlog("下载临时车收费 传入时间:" + mysendtime);
 		get_down_tempfee(url, mysendtime, mycontroller_sn);
+		while(ifinteriorok == false) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -115,14 +122,14 @@ public class DownloadServerMessage {
 		DownloadTimeBean bean = null;
 		sendonfirst(bean);
 		while (true) {
+			//取所有信息最后一次下载时间;
+			try {
+				bean = db.selector(DownloadTimeBean.class).findFirst();
+			} catch (DbException e2) {
+				e2.printStackTrace();
+			}
 			for(int i=0;i<4;i++) {
 				showlog("进入循环");
-				//取所有信息最后一次下载时间;
-				try {
-					bean = db.selector(DownloadTimeBean.class).findFirst();
-				} catch (DbException e2) {
-					e2.printStackTrace();
-				}
 				//起动对应下载任务
 				switch (i) {
 				case 0:
@@ -283,7 +290,7 @@ public class DownloadServerMessage {
 						if (result.length() != 2) {
 							//清空原有记录
 							try {
-								db.delete(MoneyTable.class,WhereBuilder.b("fee_detail_code","=",null));
+								db.delete(MoneyTable.class);
 							} catch (DbException e) {
 								e.printStackTrace();
 							}
@@ -483,11 +490,15 @@ public class DownloadServerMessage {
 													new KeyValue("codeId",list.get(c).getId()),
 													new KeyValue("car_no", list.get(c).getCar_no()),
 													new KeyValue("car_type", list.get(c).getCar_type()),
+													new KeyValue("vehicle_type", list.get(c).getVehicle_type()),
+													new KeyValue("fee_type", list.get(c).getFee_type()),
 													new KeyValue("person_name", list.get(c).getPerson_name()),
 													new KeyValue("person_tel", list.get(c).getPerson_tel()),
 													new KeyValue("person_address", list.get(c).getPerson_address()),
 													new KeyValue("start_date", DownUtils.getstringtoday(list.get(c).getStart_date())),
 													new KeyValue("stop_date", DownUtils.getstringtoday(list.get(c).getStop_date())),
+													new KeyValue("allow_count",list.get(c).getAllow_count()),
+													new KeyValue("allow_park_time",list.get(c).getAllow_park_time()),
 													new KeyValue("created_at", DownUtils.getstringtodate(list.get(c).getCreated_at())),
 													new KeyValue("updated_at", list.get(c).getUpdated_at()),
 													new KeyValue("status", list.get(c).getStatus())
@@ -498,11 +509,15 @@ public class DownloadServerMessage {
 											table.setCodeId(list.get(c).getId());
 											table.setCar_no(list.get(c).getCar_no());
 											table.setCar_type(list.get(c).getCar_type());
+											table.setVehicle_type(list.get(c).getVehicle_type());
+											table.setFee_type(list.get(c).getFee_type());
 											table.setPerson_name(list.get(c).getPerson_name());
 											table.setPerson_tel(list.get(c).getPerson_tel());
 											table.setPerson_address(list.get(c).getPerson_address());
 											table.setStart_date(DownUtils.getstringtoday(list.get(c).getStart_date()));
 											table.setStop_date(DownUtils.getstringtoday(list.get(c).getStop_date()));
+											table.setAllow_count(list.get(c).getAllow_count());
+											table.setAllow_park_time(list.get(c).getAllow_park_time());
 											table.setCreated_at(DownUtils.getstringtodate(list.get(c).getCreated_at()));
 											table.setUpdated_at(list.get(c).getUpdated_at());
 											table.setStatus(list.get(c).getStatus());
@@ -581,7 +596,7 @@ public class DownloadServerMessage {
 							//下一步根据list来存数据库
 							for (int c = 0; c < list.size(); c++) {
 								try {
-									if("正常".equals(list.get(c).getStatus())){
+									if("Y".equals(list.get(c).getStatus())){
 										//查询这个车是否存在，根据主键id查询
 										CarWeiBindTable mytable=db.selector(CarWeiBindTable.class).where("code", "=", list.get(c).getCode()).findFirst();
 										if(mytable!=null){

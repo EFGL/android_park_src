@@ -20,11 +20,16 @@ public class DownInfoVehicleBean {
 	private String id;
 	private String car_no;
 	private String car_type;
+	private String vehicle_type;
+	private String	fee_type;
+
 	private String person_name;
 	private String person_tel;
 	private String person_address;
 	private String start_date;
 	private String stop_date;
+	private int allow_count;
+	private int allow_park_time;
 	private String status;
 	private String created_at;
 	private String updated_at;
@@ -46,6 +51,23 @@ public class DownInfoVehicleBean {
 	public void setCar_type(String car_type) {
 		this.car_type = car_type;
 	}
+
+	public String getVehicle_type() {
+		return vehicle_type;
+	}
+
+	public void setVehicle_type(String vehicle_type) {
+		this.vehicle_type = vehicle_type;
+	}
+
+	public String getFee_type() {
+		return fee_type;
+	}
+
+	public void setFee_type(String fee_type) {
+		this.fee_type = fee_type;
+	}
+
 	public String getPerson_name() {
 		return person_name;
 	}
@@ -76,6 +98,10 @@ public class DownInfoVehicleBean {
 	public void setStop_date(String stop_date) {
 		this.stop_date = stop_date;
 	}
+	public int getAllow_count() {return allow_count;}
+	public void setAllow_count(int allow_count) {this.allow_count = allow_count;}
+	public int getAllow_park_time() {return allow_park_time;}
+	public void setAllow_park_time(int allow_park_time) {this.allow_park_time = allow_park_time;	}
 	public String getStatus() {
 		return status;
 	}
