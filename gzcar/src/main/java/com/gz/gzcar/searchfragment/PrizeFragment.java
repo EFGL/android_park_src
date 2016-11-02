@@ -157,11 +157,11 @@ public class PrizeFragment extends BaseFragment {
                         .and("update_time", "<", dateFormatDetail.parse(searchEnd))
                         .and("status", "=", "已出")
                         .and("receivable", ">", 0)
-                        .limit(50)
-                        .offset(50 * pageIndex)
+                        .limit(15)
+                        .offset(15 * pageIndex)
                         .orderBy("update_time", true)
                         .findAll();
-                if (all.size() > 0) {
+                if (all!=null&&all.size() > 0) {
                     allData.addAll(all);
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
@@ -183,11 +183,11 @@ public class PrizeFragment extends BaseFragment {
                         .and("car_number", "=", searchNumber)
                         .and("receivable", ">", 0)
                         .and("status", "=", "已出")
-                        .limit(50)
-                        .offset(50 * pageIndex)
+                        .limit(15)
+                        .offset(15 * pageIndex)
                         .orderBy("update_time", true)
                         .findAll();
-                if (all.size() > 0) {
+                if (all!=null&&all.size() > 0) {
                     allData.addAll(all);
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
@@ -264,10 +264,13 @@ public class PrizeFragment extends BaseFragment {
                                     .findAll();
 
                             double toteMoney = 0;
-                            for (int i = 0; i < all.size(); i++) {
+                            if (all!=null){
 
-                                double money = all.get(i).getActual_money();
-                                toteMoney += money;
+                                for (int i = 0; i < all.size(); i++) {
+
+                                    double money = all.get(i).getActual_money();
+                                    toteMoney += money;
+                                }
                             }
 
                             Message message = Message.obtain();
@@ -294,10 +297,13 @@ public class PrizeFragment extends BaseFragment {
                                     .orderBy("update_time", true)
                                     .findAll();
                             double toteMoney = 0;
-                            for (int i = 0; i < all.size(); i++) {
+                            if (all!=null){
 
-                                double money = all.get(i).getActual_money();
-                                toteMoney += money;
+                                for (int i = 0; i < all.size(); i++) {
+
+                                    double money = all.get(i).getActual_money();
+                                    toteMoney += money;
+                                }
                             }
 
                             Message message = Message.obtain();

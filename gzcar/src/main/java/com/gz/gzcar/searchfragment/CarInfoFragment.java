@@ -92,8 +92,8 @@ public class CarInfoFragment extends Fragment {
 
     private void loadMore(int pageIndex) {
         try {
-            List<CarInfoTable> more = db.selector(CarInfoTable.class).limit(30).offset(pageIndex * 30).orderBy("id", true).findAll();
-            if (more.size() > 0) {
+            List<CarInfoTable> more = db.selector(CarInfoTable.class).limit(15).offset(pageIndex * 15).orderBy("id", true).findAll();
+            if (more!=null&&more.size() > 0) {
                 allData.addAll(more);
                 if (myAdapter != null)
                     myAdapter.notifyDataSetChanged();
@@ -136,7 +136,7 @@ public class CarInfoFragment extends Fragment {
                 if (carNum.length() == 0) {
                     try {
                         List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
-                        if (allData != null) {
+                        if (all != null) {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();

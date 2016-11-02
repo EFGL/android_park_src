@@ -110,8 +110,8 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
         mProgressBar.setVisibility(View.VISIBLE);
         try {
-            List<CarWeiTable> more = db.selector(CarWeiTable.class).orderBy("id", true).limit(50).offset(pageIndex * 50).findAll();
-            if (more.size() > 0) {
+            List<CarWeiTable> more = db.selector(CarWeiTable.class).orderBy("id", true).limit(15).offset(pageIndex * 15).findAll();
+            if (more!=null&&more.size() > 0) {
 
                 allData.addAll(more);
                 if (myAdapter != null)
@@ -138,7 +138,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
                 List<CarWeiTable> all = db.findAll(CarWeiTable.class);
 
                 return all.size()+"";
-            } catch (DbException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }

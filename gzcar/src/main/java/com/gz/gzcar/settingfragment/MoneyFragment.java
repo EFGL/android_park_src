@@ -36,7 +36,7 @@ import butterknife.OnClick;
 
 /**
  * Created by Endeavor on 2016/8/8.
- *
+ * <p>
  * 收费规则
  */
 public class MoneyFragment extends Fragment {
@@ -55,7 +55,7 @@ public class MoneyFragment extends Fragment {
     @Bind(R.id.tb_hour_add)
     JellyToggleButton tbHourAdd;
     private DbManager db = x.getDb(MyApplication.daoConfig);
-    private List<MoneyTable> allData;
+    private List<MoneyTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
     private static int id = -1;
     private SPUtils spUtils;
@@ -63,6 +63,7 @@ public class MoneyFragment extends Fragment {
     private boolean isHourAddTemp = false;
 
     private int clickItem = -1;
+    private int pageIndex = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -152,10 +153,23 @@ public class MoneyFragment extends Fragment {
 
     private void initViews() {
 
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();
         mRcy.setAdapter(myAdapter);
+
+        mRcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                int lastVisibleItemPosition = lm.findLastVisibleItemPosition();
+                if (newState == 0 && lastVisibleItemPosition == allData.size() - 1) {
+                    pageIndex += 1;
+                    loadMore(pageIndex);
+                }
+            }
+        });
     }
 
 
@@ -173,28 +187,28 @@ public class MoneyFragment extends Fragment {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-            if(clickItem!=-1){
-                if(clickItem==position){
+            if (clickItem != -1) {
+                if (clickItem == position) {
                     holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                }else{
+                } else {
                     holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 }
             }
             holder.mId.setText(position + 1 + "");
 //            holder.mType.setText(allData.get(position).getCar_type_name().toString());
             holder.mMoney.setText(allData.get(position).getMoney() + "元");
-            holder.mTime_min.setText(String.format("%.1f小时",allData.get(position).getParked_min_time()/60.0));
-            holder.mTime_max.setText(String.format("%.1f小时",allData.get(position).getParked_max_time()/60.0));
+            holder.mTime_min.setText(String.format("%.1f小时", allData.get(position).getParked_min_time() / 60.0));
+            holder.mTime_max.setText(String.format("%.1f小时", allData.get(position).getParked_max_time() / 60.0));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickItem=position;
+                    clickItem = position;
                     myAdapter.notifyDataSetChanged();
                     id = allData.get(position).getId();
                     mNewMoney.requestFocus();
                     InputMethodManager imm = (InputMethodManager) mNewMoney.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-                    String time = holder.mTime_min.getText().toString().trim() + "-" + holder.mTime_max.getText().toString().trim() ;
+                    String time = holder.mTime_min.getText().toString().trim() + "-" + holder.mTime_max.getText().toString().trim();
                     mTime.setText(time + "");
 
                 }
@@ -233,25 +247,37 @@ public class MoneyFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        pageIndex = 0;
+        allData.clear();
+
         readConfiig();
         initData();
+        initViews();
     }
 
 
     private void initData() {
 
+        loadMore(pageIndex);
+    }
+
+    private void loadMore(int pageIndex) {
         try {
-            allData = db.selector(MoneyTable.class).orderBy("parked_min_time").findAll();
+            List<MoneyTable> all = db.selector(MoneyTable.class).orderBy("parked_min_time").limit(15).offset(15 * pageIndex).findAll();
+            if (all.size() > 0) {
+
+                allData.addAll(all);
+                if (myAdapter != null)
+                    myAdapter.notifyDataSetChanged();
+            } else {
+                T.showShort(getContext(), "没有更多数据了");
+            }
         } catch (DbException e) {
             e.printStackTrace();
         }
-        if (allData != null ) {
-             initViews();
-        } else {
-
-        }
     }
-        @Override
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
