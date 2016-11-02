@@ -25,8 +25,10 @@ public class CarInfoTable{
     @Column(name = "car_type")
     private String car_type;
     //车辆类型 固定车 或者 特殊车
+    @Column(name = "vehicle_type")
     private  String vehicle_type;
     //收费类型
+    @Column(name = "fee_type")
     private String fee_type;
     //车辆所有人姓名
     @Column(name = "person_name")
@@ -43,6 +45,12 @@ public class CarInfoTable{
     //有效结束时间
     @Column(name = "stop_date")
     private Date stop_date;
+    //有效次数
+    @Column(name = "allow_count")
+    private int allow_count;
+    //免费时长（分钟）
+    @Column(name = "allow_park_time")
+    private int allow_park_time;
     //数据创建时间
     @Column(name = "created_at")
     private Date created_at;
@@ -66,6 +74,8 @@ public class CarInfoTable{
                 ", person_address='" + person_address + '\'' +
                 ", start_date=" + start_date +
                 ", stop_date=" + stop_date +
+                ", allow_count=" + allow_count +
+                ", allow_park_time=" + allow_park_time +
                 ", created_at=" + created_at +
                 ", updated_at='" + updated_at + '\'' +
                 ", status='" + status + '\'' +
@@ -115,13 +125,9 @@ public class CarInfoTable{
 
     public void setVehicle_type(String vehicle_type) {        this.vehicle_type = vehicle_type;    }
 
-    public String getFee_type() {
-        return fee_type;
-    }
+    public String getFee_type() {     return fee_type;    }
 
-    public void setFee_type(String fee_type) {
-        this.fee_type = fee_type;
-    }
+    public void setFee_type(String fee_type) { this.fee_type = fee_type; }
 
     public String getPerson_name() {
         return person_name;
@@ -162,6 +168,14 @@ public class CarInfoTable{
     public void setStart_date(Date start_date) {
         this.start_date = start_date;
     }
+
+    public int getAllow_count() {return allow_count;}
+
+    public void setAllow_count(int allow_count) {this.allow_count = allow_count;}
+
+    public int getAllow_park_time() {return allow_park_time;}
+
+    public void setAllow_park_time(int allow_park_time) { this.allow_park_time = allow_park_time;}
 
     public Date getCreated_at() {
         return created_at;

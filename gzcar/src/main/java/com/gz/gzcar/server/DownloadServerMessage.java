@@ -497,6 +497,8 @@ public class DownloadServerMessage {
 													new KeyValue("person_address", list.get(c).getPerson_address()),
 													new KeyValue("start_date", DownUtils.getstringtoday(list.get(c).getStart_date())),
 													new KeyValue("stop_date", DownUtils.getstringtoday(list.get(c).getStop_date())),
+													new KeyValue("allow_count",list.get(c).getAllow_count()),
+													new KeyValue("allow_park_time",list.get(c).getAllow_park_time()),
 													new KeyValue("created_at", DownUtils.getstringtodate(list.get(c).getCreated_at())),
 													new KeyValue("updated_at", list.get(c).getUpdated_at()),
 													new KeyValue("status", list.get(c).getStatus())
@@ -514,6 +516,8 @@ public class DownloadServerMessage {
 											table.setPerson_address(list.get(c).getPerson_address());
 											table.setStart_date(DownUtils.getstringtoday(list.get(c).getStart_date()));
 											table.setStop_date(DownUtils.getstringtoday(list.get(c).getStop_date()));
+											table.setAllow_count(list.get(c).getAllow_count());
+											table.setAllow_park_time(list.get(c).getAllow_park_time());
 											table.setCreated_at(DownUtils.getstringtodate(list.get(c).getCreated_at()));
 											table.setUpdated_at(list.get(c).getUpdated_at());
 											table.setStatus(list.get(c).getStatus());
@@ -592,7 +596,7 @@ public class DownloadServerMessage {
 							//下一步根据list来存数据库
 							for (int c = 0; c < list.size(); c++) {
 								try {
-									if("正常".equals(list.get(c).getStatus())){
+									if("Y".equals(list.get(c).getStatus())){
 										//查询这个车是否存在，根据主键id查询
 										CarWeiBindTable mytable=db.selector(CarWeiBindTable.class).where("code", "=", list.get(c).getCode()).findFirst();
 										if(mytable!=null){

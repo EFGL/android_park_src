@@ -28,6 +28,8 @@ public class DownInfoVehicleBean {
 	private String person_address;
 	private String start_date;
 	private String stop_date;
+	private int allow_count;
+	private int allow_park_time;
 	private String status;
 	private String created_at;
 	private String updated_at;
@@ -96,6 +98,10 @@ public class DownInfoVehicleBean {
 	public void setStop_date(String stop_date) {
 		this.stop_date = stop_date;
 	}
+	public int getAllow_count() {return allow_count;}
+	public void setAllow_count(int allow_count) {this.allow_count = allow_count;}
+	public int getAllow_park_time() {return allow_park_time;}
+	public void setAllow_park_time(int allow_park_time) {this.allow_park_time = allow_park_time;	}
 	public String getStatus() {
 		return status;
 	}
