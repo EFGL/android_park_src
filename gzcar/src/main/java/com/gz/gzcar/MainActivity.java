@@ -29,6 +29,7 @@ import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.server.DownLoadServer;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.FileUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.SPUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
@@ -233,7 +234,7 @@ public class MainActivity extends BaseActivity {
         outPortLog.setCar_type("");
         outPortLog.setStall_time("待通行");
         showLogin();
-        startmyserver();
+//        startmyserver();
     }
 
     /**
@@ -479,6 +480,16 @@ public class MainActivity extends BaseActivity {
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
         upStatusInfoDisp();
+
+        // 打印
+        print();
+    }
+
+    private void print() {
+
+        boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
+        L.showlogError("是否打印::"+isPrint);
+
     }
 
     //无牌入场

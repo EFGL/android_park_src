@@ -72,6 +72,7 @@ public class MoneyFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         ArrayList<String> templist = new ArrayList<>();
+        templist.add("0");
         templist.add("30");
         templist.add("60");
         templist.add("120");
@@ -80,6 +81,7 @@ public class MoneyFragment extends Fragment {
         mTemp.setText(templist.get(0));
 
         ArrayList<String> friendlist = new ArrayList<>();
+        friendlist.add("0");
         friendlist.add("30");
         friendlist.add("60");
         friendlist.add("120");
