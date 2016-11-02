@@ -15,15 +15,15 @@
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="10"/>
+            android:layout_weight="10" />
 
         <Button
+            android:id="@+id/parking_add"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_weight="1"
             android:background="@drawable/tab_text_seletor"
-            android:id="@+id/parking_add"
             android:text="新增"
             android:textSize="18sp" />
 
@@ -48,27 +48,61 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:background="@mipmap/ic_text_bg"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="序号"
                 android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="车库编号"
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="1dp"
+            android:background="#e4e4e4"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ProgressBar
+                android:id="@+id/pb"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e4e4e4"/>
+        <TextView
+            android:id="@+id/tv_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:layout_margin="10dp"
+            android:text="总车位:0 个"
+            android:gravity="right"/>
     </LinearLayout>
 
 </LinearLayout>

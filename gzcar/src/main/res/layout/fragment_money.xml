@@ -38,49 +38,57 @@
                 android:layout_height="40dp"
                 android:background="#fff"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.4"
-                    android:background="@mipmap/ic_text_bg"
                     android:gravity="center"
                     android:text="序号"
                     android:textSize="18sp" />
+
+                <include layout="@layout/linear_vertical" />
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@mipmap/ic_text_bg"
                     android:gravity="center"
                     android:text="收费类型"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@mipmap/ic_text_bg"
-                    android:gravity="center"
-                    android:text="最小时长"
-                    android:textSize="18sp" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@mipmap/ic_text_bg"
-                    android:gravity="center"
-                    android:text="最大时长"
-                    android:textSize="18sp" />
+                <include layout="@layout/linear_vertical" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@mipmap/ic_text_bg"
+                    android:gravity="center"
+                    android:text="最小时长"
+                    android:textSize="18sp" />
+
+                <include layout="@layout/linear_vertical" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="最大时长"
+                    android:textSize="18sp" />
+
+                <include layout="@layout/linear_vertical" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="收费金额"
                     android:textSize="18sp" />
             </LinearLayout>
+
+            <include layout="@layout/linear_horizontal" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/moneyrcy_rcy"
@@ -136,13 +144,13 @@
                 android:padding="5dp">
 
                 <EditText
-                    android:singleLine="true"
-                    android:imeOptions="actionDone"
                     android:id="@+id/money_new_money"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_white"
+                    android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
+                    android:singleLine="true"
                     android:textSize="20sp" />
 
                 <TextView

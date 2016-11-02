@@ -2,11 +2,13 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     Button mBtnAdd;
     @Bind(R.id.recyclerview)
     RecyclerView rcy;
+    @Bind(R.id.tv_bottom)
+    TextView mBottom;
 
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
@@ -75,8 +79,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private void initData() {
 
         try {
-            allData = db.selector(UserTable.class).orderBy("id",true).findAll();
-            Log.e("ende","allData=="+allData.size());
+            allData = db.selector(UserTable.class).orderBy("id", true).findAll();
+            Log.e("ende", "allData==" + allData.size());
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询全部异常");
@@ -155,9 +159,37 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         if (allData != null && allData.size() > 0) {
             initViews();
         }
+        MySumTask mySumTask = new MySumTask();
+        mySumTask.execute();
+    }
+
+    class MySumTask extends AsyncTask<Void, Void, String> {
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            try {
+                List<UserTable> all = db.findAll(UserTable.class);
+                return all.size() + "";
+            } catch (DbException e) {
+                e.printStackTrace();
+
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            if (!TextUtils.isEmpty(s))
+                mBottom.setText("用户:"+s+" 个");
+        }
     }
 
     @Override
+
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
@@ -181,6 +213,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             allData.clear();
                             allData.addAll(db.findAll(UserTable.class));
                             myAdapter.notifyDataSetChanged();
+                            new MySumTask().execute();
                         } catch (DbException e) {
                             e.printStackTrace();
                         }

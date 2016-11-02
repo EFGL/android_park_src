@@ -21,13 +21,13 @@
             android:textSize="18sp" />
 
         <EditText
-            android:background="@drawable/shape_white"
-            android:layout_marginLeft="30dp"
-            android:singleLine="true"
-            android:imeOptions="actionDone"
             android:id="@+id/carnumber"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/shape_white"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textSize="18sp" />
 
         <TextView
@@ -39,9 +39,10 @@
 
         <com.gz.gzcar.weight.MyPullText
             android:id="@+id/cartype"
-            android:layout_marginLeft="30dp"
             android:layout_width="300dp"
-            android:layout_height="35dp" />
+            android:layout_height="35dp"
+            android:layout_marginLeft="30dp" />
+
         <Button
             android:id="@+id/car_add"
             android:layout_width="0dp"
@@ -75,81 +76,126 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="序号"
                 android:textSize="18sp" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="车牌号"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="0dp"
+            <View
+                android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
-                android:gravity="center"
-                android:text="类型"
-                android:textSize="18sp" />
+                android:background="#e4e4e4" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
+                android:gravity="center"
+                android:text="类型"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="车位"
                 android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.7"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="联系人"
                 android:textSize="18sp" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="电话"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="0dp"
+            <View
+                android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
-                android:gravity="center"
-                android:text="有效开始时间"
-                android:textSize="18sp" />
+                android:background="#e4e4e4" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
+                android:gravity="center"
+                android:text="有效开始时间"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#e4e4e4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="有效结束时间"
                 android:textSize="18sp" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e4e4e4" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/setting_carmanager_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e4e4e4"/>
+
+        <TextView
+            android:id="@+id/tv_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical|right"
+            android:text="车辆总数:0 辆"
+            android:textSize="25sp" />
 
     </LinearLayout>
 

@@ -22,13 +22,13 @@
             android:textSize="16sp" />
 
         <EditText
-            android:singleLine="true"
-            android:imeOptions="actionDone"
             android:id="@+id/et_money_carnumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/tab_text_seletor"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textSize="16sp" />
 
         <TextView
@@ -101,68 +101,72 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="序号"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="车牌号"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="类型"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="入场时间"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="出场时间"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="停车时长"
                 android:textSize="18sp" />
 
+            <include layout="@layout/linear_vertical" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@mipmap/ic_text_bg"
                 android:gravity="center"
                 android:text="收费金额"
                 android:textSize="18sp" />
         </LinearLayout>
 
+        <include layout="@layout/linear_horizontal" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/money_recyclerview"

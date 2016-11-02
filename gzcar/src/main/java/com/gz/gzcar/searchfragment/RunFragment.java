@@ -263,8 +263,7 @@ public class RunFragment extends BaseFragment {
     }
 
     public void updaterecycltviewadapter() {
-        Log.e("chenghao", "updaterecycltviewadapter: changdu=" + all.size());
-        if (all.size() != 0) {
+        if (all!=null&&all.size() != 0) {
             allData.clear();
             setallmessage();
             sumBottomCarNum(all.size());

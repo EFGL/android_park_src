@@ -21,13 +21,12 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.gz.gzcar.MyApplication.daoConfig;
 
 /*
  * 新增
@@ -76,6 +75,11 @@ public class CarAdd extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String current = DateUtils.date2String(new Date());
+        mStarttiem.setText(current);
+        String monthday = current.substring(5, 10);
+        mEndtime.setText((DateUtils.getCurrentYear() + 1) + "-" +monthday);
+
         initMypull();
     }
 
@@ -139,14 +143,14 @@ public class CarAdd extends BaseActivity {
             T.showShort(this, "请输入联系人");
             return;
         }
-        if (TextUtils.isEmpty(startTime)) {
-            T.showShort(this, "请选择开始时间");
-            return;
-        }
-        if (TextUtils.isEmpty(endTime)) {
-            T.showShort(this, "请选择结束时间");
-            return;
-        }
+//        if (TextUtils.isEmpty(startTime)) {
+//            T.showShort(this, "请选择开始时间");
+//            return;
+//        }
+//        if (TextUtils.isEmpty(endTime)) {
+//            T.showShort(this, "请选择结束时间");
+//            return;
+//        }
         try {
             CarInfoTable mInfo = new CarInfoTable();
             mInfo.setCar_no(carNum);

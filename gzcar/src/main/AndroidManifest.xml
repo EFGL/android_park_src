@@ -23,7 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".settings.SettingActivity" />
+        <activity
+            android:name=".settings.SettingActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".SrarchActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
