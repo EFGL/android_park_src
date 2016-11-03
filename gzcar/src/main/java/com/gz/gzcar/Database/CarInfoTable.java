@@ -3,16 +3,47 @@ package com.gz.gzcar.Database;
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * 车辆信息信息表
- *
+ * <p>
  * Created by Endeavor on 2016/8/18.
  */
 
 @Table(name = "record_stall_vehicle")
-public class CarInfoTable{
+public class CarInfoTable {
+    public CarInfoTable() {
+    }
+
+    public CarInfoTable(String[] members) throws Exception {
+        if (!members[0].isEmpty())
+            this.id = Integer.parseInt(members[0]);
+        if (!members[1].isEmpty())
+            this.car_no = members[1];
+        if (!members[2].isEmpty())
+            this.car_type = members[2];
+        //   if(!members[3].isEmpty())
+        //  this.codeId=members[3];
+        if (!members[4].isEmpty())
+            this.person_tel = members[4];
+        if (!members[5].isEmpty())
+            this.person_name = members[5];
+        if (!members[6].isEmpty())
+            this.person_address = members[6];
+        if (!members[7].isEmpty())
+            this.status = members[7];
+        // try {
+        if (!members[8].isEmpty())
+            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
+        if (!members[9].isEmpty())
+            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[9]);
+        //}catch (Exception e) {
+        //throw e;
+        // }
+    }
+
     @Column(name = "id", isId = true)
     private int id;
     //组键
@@ -26,7 +57,7 @@ public class CarInfoTable{
     private String car_type;
     //车辆类型 固定车 或者 特殊车
     @Column(name = "vehicle_type")
-    private  String vehicle_type;
+    private String vehicle_type;
     //收费类型
     @Column(name = "fee_type")
     private String fee_type;
@@ -66,7 +97,7 @@ public class CarInfoTable{
         return "CarInfoTable{" +
                 "id=" + id +
                 ", car_no='" + car_no + '\'' +
-               ", car_type='" + car_type + '\'' +
+                ", car_type='" + car_type + '\'' +
                 ", vehicle_type='" + vehicle_type + '\'' +
                 ", fee_type='" + fee_type + '\'' +
                 ", person_name='" + person_name + '\'' +
@@ -85,6 +116,7 @@ public class CarInfoTable{
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -121,13 +153,21 @@ public class CarInfoTable{
         this.car_type = car_type;
     }
 
-    public String getVehicle_type() {  return vehicle_type;    }
+    public String getVehicle_type() {
+        return vehicle_type;
+    }
 
-    public void setVehicle_type(String vehicle_type) {        this.vehicle_type = vehicle_type;    }
+    public void setVehicle_type(String vehicle_type) {
+        this.vehicle_type = vehicle_type;
+    }
 
-    public String getFee_type() {     return fee_type;    }
+    public String getFee_type() {
+        return fee_type;
+    }
 
-    public void setFee_type(String fee_type) { this.fee_type = fee_type; }
+    public void setFee_type(String fee_type) {
+        this.fee_type = fee_type;
+    }
 
     public String getPerson_name() {
         return person_name;
@@ -169,13 +209,21 @@ public class CarInfoTable{
         this.start_date = start_date;
     }
 
-    public int getAllow_count() {return allow_count;}
+    public int getAllow_count() {
+        return allow_count;
+    }
 
-    public void setAllow_count(int allow_count) {this.allow_count = allow_count;}
+    public void setAllow_count(int allow_count) {
+        this.allow_count = allow_count;
+    }
 
-    public int getAllow_park_time() {return allow_park_time;}
+    public int getAllow_park_time() {
+        return allow_park_time;
+    }
 
-    public void setAllow_park_time(int allow_park_time) { this.allow_park_time = allow_park_time;}
+    public void setAllow_park_time(int allow_park_time) {
+        this.allow_park_time = allow_park_time;
+    }
 
     public Date getCreated_at() {
         return created_at;

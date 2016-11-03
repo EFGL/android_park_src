@@ -1,8 +1,10 @@
 package com.gz.gzcar.settingfragment;
 
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,9 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,6 +28,7 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
+import com.gz.gzcar.utils.CarInfoDbutils;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
@@ -32,6 +37,9 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +47,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Endeavor on 2016/8/8.
@@ -56,6 +66,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     RecyclerView rcy;
     @Bind(R.id.tv_bottom)
     TextView mBottomCarNumber;
+    @Bind(R.id.car_import)
+    Button buttonCarImport;
     private int TAG = 0;
     private String type = "";
 
@@ -71,6 +83,24 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_car_manager, container, false);
 
         ButterKnife.bind(this, view);
+
+        /*导入*/
+        buttonCarImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent, "请选择一个要上传的文件"), 1);
+
+                    /*Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*.csv");
+                startActivityForResult(intent, 1);*/
+            }
+        });
+
         return view;
     }
 
@@ -93,7 +123,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViews() {
-
         // 根据车号查询
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -411,4 +440,56 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         builder.show();
     }
 
+    /*
+    功能：
+    1、重载onActivityResult方法
+    2、从文件管理界面中得到文件路径
+    3、通过流打开文件，读取文件，拆分，插入车辆信息表中
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            ContentResolver cr = getActivity().getContentResolver();
+            Log.i("ch", "onActivityResult: "+cr.getType(uri));
+                String fileName=uri.toString();
+                T.showLong(getActivity(),fileName);
+                fileName=fileName.toString().substring(fileName.lastIndexOf(".")+1);
+                if(!fileName.equalsIgnoreCase("csv")){
+                    T.showLong(getActivity(),"文件类型错误，导入失败！！！");
+                    return;
+                }
+                BufferedReader reader=null;
+                try {
+                    reader= new BufferedReader(new InputStreamReader(cr.openInputStream(uri), Charset.forName("GBK")));
+                    ArrayList<CarInfoTable> list=new   ArrayList<CarInfoTable>();
+                    String  line= reader.readLine();
+                    while ((line = reader.readLine())!= null)
+                    {
+                        String[] members=line.split(",");
+                        try {
+                            CarInfoTable carInfoTable = new CarInfoTable(members);
+                            list.add(carInfoTable);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            continue;
+                        }
+                    }
+                    T.showLong(getActivity(),"已成功导入"+ CarInfoDbutils.save_carinfo(list)+"条数据！！");
+                } catch (Exception e) {
+                    T.showLong(getActivity(),"导入失败！！");
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        reader.close();
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    }
 }

@@ -53,6 +53,16 @@
             android:text="新增"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/car_import"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:background="@drawable/tab_text_seletor"
+            android:text="导入"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
     <View

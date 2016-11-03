@@ -1,469 +1,471 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--root-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e4e4e4"
+    android:layout_centerInParent="true"
+    android:background="#fff"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingLeft="35dp"
+    android:paddingRight="35dp"
+    android:paddingTop="15dp">
 
-
-    <!--root-->
-    <LinearLayout
-        android:layout_width="1060dp"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/shape_white"
-        android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingLeft="35dp"
-        android:paddingRight="35dp"
-        android:paddingTop="15dp">
+        android:gravity="center"
+        android:text="新增车辆"
+        android:textSize="23sp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="新增车辆"
-            android:textSize="23sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#e4e4e4" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="#e4e4e4" />
+    <!-- 2 root-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
 
-        <!-- 2 root-->
+        <!--left-->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
 
-            <!--left-->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车牌号:" />
+
+                <EditText
+                    android:id="@+id/add_carnumber"
+                    style="@style/EditTextStyle" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="类    型:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_cartype"
+                    android:layout_width="365dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="20dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="固定车类型:" />
+
+
+                <EditText
+                    style="@style/EditTextStyle"
+                    android:text="月租车" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="通行条件:" />
+
+                <RadioGroup
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车牌号:"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/add_carnumber"
+                    <RadioButton
+                        android:id="@+id/rb_1"
                         android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/shape_white"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
+                        android:checked="true"
+                        android:text="有效时间"
                         android:textSize="18sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="类    型:"
-                        android:textSize="20sp" />
 
 
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_cartype"
-                        android:layout_width="365dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="联系人:"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/add_person"
+                    <RadioButton
+                        android:id="@+id/rb_12"
                         android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/shape_white"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
+                        android:text="有效次数"
                         android:textSize="18sp" />
-                </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="电    话:"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/add_phone"
+                    <RadioButton
+                        android:id="@+id/rb_13"
                         android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/shape_white"
-                        android:imeOptions="actionNext"
-                        android:inputType="phone"
-                        android:singleLine="true"
+                        android:text="免费时长"
                         android:textSize="18sp" />
 
+                </RadioGroup>
+            </LinearLayout>
 
-                </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
 
-                <View
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="有效期:" />
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/add_starttiem"
+                    style="@style/TextViewStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
+                    android:background="@drawable/shape_white"
+                    android:gravity="center"
+                    android:text="起始时间" />
 
-                <LinearLayout
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="        至:" />
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/add_endtime"
+                    style="@style/TextViewStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:background="@drawable/shape_white"
+                    android:gravity="center"
+                    android:text="结束时间" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="住    址:"
-                        android:textSize="20sp" />
+            </LinearLayout>
 
-                    <EditText
-                        android:id="@+id/add_address"
-                        android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/shape_white"
-                        android:imeOptions="actionDone"
-                        android:singleLine="true"
-                        android:textSize="18sp" />
 
-                </LinearLayout>
+        </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
+        <!--right-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="有效期:"
-                        android:textSize="18sp" />
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="联系人:" />
 
-                    <TextView
-                        android:id="@+id/add_starttiem"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/shape_white"
-                        android:gravity="center"
-                        android:hint="起始时间"
-                        android:textSize="18sp" />
+                <EditText
+                    android:id="@+id/add_person"
+                    style="@style/EditTextStyle" />
+            </LinearLayout>
 
-                </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="        至:"
-                        android:textSize="20sp" />
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="电    话:" />
 
-                    <TextView
-                        android:id="@+id/add_endtime"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_white"
-                        android:gravity="center"
-                        android:hint="结束时间"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
+                <EditText
+                    android:id="@+id/add_phone"
+                    style="@style/EditTextStyle" />
 
 
             </LinearLayout>
 
-            <!--right-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="住    址:" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  1:"
-                        android:textSize="20sp" />
+                <EditText
+                    android:id="@+id/add_address"
+                    style="@style/EditTextStyle"
+                    android:imeOptions="actionDone" />
 
+            </LinearLayout>
 
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  2:"
-                        android:textSize="20sp" />
-
-
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei2"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  3:"
-                        android:textSize="20sp" />
-
-
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei3"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  4:"
-                        android:textSize="20sp" />
-
-
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei4"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  5:"
-                        android:textSize="20sp" />
-
-
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei5"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车  位  6:"
-                        android:textSize="20sp" />
-
-
-                    <com.gz.gzcar.weight.MyPullText
-                        android:id="@+id/add_carwei6"
-                        android:layout_width="340dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#e4e4e4" />
-
-
-            </LinearLayout> <!--right-->
-
-        </LinearLayout><!--2 root-->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="15dp"
-            android:background="#e4e4e4" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/add_btn_cancle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="200dp"
-                android:background="@drawable/ic_bg_message"
-                android:text="取消"
-                android:textSize="16sp" />
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/add_btn_ok"
-                android:layout_width="wrap_content"
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  1:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="200dp"
-                android:background="@drawable/ic_bg_message"
-                android:text="增加"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-    </LinearLayout><!--root-->
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  2:" />
 
-</RelativeLayout>
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei2"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  3:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei3"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  4:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei4"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  5:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei5"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:text="车  位  6:" />
+
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/add_carwei6"
+                    android:layout_width="340dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#e4e4e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/add_btn_cancle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="100dp"
+                    android:background="@drawable/ic_bg_message"
+                    android:text="取消"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/add_btn_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="100dp"
+                    android:background="@drawable/ic_bg_message"
+                    android:text="增加"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout> <!--right-->
+    </LinearLayout><!--2 root-->
+</LinearLayout><!--root-->

@@ -10,6 +10,7 @@ import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,24 @@ import java.util.List;
 public class CarInfoDbutils {
 
 
-	public static DbManager db =x.getDb(MyApplication.daoConfig);
+	public static DbManager db = x.getDb(MyApplication.daoConfig);
+	/**
+	 *导入
+	 * @param list
+	 */
+	public static int save_carinfo(ArrayList<CarInfoTable> list) {
+		int reuslt = 0;
+		for (CarInfoTable item : list) {
+			try {
+				db.save(item);
+				reuslt++;
+			} catch (DbException e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		return reuslt;
+	}
 	/**
 	 * 添加
 	 * @param carInfoTable
@@ -50,7 +68,7 @@ public class CarInfoDbutils {
 	 */
 	public static void update_user(String carnum,CarInfoTable carInfoTable){
 		try {
-			db.update(UserTable.class,WhereBuilder.b("car_no","=",carnum)
+			db.update(UserTable.class, WhereBuilder.b("car_no","=",carnum)
 					,new KeyValue("car_type",carInfoTable.getCar_type())
 			,new KeyValue("person_address", carInfoTable.getPerson_address())
 			,new KeyValue("person_tel", carInfoTable.getPerson_tel())
