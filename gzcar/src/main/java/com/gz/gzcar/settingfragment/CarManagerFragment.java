@@ -205,6 +205,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 super.onScrollStateChanged(recyclerView, newState);
 
                 int lastVisibleItemPosition = lm.findLastVisibleItemPosition();
+                L.showlogError("lastVisibleItemPosition==="+lastVisibleItemPosition);
                 if (lastVisibleItemPosition == (allData.size() - 1) && newState == 0) {
                     pageIndex += 1;
                     loadMore(pageIndex);

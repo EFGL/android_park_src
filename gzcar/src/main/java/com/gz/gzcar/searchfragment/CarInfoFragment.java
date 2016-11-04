@@ -68,9 +68,10 @@ public class CarInfoFragment extends Fragment {
     @OnClick(R.id.btn_search_car)
     public void onClick() {
         String carNum = mCarNumber.getText().toString().trim();
-        if (!TextUtils.isEmpty(carNum) && carNum.length() > 0) {
+        if (!TextUtils.isEmpty(carNum)) {
             try {
                 List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
+                mBottomCarNumber.setText("车辆总数:"+carNumList.size()+" 辆");
                 if (allData != null) {
                     allData.clear();
                     allData.addAll(carNumList);
@@ -87,6 +88,7 @@ public class CarInfoFragment extends Fragment {
 
 
     private void initData() {
+        new SumTask().execute();
         loadMore(pageIndex);
     }
 
@@ -115,6 +117,8 @@ public class CarInfoFragment extends Fragment {
             myAdapter.notifyDataSetChanged();
         initData();
         initViews();
+
+
     }
 
     private void initViews() {
@@ -134,17 +138,20 @@ public class CarInfoFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 String carNum = mCarNumber.getText().toString().trim();
                 if (carNum.length() == 0) {
-                    try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
-                        if (all != null) {
-                            allData.clear();
-                            allData.addAll(all);
-                            myAdapter.notifyDataSetChanged();
-                        }
-
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        List<CarInfoTable> all = db.selector(CarInfoTable.class).orderBy("id", true).findAll();
+//                        if (all != null) {
+//                            allData.clear();
+//                            allData.addAll(all);
+//                            myAdapter.notifyDataSetChanged();
+//                        }
+//
+//                    } catch (DbException e) {
+//                        e.printStackTrace();
+//                    }
+                    allData.clear();
+                    pageIndex = 0;
+                    initData();
                 }
 
             }
@@ -300,12 +307,20 @@ public class CarInfoFragment extends Fragment {
     class SumTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
-            return null;
+            try {
+                List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                return all.size()+"";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if (!TextUtils.isEmpty(s))
+                mBottomCarNumber.setText("车辆总数:"+s+" 辆");
         }
     }
 }
