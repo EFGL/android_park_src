@@ -14,35 +14,7 @@ import java.util.Date;
 
 @Table(name = "record_stall_vehicle")
 public class CarInfoTable {
-    public CarInfoTable() {
-    }
 
-    public CarInfoTable(String[] members) throws Exception {
-        if (!members[0].isEmpty())
-            this.codeId = members[0];
-        if (!members[1].isEmpty())
-            this.car_no = members[1];
-        if (!members[2].isEmpty())
-            this.vehicle_type = members[2];
-//        if(!members[3].isEmpty())
-//            this.codeId=members[3];
-        if (!members[3].isEmpty())
-            this.person_tel = members[3];
-        if (!members[4].isEmpty())
-            this.person_name = members[4];
-        if (!members[5].isEmpty())
-            this.person_address = members[5];
-        if (!members[6].isEmpty())
-            this.status = members[6];
-        // try {
-        if (!members[7].isEmpty())
-            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[7]);
-        if (!members[8].isEmpty())
-            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
-        //}catch (Exception e) {
-        //throw e;
-        // }
-    }
 
     @Column(name = "id", isId = true)
     private int id;
@@ -112,7 +84,35 @@ public class CarInfoTable {
                 ", status='" + status + '\'' +
                 '}';
     }
+    public CarInfoTable() {
+    }
 
+    public CarInfoTable(String[] members) throws Exception {
+        if (!members[0].isEmpty())
+            this.codeId = members[0];
+        if (!members[1].isEmpty())
+            this.car_no = members[1];
+        if (!members[2].isEmpty())
+            this.vehicle_type = members[2];
+//        if(!members[3].isEmpty())
+//            this.codeId=members[3];
+        if (!members[3].isEmpty())
+            this.person_tel = members[3];
+        if (!members[4].isEmpty())
+            this.person_name = members[4];
+        if (!members[5].isEmpty())
+            this.person_address = members[5];
+        if (!members[6].isEmpty())
+            this.status = members[6];
+        // try {
+        if (!members[7].isEmpty())
+            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[7]);
+        if (!members[8].isEmpty())
+            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
+        //}catch (Exception e) {
+        //throw e;
+        // }
+    }
     public int getId() {
         return id;
     }

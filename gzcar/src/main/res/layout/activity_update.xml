@@ -1,57 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--root-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e4e4e4"
+    android:layout_centerInParent="true"
+    android:background="#fff"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:text="修改车辆"
+        android:textSize="23sp" />
 
-        <LinearLayout
-            android:layout_width="1060dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/shape_white"
-            android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingLeft="35dp"
-            android:paddingRight="35dp"
-            android:paddingTop="15dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="修改车辆"
-                android:textSize="23sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="#e4e4e4" />
-
-    <!-- 2 root-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginRight="10dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="20dp">
 
-    <!--left-->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
+        <!--left-->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -245,18 +230,18 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:textSize="18sp"
                     android:id="@+id/up_et_end"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_white"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
 
-    </LinearLayout>
+        </LinearLayout>
 
         <!--right-->
         <LinearLayout
@@ -433,36 +418,36 @@
 
     </LinearLayout><!--2 root-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="15dp"
-                android:background="#e4e4e4" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="#e4e4e4" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/up_cancle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="200dp"
-                    android:background="@drawable/ic_bg_message"
-                    android:text="取消"
-                    android:textSize="16sp" />
+        <Button
+            android:id="@+id/up_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="200dp"
+            android:background="@drawable/ic_bg_message"
+            android:text="取消"
+            android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/up_update"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
-                    android:background="@drawable/ic_bg_message"
-                    android:text="修改"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
-</RelativeLayout>
+        <Button
+            android:id="@+id/up_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="200dp"
+            android:background="@drawable/ic_bg_message"
+            android:text="修改"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>
+

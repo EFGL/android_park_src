@@ -9,7 +9,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:gravity="center"
@@ -94,17 +93,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/TextViewStyle"
-                    android:layout_marginBottom="20dp"
                     android:text="通行条件:" />
 
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -123,18 +122,18 @@
                         android:layout_marginLeft="15dp"
                         android:text="有效次数"
                         android:textColor="#666"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                     <RadioButton
                         android:id="@+id/rb_time"
-                        android:layout_width="200dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="-247dp"
-                        android:layout_marginTop="50dp"
+                        android:layout_marginLeft="15dp"
                         android:text="免费时长"
                         android:textColor="#666"
-                        android:textScaleX="1"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
 
                 </RadioGroup>
@@ -205,9 +204,12 @@
                     android:text="有效次数:" />
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/et_free_count"
                     style="@style/EditTextStyle"
-                    android:hint="请输入有效次数(必须)" />
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="请输入有效次数(必须)"
+                    android:inputType="number" />
 
                 <TextView
                     style="@style/TextViewStyle"
@@ -229,10 +231,12 @@
                     android:text="有效时长:" />
 
                 <EditText
+                    android:id="@+id/et_free_time"
                     style="@style/EditTextStyle"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:hint="请输入时间(必须)" />
+                    android:hint="请输入免费时间(必须)"
+                    android:inputType="number" />
 
                 <TextView
                     style="@style/TextViewStyle"
