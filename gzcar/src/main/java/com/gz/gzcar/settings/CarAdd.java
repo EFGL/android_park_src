@@ -3,7 +3,10 @@ package com.gz.gzcar.settings;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.gz.gzcar.BaseActivity;
@@ -35,8 +38,8 @@ public class CarAdd extends BaseActivity {
 
     @Bind(R.id.add_carnumber)
     EditText mCarnumber;
-    @Bind(R.id.add_cartype)
-    MyPullText mCartype;
+    @Bind(R.id.pt_cartype)
+    MyPullText mCarTypeSelector;
     @Bind(R.id.add_carwei)
     MyPullText mCarwei;
     @Bind(R.id.add_person)
@@ -59,6 +62,24 @@ public class CarAdd extends BaseActivity {
     MyPullText mCarwei5;
     @Bind(R.id.add_carwei6)
     MyPullText mCarwei6;
+    @Bind(R.id.tv_type_detail)
+    TextView tvTypeDetail;
+    @Bind(R.id.et_type_detail)
+    EditText etTypeDetail;
+    @Bind(R.id.rb_date)
+    RadioButton rbDate;
+    @Bind(R.id.rb_count)
+    RadioButton rbCount;
+    @Bind(R.id.rb_time)
+    RadioButton rbTime;
+    @Bind(R.id.lyt_date)
+    LinearLayout lytDate;
+    @Bind(R.id.editText)
+    EditText editText;
+    @Bind(R.id.lyt_count)
+    LinearLayout lytCount;
+    @Bind(R.id.lyt_time)
+    LinearLayout lytTime;
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
 
@@ -78,7 +99,7 @@ public class CarAdd extends BaseActivity {
         String current = DateUtils.date2String(new Date());
         mStarttiem.setText(current);
         String monthday = current.substring(5, 10);
-        mEndtime.setText((DateUtils.getCurrentYear() + 1) + "-" +monthday);
+        mEndtime.setText((DateUtils.getCurrentYear() + 1) + "-" + monthday);
 
         initMypull();
     }
@@ -87,8 +108,52 @@ public class CarAdd extends BaseActivity {
         ArrayList<String> typeList = new ArrayList<>();
         typeList.add("固定车");
         typeList.add("特殊车");
-        mCartype.setPopList(typeList);
-        mCartype.setText(typeList.get(0));
+        mCarTypeSelector.setPopList(typeList);
+        mCarTypeSelector.setText(typeList.get(0));
+
+        mCarTypeSelector.setOnTextChangedListener(new MyPullText.OnTextChangedListener() {
+            @Override
+            public void OnTextChanged() {
+                String text = mCarTypeSelector.getText();
+                if (text.equals("固定车")){
+                    tvTypeDetail.setText("固定车类型:");
+                    etTypeDetail.setText("月租车");
+                }else {
+                    tvTypeDetail.setText("收费类型:");
+                    etTypeDetail.setText("探亲车");
+                }
+            }
+        });
+        rbCount.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    lytCount.setVisibility(View.VISIBLE);
+                    lytDate.setVisibility(View.GONE);
+                    lytTime.setVisibility(View.GONE);
+                }
+            }
+        });
+        rbDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    lytCount.setVisibility(View.GONE);
+                    lytDate.setVisibility(View.VISIBLE);
+                    lytTime.setVisibility(View.GONE);
+                }
+            }
+        });
+        rbTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    lytCount.setVisibility(View.GONE);
+                    lytDate.setVisibility(View.GONE);
+                    lytTime.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         initCarWei(mCarwei);
         initCarWei(mCarwei2);
@@ -99,6 +164,7 @@ public class CarAdd extends BaseActivity {
 
     }
 
+    // 改为异步
     private void initCarWei(MyPullText myPullText) {
         ArrayList<String> carweiList = new ArrayList<>();
         try {
@@ -106,9 +172,9 @@ public class CarAdd extends BaseActivity {
             if (all != null) {
 
                 for (int i = 0; i < all.size(); i++) {
-                    carweiList.add(all.get(i).getPrint_code()+all.get(i).getId());
+                    carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
                 }
-                carweiList.add(0,"");
+                carweiList.add(0, "");
                 myPullText.setPopList(carweiList);
             }
         } catch (DbException e) {
@@ -125,7 +191,7 @@ public class CarAdd extends BaseActivity {
     public void getData() {
         String carNum = mCarnumber.getText().toString().trim().toUpperCase();
         String person = mPerson.getText().toString().trim();
-        String carType = mCartype.getText().toString().trim();
+        String carType = mCarTypeSelector.getText().toString().trim();
         String address = mAddress.getText().toString().trim();
         String phone = mPhone.getText().toString().trim();
         String startTime = mStarttiem.getText().toString().trim();
@@ -165,32 +231,32 @@ public class CarAdd extends BaseActivity {
             CarWeiBindTable carBind = new CarWeiBindTable();
             carBind.setCar_no(carNum);
             String carWei = mCarwei.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
             carWei = mCarwei2.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
             carWei = mCarwei3.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
             carWei = mCarwei4.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
             carWei = mCarwei5.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
             carWei = mCarwei6.getText().toString().trim();
-            if (!TextUtils.isEmpty(carWei)){
+            if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
@@ -201,6 +267,7 @@ public class CarAdd extends BaseActivity {
             e.printStackTrace();
         }
     }
+
     @OnClick({R.id.add_starttiem, R.id.add_endtime, R.id.add_btn_cancle, R.id.add_btn_ok})
     public void onClick(View view) {
         switch (view.getId()) {

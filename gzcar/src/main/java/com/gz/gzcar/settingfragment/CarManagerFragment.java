@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
 import com.gz.gzcar.utils.CarInfoDbutils;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
@@ -147,7 +147,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 } else {
                     try {
 
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%"+carNum+"%").orderBy("id", true).findAll();
+                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
                         if (all != null) {
                             allData.clear();
                             allData.addAll(all);
@@ -227,7 +227,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         if (TAG == 0) {
             try {
                 List<CarInfoTable> more = db.selector(CarInfoTable.class).orderBy("id", true).limit(15).offset(pageIndex * 15).findAll();
-                if (more!=null&&more.size() > 0) {
+                if (more != null && more.size() > 0) {
                     allData.addAll(more);
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
@@ -243,7 +243,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         .where("car_type", "=", type)
                         .limit(30)
                         .offset(pageIndex * 30).orderBy("id", true).findAll();
-                if (more!=null&&more.size()>0){
+                if (more != null && more.size() > 0) {
 
                     allData.addAll(more);
                     if (myAdapter != null)
@@ -322,10 +322,9 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             } catch (DbException e) {
                 e.printStackTrace();
             }
-            if( carInfo.getVehicle_type().equals("固定车")) {
+            if (carInfo.getVehicle_type().equals("固定车")) {
                 holder.mType.setText(carInfo.getCar_type());
-            }
-            else{
+            } else {
                 holder.mType.setText(carInfo.getFee_type());
             }
             holder.mPerson.setText(carInfo.getPerson_name());
@@ -452,23 +451,27 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            ContentResolver cr = getActivity().getContentResolver();
-            Log.i("ch", "onActivityResult: "+cr.getType(uri));
-                String fileName=uri.toString();
-                T.showLong(getActivity(),fileName);
-                fileName=fileName.toString().substring(fileName.lastIndexOf(".")+1);
-                if(!fileName.equalsIgnoreCase("csv")){
-                    T.showLong(getActivity(),"文件类型错误，导入失败！！！");
-                    return;
-                }
+            String fileName = uri.toString();
+            T.showLong(getActivity(), fileName);
+            L.showlogError("fileName===" + fileName);
+            fileName = fileName.toString().substring(fileName.lastIndexOf(".") + 1);
+            if (!fileName.equalsIgnoreCase("csv")) {
+                T.showLong(getActivity(), "文件类型错误，导入失败！！！");
+                return;
+            }
+             ContentResolver cr = getActivity().getContentResolver();
+
                 BufferedReader reader=null;
                 try {
                     reader= new BufferedReader(new InputStreamReader(cr.openInputStream(uri), Charset.forName("GBK")));
                     ArrayList<CarInfoTable> list=new   ArrayList<CarInfoTable>();
                     String  line= reader.readLine();
+                    L.showlogInfo(line);
                     while ((line = reader.readLine())!= null)
                     {
                         String[] members=line.split(",");
+                        L.showlogInfo(members.toString());
+                        L.showlogError("line==="+line);
                         try {
                             CarInfoTable carInfoTable = new CarInfoTable(members);
                             list.add(carInfoTable);
@@ -490,6 +493,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                         e.printStackTrace();
                     }
                 }
-            }
+        }
     }
 }

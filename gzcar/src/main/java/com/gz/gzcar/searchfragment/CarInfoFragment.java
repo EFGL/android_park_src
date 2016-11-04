@@ -1,6 +1,7 @@
 package com.gz.gzcar.searchfragment;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,12 +70,11 @@ public class CarInfoFragment extends Fragment {
         String carNum = mCarNumber.getText().toString().trim();
         if (!TextUtils.isEmpty(carNum) && carNum.length() > 0) {
             try {
-                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "like", "%"+carNum+"%").orderBy("id", true).findAll();
+                List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
                 if (allData != null) {
                     allData.clear();
                     allData.addAll(carNumList);
                     myAdapter.notifyDataSetChanged();
-                    sumBottomCarNum(allData.size());
                 }
             } catch (DbException e) {
                 T.showShort(getActivity(), "查询异常");
@@ -93,7 +93,7 @@ public class CarInfoFragment extends Fragment {
     private void loadMore(int pageIndex) {
         try {
             List<CarInfoTable> more = db.selector(CarInfoTable.class).limit(15).offset(pageIndex * 15).orderBy("id", true).findAll();
-            if (more!=null&&more.size() > 0) {
+            if (more != null && more.size() > 0) {
                 allData.addAll(more);
                 if (myAdapter != null)
                     myAdapter.notifyDataSetChanged();
@@ -140,7 +140,6 @@ public class CarInfoFragment extends Fragment {
                             allData.clear();
                             allData.addAll(all);
                             myAdapter.notifyDataSetChanged();
-                            sumBottomCarNum(allData.size());
                         }
 
                     } catch (DbException e) {
@@ -171,7 +170,6 @@ public class CarInfoFragment extends Fragment {
 
             myAdapter = new MyAdapter();
             rcy.setAdapter(myAdapter);
-            sumBottomCarNum(allData.size());
         }
 
     }
@@ -204,10 +202,9 @@ public class CarInfoFragment extends Fragment {
             final CarInfoTable carInfo = allData.get(position);
             holder.id.setText(position + 1 + "");
             holder.carNum.setText(carInfo.getCar_no());
-            if( carInfo.getVehicle_type().equals("固定车")) {
+            if (carInfo.getVehicle_type().equals("固定车")) {
                 holder.cartype.setText(carInfo.getCar_type());
-            }
-            else{
+            } else {
                 holder.cartype.setText(carInfo.getFee_type());
             }
             try {
@@ -297,7 +294,18 @@ public class CarInfoFragment extends Fragment {
     }
 
 
-    private void sumBottomCarNum(int size) {
-        mBottomCarNumber.setText("车辆总数:" + size + "辆");
+    //    private void sumBottomCarNum(int size) {
+//        mBottomCarNumber.setText("车辆总数:" + size + "辆");
+//    }
+    class SumTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
     }
 }

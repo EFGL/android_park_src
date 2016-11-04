@@ -19,26 +19,26 @@ public class CarInfoTable {
 
     public CarInfoTable(String[] members) throws Exception {
         if (!members[0].isEmpty())
-            this.id = Integer.parseInt(members[0]);
+            this.codeId = members[0];
         if (!members[1].isEmpty())
             this.car_no = members[1];
         if (!members[2].isEmpty())
-            this.car_type = members[2];
-        //   if(!members[3].isEmpty())
-        //  this.codeId=members[3];
+            this.vehicle_type = members[2];
+//        if(!members[3].isEmpty())
+//            this.codeId=members[3];
+        if (!members[3].isEmpty())
+            this.person_tel = members[3];
         if (!members[4].isEmpty())
-            this.person_tel = members[4];
+            this.person_name = members[4];
         if (!members[5].isEmpty())
-            this.person_name = members[5];
+            this.person_address = members[5];
         if (!members[6].isEmpty())
-            this.person_address = members[6];
-        if (!members[7].isEmpty())
-            this.status = members[7];
+            this.status = members[6];
         // try {
+        if (!members[7].isEmpty())
+            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[7]);
         if (!members[8].isEmpty())
-            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
-        if (!members[9].isEmpty())
-            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[9]);
+            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
         //}catch (Exception e) {
         //throw e;
         // }
