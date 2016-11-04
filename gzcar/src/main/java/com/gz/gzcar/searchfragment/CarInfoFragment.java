@@ -71,7 +71,8 @@ public class CarInfoFragment extends Fragment {
         if (!TextUtils.isEmpty(carNum)) {
             try {
                 List<CarInfoTable> carNumList = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
-                mBottomCarNumber.setText("车辆总数:"+carNumList.size()+" 辆");
+                if (carNumList != null)
+                    mBottomCarNumber.setText("车辆总数:" + carNumList.size() + " 辆");
                 if (allData != null) {
                     allData.clear();
                     allData.addAll(carNumList);
@@ -309,7 +310,7 @@ public class CarInfoFragment extends Fragment {
         protected String doInBackground(Void... params) {
             try {
                 List<CarInfoTable> all = db.findAll(CarInfoTable.class);
-                return all.size()+"";
+                return all.size() + "";
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -320,7 +321,7 @@ public class CarInfoFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (!TextUtils.isEmpty(s))
-                mBottomCarNumber.setText("车辆总数:"+s+" 辆");
+                mBottomCarNumber.setText("车辆总数:" + s + " 辆");
         }
     }
 }

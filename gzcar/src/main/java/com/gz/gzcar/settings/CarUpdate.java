@@ -1,5 +1,6 @@
 package com.gz.gzcar.settings;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -98,12 +99,16 @@ public class CarUpdate extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initMypull();
+        new PullTask().execute();
         initViews();
         receiveData();
     }
 
     private void initViews() {
+        ArrayList<String> typelist = new ArrayList<>();
+        typelist.add("固定车");
+        typelist.add("特殊车");
+        mType.setPopList(typelist);
 
         String current = DateUtils.date2String(new Date());
         mStart.setText(current);
@@ -446,36 +451,65 @@ public class CarUpdate extends BaseActivity {
         }
     }
 
-    private void initMypull() {
-        ArrayList<String> typelist = new ArrayList<>();
-        typelist.add("固定车");
-        typelist.add("特殊车");
-        mType.setPopList(typelist);
+    class PullTask extends AsyncTask<Void, Void, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(Void... params) {
 
-        initCarWei(mCarwei1);
-        initCarWei(mCarwei2);
-        initCarWei(mCarwei3);
-        initCarWei(mCarwei4);
-        initCarWei(mCarwei5);
-        initCarWei(mCarwei6);
-    }
-
-    private void initCarWei(MyPullText myPullText) {
-        ArrayList<String> carweiList = new ArrayList<>();
-        try {
-            List<CarWeiTable> all = db.findAll(CarWeiTable.class);
-            if (all != null) {
+            ArrayList<String> carweiList = new ArrayList<>();
+            try {
+                List<CarWeiTable> all = db.findAll(CarWeiTable.class);
 
                 for (int i = 0; i < all.size(); i++) {
-
                     carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
                 }
                 carweiList.add(0, "");
-                myPullText.setPopList(carweiList);
+                return carweiList;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return carweiList;
             }
-        } catch (DbException e) {
-            e.printStackTrace();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> strings) {
+            super.onPostExecute(strings);
+            mCarwei1.setPopList(strings);
+            mCarwei2.setPopList(strings);
+            mCarwei3.setPopList(strings);
+            mCarwei4.setPopList(strings);
+            mCarwei5.setPopList(strings);
+            mCarwei6.setPopList(strings);
+//            T.showShort(CarAdd.this,"车位检索完成,共"+strings.size()+"个");
         }
     }
+
+//    private void initMypull() {
+//
+//
+//        initCarWei(mCarwei1);
+//        initCarWei(mCarwei2);
+//        initCarWei(mCarwei3);
+//        initCarWei(mCarwei4);
+//        initCarWei(mCarwei5);
+//        initCarWei(mCarwei6);
+//    }
+//
+//    private void initCarWei(MyPullText myPullText) {
+//        ArrayList<String> carweiList = new ArrayList<>();
+//        try {
+//            List<CarWeiTable> all = db.findAll(CarWeiTable.class);
+//            if (all != null) {
+//
+//                for (int i = 0; i < all.size(); i++) {
+//
+//                    carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
+//                }
+//                carweiList.add(0, "");
+//                myPullText.setPopList(carweiList);
+//            }
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
