@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.gz.gzcar.BaseActivity;
@@ -14,6 +17,7 @@ import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
@@ -22,6 +26,7 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -56,6 +61,26 @@ public class CarUpdate extends BaseActivity {
     MyPullText mCarwei5;
     @Bind(R.id.add_carwei6)
     MyPullText mCarwei6;
+    @Bind(R.id.tv_type_detail)
+    TextView tvTypeDetail;
+    @Bind(R.id.et_type_detail)
+    EditText etTypeDetail;
+    @Bind(R.id.rb_date)
+    RadioButton rbDate;
+    @Bind(R.id.rb_count)
+    RadioButton rbCount;
+    @Bind(R.id.rb_time)
+    RadioButton rbTime;
+    @Bind(R.id.lyt_date)
+    LinearLayout lytDate;
+    @Bind(R.id.et_free_count)
+    EditText etFreeCount;
+    @Bind(R.id.lyt_count)
+    LinearLayout lytCount;
+    @Bind(R.id.et_free_time)
+    EditText etFreeTime;
+    @Bind(R.id.lyt_time)
+    LinearLayout lytTime;
     private int id;
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private String carNumber;
@@ -74,61 +99,134 @@ public class CarUpdate extends BaseActivity {
     protected void onResume() {
         super.onResume();
         initMypull();
+        initViews();
         receiveData();
     }
 
-    private void initMypull() {
-        ArrayList<String> typelist = new ArrayList<>();
-        typelist.add("固定车");
-        typelist.add("探亲车");
-        mType.setPopList(typelist);
-        mType.setText("固定车");
+    private void initViews() {
 
-        initCarWei(mCarwei1);
-        initCarWei(mCarwei2);
-        initCarWei(mCarwei3);
-        initCarWei(mCarwei4);
-        initCarWei(mCarwei5);
-        initCarWei(mCarwei6);
-    }
-    private void initCarWei(MyPullText myPullText) {
-        ArrayList<String> carweiList = new ArrayList<>();
-        try {
-            List<CarWeiTable> all = db.findAll(CarWeiTable.class);
-            if (all != null) {
+        String current = DateUtils.date2String(new Date());
+        mStart.setText(current);
+        String monthday = current.substring(5, 10);
+        mEnd.setText((DateUtils.getCurrentYear() + 1) + "-" + monthday);
 
-                for (int i = 0; i < all.size(); i++) {
-
-                    carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
+        mType.setOnTextChangedListener(new MyPullText.OnTextChangedListener() {
+            @Override
+            public void OnTextChanged() {
+                String text = mType.getText();
+                if (text.equals("固定车")) {
+                    tvTypeDetail.setText("固定车类型:");
+                    etTypeDetail.setText("月租车");
+                    rbDate.setVisibility(View.VISIBLE);
+                    rbDate.setChecked(true);
+                    rbCount.setVisibility(View.GONE);
+                    rbTime.setVisibility(View.GONE);
+                } else {
+                    tvTypeDetail.setText("收费类型:");
+                    etTypeDetail.setText("探亲车");
+                    rbDate.setVisibility(View.VISIBLE);
+                    rbCount.setVisibility(View.VISIBLE);
+                    rbTime.setVisibility(View.VISIBLE);
                 }
-                carweiList.add(0, "");
-                myPullText.setPopList(carweiList);
             }
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+        });
+        rbCount.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    lytCount.setVisibility(View.VISIBLE);
+                    lytDate.setVisibility(View.GONE);
+                    lytTime.setVisibility(View.GONE);
+                }
+            }
+        });
+        rbDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    lytCount.setVisibility(View.GONE);
+                    lytDate.setVisibility(View.VISIBLE);
+                    lytTime.setVisibility(View.GONE);
+                }
+            }
+        });
+        rbTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    lytCount.setVisibility(View.GONE);
+                    lytDate.setVisibility(View.GONE);
+                    lytTime.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
+
 
     private void receiveData() {
 
         carNumber = getIntent().getStringExtra("carNumber");
-        String carType = getIntent().getStringExtra("carType");
+//        String carType = getIntent().getStringExtra("carType");
 //        String carWei = getIntent().getStringExtra("carWei");
         String person = getIntent().getStringExtra("person");
         String phone = getIntent().getStringExtra("phone");
         String address = getIntent().getStringExtra("address");
-        String startTime = getIntent().getStringExtra("startTime");
-        String endTime = getIntent().getStringExtra("endTime");
+
         id = getIntent().getIntExtra("id", -1);
 
         mCarnum.setText(carNumber);
-        mType.setText(carType);
+//        mType.setText(carType);
 //        mOrder.setText(carWei);
         mPerson.setText(person);
         mPhone.setText(phone);
         mAddress.setText(address);
-        mStart.setText(startTime);
-        mEnd.setText(endTime);
+
+
+        String vehicle_type = getIntent().getStringExtra("vehicle_type");// 车类型
+        String carTypeDetail = getIntent().getStringExtra("carTypeDetail");// 固定车详情
+        String fee_type = getIntent().getStringExtra("fee_type");// 特殊车详情
+        int allow_count = getIntent().getIntExtra("allow_count", 0);
+        int allow_park_time = getIntent().getIntExtra("allow_park_time", 0);
+
+        mType.setText(vehicle_type);
+        if (vehicle_type.equals("固定车")) {
+            tvTypeDetail.setText("固定车类型:");
+            etTypeDetail.setText(carTypeDetail);
+            rbDate.setVisibility(View.VISIBLE);
+            rbDate.setChecked(true);
+            rbCount.setVisibility(View.GONE);
+            rbTime.setVisibility(View.GONE);
+            String startTime = getIntent().getStringExtra("startTime");
+            String endTime = getIntent().getStringExtra("endTime");
+
+            mStart.setText(startTime);
+            mEnd.setText(endTime);
+        } else {
+            tvTypeDetail.setText("收费类型:");
+            etTypeDetail.setText(fee_type);
+            rbDate.setVisibility(View.VISIBLE);
+            rbCount.setVisibility(View.VISIBLE);
+            rbTime.setVisibility(View.VISIBLE);
+        }
+        if (allow_count != 0) {
+            rbCount.setChecked(true);
+            rbDate.setChecked(false);
+            rbTime.setChecked(false);
+            lytCount.setVisibility(View.VISIBLE);
+            lytTime.setVisibility(View.GONE);
+            lytDate.setVisibility(View.GONE);
+            etFreeCount.setText(allow_count + "");
+        }
+
+        if (allow_park_time != 0) {
+            rbCount.setChecked(false);
+            rbDate.setChecked(false);
+            rbTime.setChecked(true);
+            lytTime.setVisibility(View.VISIBLE);
+            lytDate.setVisibility(View.GONE);
+            lytCount.setVisibility(View.GONE);
+            etFreeTime.setText(allow_park_time + "");
+        }
 
         setCarBindData(carNumber);
     }
@@ -152,7 +250,7 @@ public class CarUpdate extends BaseActivity {
                 for (int i = 0; i < all.size(); i++) {
                     String carWei = all.get(i).getStall_code();
                     if (i == 0) {
-                         mCarwei1.setText(carWei);
+                        mCarwei1.setText(carWei);
                         id1 = all.get(i).getId();
                     }
                     if (i == 1) {
@@ -188,20 +286,92 @@ public class CarUpdate extends BaseActivity {
     private void upDate() {
         if (id != -1) {
 
+            String carNum = mCarnum.getText().toString().trim().toUpperCase();
+            String person = mPerson.getText().toString().trim();
+            String vehicle_type = mType.getText().toString().trim();// 车辆类型
+            String phone = mPhone.getText().toString().trim();
+            String address = mAddress.getText().toString().trim();
+            String typeDetail = etTypeDetail.getText().toString().trim();
+            if (TextUtils.isEmpty(typeDetail)) {
+                T.showShort(this, "请输入详细类型");
+                return;
+            }
+
+
+            String car_type = "";// 固定车类型详细
+            String fee_type = "";// 特殊车类型详细
+            String allow_park_time = "0";
+            String allow_count = "0";
+
+            if (TextUtils.isEmpty(carNum)) {
+                T.showShort(this, "请输入车号");
+                return;
+            }
+
+            if (TextUtils.isEmpty(person)) {
+                T.showShort(this, "请输入联系人");
+                return;
+            }
+
             try {
-                CarInfoTable car = db.findById(CarInfoTable.class, id);
-                Log.e("ended","值=="+car);
-                car.setCar_no(mCarnum.getText().toString().trim().toUpperCase());
-                car.setCar_type(mType.getText().toString().trim());
-                car.setPerson_name(mPerson.getText().toString().trim());
-                car.setPerson_tel(mPhone.getText().toString().trim());
-                car.setPerson_address(mAddress.getText().toString().trim());
+                CarInfoTable mInfo = db.findById(CarInfoTable.class, id);
 
-                car.setStart_date(DateUtils.string2Date(mStart.getText().toString().trim()));
-                car.setStop_date(DateUtils.string2Date(mEnd.getText().toString().trim()));
+                if (vehicle_type.equals("固定车")) {
 
-                db.update(car, "car_no", "car_type", "person_name", "person_tel", "person_address", "start_date", "stop_date");
+                    car_type = typeDetail;
+                    String startTime = mStart.getText().toString().trim();
+                    String endTime = mEnd.getText().toString().trim();
+                    mInfo.setStart_date(DateUtils.string2Date(startTime));
+                    mInfo.setStop_date(DateUtils.string2Date(endTime));
 
+                    mInfo.setAllow_count(Integer.parseInt(allow_count));
+                    mInfo.setAllow_park_time(Integer.parseInt(allow_park_time));
+                } else {
+                    fee_type = typeDetail;
+                    if (rbDate.isChecked()) {
+                        String startTime = mStart.getText().toString().trim();
+                        String endTime = mEnd.getText().toString().trim();
+                        mInfo.setStart_date(DateUtils.string2Date(startTime));
+                        mInfo.setStop_date(DateUtils.string2Date(endTime));
+
+                        mInfo.setAllow_count(Integer.parseInt(allow_count));
+                        mInfo.setAllow_park_time(Integer.parseInt(allow_park_time));
+                    } else if (rbCount.isChecked()) {
+                        allow_count = etFreeCount.getText().toString().trim();
+                        if (TextUtils.isEmpty(allow_count)) {
+                            T.showShort(this, "请输入有效次数");
+                            return;
+                        }
+                        mInfo.setAllow_count(Integer.parseInt(allow_count));
+                        mInfo.setStart_date(null);
+                        mInfo.setStop_date(null);
+                        mInfo.setAllow_park_time(Integer.parseInt(allow_park_time));
+                    } else if (rbTime.isChecked()) {
+                        allow_park_time = etFreeTime.getText().toString().trim();
+                        if (TextUtils.isEmpty(allow_park_time)) {
+                            T.showShort(this, "请输入有效时长");
+                            return;
+                        }
+                        mInfo.setAllow_park_time(Integer.parseInt(allow_park_time));
+
+                        mInfo.setAllow_count(Integer.parseInt(allow_count));
+                        mInfo.setStart_date(null);
+                        mInfo.setStop_date(null);
+                    }
+                }
+                mInfo.setVehicle_type(vehicle_type);// 车辆类型
+                mInfo.setCar_type(car_type);
+                mInfo.setFee_type(fee_type);
+
+                mInfo.setCar_no(carNum);
+                mInfo.setPerson_name(person);
+                mInfo.setPerson_tel(phone);
+                mInfo.setPerson_address(address);
+
+
+                db.update(mInfo, "car_no", "vehicle_type", "car_type", "fee_type", "allow_count", "allow_park_time", "person_name", "person_tel", "person_address", "start_date", "stop_date");
+
+                L.showlogError("当前车辆信息       " + mInfo.toString());
                 // TODO: 2016/10/17 0017
                 String carWei1 = mCarwei1.getText().toString().trim();
                 String carWei2 = mCarwei2.getText().toString().trim();
@@ -243,18 +413,18 @@ public class CarUpdate extends BaseActivity {
             CarWeiBindTable carBind = db.findById(CarWeiBindTable.class, id);
             carBind.setStall_code(carWei);
             db.update(carBind, "car_wei");
-            Log.e("ende","id=="+id+"原来有 现在也有 更新");
+            Log.e("ende", "id==" + id + "原来有 现在也有 更新");
         } else if (id != -1 && TextUtils.isEmpty(carWei)) {
             // 原来有 现在没有 删除
-            db.deleteById(CarWeiBindTable.class,id);
-            Log.e("ende","id=="+id+"原来有 现在没有 删除");
+            db.deleteById(CarWeiBindTable.class, id);
+            Log.e("ende", "id==" + id + "原来有 现在没有 删除");
         } else if (id == -1 && !TextUtils.isEmpty(carWei)) {
             // 原来没有 现在有 创建
             CarWeiBindTable carBind = new CarWeiBindTable();
             carBind.setCar_no(mCarnum.getText().toString().trim());
             carBind.setStall_code(carWei);
             db.save(carBind);
-            Log.e("ende","id=="+id+" 原来没有 现在有 创建");
+            Log.e("ende", "id==" + id + " 原来没有 现在有 创建");
         }
     }
 
@@ -273,6 +443,38 @@ public class CarUpdate extends BaseActivity {
             case R.id.up_update:
                 upDate();
                 break;
+        }
+    }
+
+    private void initMypull() {
+        ArrayList<String> typelist = new ArrayList<>();
+        typelist.add("固定车");
+        typelist.add("特殊车");
+        mType.setPopList(typelist);
+
+        initCarWei(mCarwei1);
+        initCarWei(mCarwei2);
+        initCarWei(mCarwei3);
+        initCarWei(mCarwei4);
+        initCarWei(mCarwei5);
+        initCarWei(mCarwei6);
+    }
+
+    private void initCarWei(MyPullText myPullText) {
+        ArrayList<String> carweiList = new ArrayList<>();
+        try {
+            List<CarWeiTable> all = db.findAll(CarWeiTable.class);
+            if (all != null) {
+
+                for (int i = 0; i < all.size(); i++) {
+
+                    carweiList.add(all.get(i).getPrint_code() + all.get(i).getId());
+                }
+                carweiList.add(0, "");
+                myPullText.setPopList(carweiList);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
         }
     }
 

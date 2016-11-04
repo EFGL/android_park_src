@@ -29,7 +29,13 @@ public class DateUtils {
 
     public static String date2String(Date date) {
         // Date -> String
-        return dateFormat.format(date);
+        try {
+
+            return dateFormat.format(date);
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static String date2StringDetail(Date date) {

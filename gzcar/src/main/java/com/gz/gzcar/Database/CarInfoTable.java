@@ -106,9 +106,9 @@ public class CarInfoTable {
             this.status = members[6];
         // try {
         if (!members[7].isEmpty())
-            this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[7]);
+            this.start_date = new SimpleDateFormat("yyyy-MM-dd").parse(members[7]);
         if (!members[8].isEmpty())
-            this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[8]);
+            this.stop_date = new SimpleDateFormat("yyyy-MM-dd").parse(members[8]);
         //}catch (Exception e) {
         //throw e;
         // }

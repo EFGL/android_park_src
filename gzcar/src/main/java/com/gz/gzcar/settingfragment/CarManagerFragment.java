@@ -310,7 +310,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         }
 
         @Override
-        public void onBindViewHolder(MyHolder holder, int position) {
+        public void onBindViewHolder(MyHolder holder, final int position) {
 
             final CarInfoTable carInfo = allData.get(position);
             holder.mId.setText(position + 1 + "");
@@ -347,13 +347,21 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 public void onClick(View v) {
                     Intent i = new Intent(getContext(), CarUpdate.class);
                     i.putExtra("carNumber", carInfo.getCar_no());
-                    i.putExtra("carType", carInfo.getCar_type());
-//                    i.putExtra("carWei", carInfo.getCarWei());
+
+                    i.putExtra("vehicle_type",carInfo.getVehicle_type());// 固定车 特殊车
+                    i.putExtra("carTypeDetail", carInfo.getCar_type()); //固定车详情
+                    i.putExtra("fee_type",carInfo.getFee_type());//  特殊车详情
+                    i.putExtra("allow_count", carInfo.getAllow_count());// 免费次数
+                    i.putExtra("allow_park_time", carInfo.getAllow_park_time());// 免费时长
+
+
                     i.putExtra("person", carInfo.getPerson_name());
                     i.putExtra("phone", carInfo.getPerson_tel());
                     i.putExtra("address", carInfo.getPerson_address());
-                    i.putExtra("startTime", start);
-                    i.putExtra("endTime", end);
+                    i.putExtra("startTime", DateUtils.date2String(allData.get(position).getStart_date()));
+                    i.putExtra("endTime", DateUtils.date2String(allData.get(position).getStop_date()));
+//                    L.showlogError("startTime=="+s);
+//                    L.showlogError("endTime=="+end);
                     i.putExtra("id", carInfo.getId());
 
                     startActivity(i);
