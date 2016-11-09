@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/carnumber"
-            android:layout_width="260dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:background="@drawable/shape_white"
@@ -39,7 +39,7 @@
 
         <com.gz.gzcar.weight.MyPullText
             android:id="@+id/cartype"
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="35dp"
             android:layout_marginLeft="30dp" />
 
@@ -63,6 +63,15 @@
             android:text="导入"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/car_export"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:background="@drawable/tab_text_seletor"
+            android:text="导出"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <View
@@ -187,16 +196,28 @@
             android:layout_height="1dp"
             android:background="#e4e4e4" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/setting_carmanager_recyclerview"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/setting_carmanager_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/exp_progress"
+                android:visibility="gone"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e4e4e4"/>
+            android:background="#e4e4e4" />
 
         <TextView
             android:id="@+id/tv_bottom"

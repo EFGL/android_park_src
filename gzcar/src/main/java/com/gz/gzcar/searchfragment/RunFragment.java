@@ -3,7 +3,9 @@ package com.gz.gzcar.searchfragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,19 +17,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
+import org.xutils.x;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +65,8 @@ public class RunFragment extends BaseFragment {
     RecyclerView rcy;
     @Bind(R.id.tv_number)
     TextView mBottomCarNumber;
+    @Bind(R.id.search_run_progressbar)
+    ProgressBar progressbar;
 
     private View view;
     private DbManager db = null;
@@ -65,12 +76,16 @@ public class RunFragment extends BaseFragment {
     private RecyclerView.LayoutManager lm;
     private List<TrafficInfoTable> all;
     private String TAG = "chenghao";
+    private String exportStart;
+    private String exportEnd;
+    private String exportType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_search_run, container, false);
         }
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -122,7 +137,7 @@ public class RunFragment extends BaseFragment {
         }, 0);
     }
 
-    android.os.Handler handler = new android.os.Handler() {
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -186,6 +201,7 @@ public class RunFragment extends BaseFragment {
         popListItem.add("固定车");
         popListItem.add("临时车");
         popListItem.add("特殊车");
+        myPullText.setTextSize(16);
         myPullText.setPopList(popListItem);
         myPullText.setText(popListItem.get(0));
     }
@@ -198,9 +214,8 @@ public class RunFragment extends BaseFragment {
 
     private void initViews() {
         allData = new ArrayList<TrafficInfoTable>();
-        allData = new ArrayList<TrafficInfoTable>();
         if (db == null) {
-            db = org.xutils.x.getDb(MyApplication.daoConfig);
+            db = x.getDb(MyApplication.daoConfig);
         }
         //时间选择器
         initDetailTime(getContext(), mStartTime, mEndTime);
@@ -263,7 +278,7 @@ public class RunFragment extends BaseFragment {
     }
 
     public void updaterecycltviewadapter() {
-        if (all!=null&&all.size() != 0) {
+        if (all != null && all.size() != 0) {
             allData.clear();
             setallmessage();
             sumBottomCarNum(all.size());
@@ -281,7 +296,7 @@ public class RunFragment extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.et_run_starttime, R.id.et_run_endtime, R.id.btn_run_search})
+    @OnClick({R.id.et_run_starttime, R.id.et_run_endtime, R.id.btn_run_search, R.id.search_run_export})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_run_starttime:
@@ -293,8 +308,128 @@ public class RunFragment extends BaseFragment {
             case R.id.btn_run_search:
                 search();
                 break;
+            case R.id.search_run_export:
+                progressbar.setVisibility(View.VISIBLE);
+                exportStart = mStartTime.getText().toString().trim();
+                exportEnd = mEndTime.getText().toString().trim();
+                exportType = myPullText.getText();
+                L.showlogError("exportStart==" + exportStart);
+                L.showlogError("exportEnd==" + exportEnd);
+                L.showlogError("exportType==" + exportType);
+                new ExportTask().execute();
+                break;
         }
     }
+
+    class ExportTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... params) {
+            CsvWriter cw = null;
+            List<TrafficInfoTable> all;
+
+            try {
+
+                L.showlogError("--- 开始查询数据库 ---");
+                if (exportType.equals("所有车")) {
+
+                    all = db.selector(TrafficInfoTable.class)
+                            .where("update_time", ">", dateFormatDetail.parse(exportStart))
+                            .and("update_time", "<", dateFormatDetail.parse(exportEnd))
+                            .orderBy("update_time", true)
+                            .findAll();
+                } else {
+                    all = db.selector(TrafficInfoTable.class)
+                            .where("update_time", ">", dateFormatDetail.parse(exportStart))
+                            .and("update_time", "<", dateFormatDetail.parse(exportEnd))
+                            .and("car_type", "=", exportType)
+                            .orderBy("update_time", true)
+                            .findAll();
+                }
+                L.showlogError("--- 数据库查询完成,all ---" + all);
+                if (all != null && all.size() > 0) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                    String current = format.format(System.currentTimeMillis());
+                    String fileName = "/" + current + ".csv";
+                    String usbDir = "/storage/uhost";
+                    String usbDir1 = "/storage/uhost1";
+
+                    L.showlogError("fileName===" + fileName);
+
+                    String[] title = new String[]{"车号", "车辆类型", "入场时间", "出场时间",
+                            "应收费用", "实收费用", "停车时长", "入场操作员", "出场操作员"};
+                    try {
+
+                        cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
+                        cw.writeRecord(title);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            L.showlogError("--- 1号位未找到U盘,开始检索2号位 ---");
+                            cw = new CsvWriter(usbDir + fileName, ',', Charset.forName("GBK"));
+                            cw.writeRecord(title);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            L.showlogError("--- 2号位未找到U盘,停止... ---");
+                            return -2;
+                        }
+                    }
+
+                    TrafficInfoTable traffic;
+                    for (int i = 0; i < all.size(); i++) {
+                        traffic = all.get(i);
+                        String car_type = traffic.getCar_type();
+                        String car_no = traffic.getCar_no();
+                        Date in_time = traffic.getIn_time();
+                        String in_user = traffic.getIn_user();
+                        String out_time = DateUtils.date2StringDetail(traffic.getOut_time());
+                        if (TextUtils.isEmpty(out_time))
+                            out_time = "无出场记录";
+
+                        String out_user = traffic.getOut_user();
+                        Double receivable = traffic.getReceivable();
+                        Double actual_money = traffic.getActual_money();
+                        String stall_time = traffic.getStall_time();
+
+                        String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
+                                receivable + "", actual_money + "", stall_time, in_user, out_user};
+
+                        cw.writeRecord(carInfo);
+                        L.showlogError("数据写入成功 数据:id==" + traffic.getId());
+                    }
+                    Thread.sleep(3000);
+                    return all.size();
+                } else {
+                    return 0;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            } finally {
+                if (cw != null)
+                    cw.close();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            int i = integer.intValue();
+            if (i == -1) {
+                T.showShort(getContext(), "导出失败");
+            } else if (i == -2) {
+                T.showShort(getContext(), "请先插入U盘");
+
+            } else if (i == 0) {
+                T.showShort(getContext(), "当前时间段内无数据");
+            } else {
+
+                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+            }
+
+            progressbar.setVisibility(View.GONE);
+        }
+    }
+
 
     private void search() {
         String type = myPullText.getText().toString().trim();
@@ -371,7 +506,7 @@ public class RunFragment extends BaseFragment {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">", DateUtils.string2DateDetail(start))
                     .and("update_time", "<", DateUtils.string2DateDetail(end))
-                    .and("car_no", "like", "%"+number+"%")
+                    .and("car_no", "like", "%" + number + "%")
                     .orderBy("id", true)
                     .findAll();
 
@@ -390,6 +525,7 @@ public class RunFragment extends BaseFragment {
             T.showShort(getContext(), "查询异常");
         }
     }
+
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
@@ -429,8 +565,8 @@ public class RunFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ImageDetailActivity.class);
-                    intent.putExtra("in_image",traffic.getIn_image()+"");
-                    intent.putExtra("out_image",traffic.getOut_image()+"");
+                    intent.putExtra("in_image", traffic.getIn_image() + "");
+                    intent.putExtra("out_image", traffic.getOut_image() + "");
 
                     intent.putExtra("carNumber", traffic.getCar_no() + "");
 

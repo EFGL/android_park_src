@@ -228,7 +228,7 @@ public class MainActivity extends BaseActivity {
         outPortLog.setCar_type("");
         outPortLog.setStall_time("待通行");
         showLogin();
-        startmyserver();
+//        startmyserver();
     }
 
     /**

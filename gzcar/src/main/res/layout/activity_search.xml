@@ -61,8 +61,8 @@
                 android:background="@drawable/tab_text_seletor"
                 android:button="@null"
                 android:gravity="center"
-                android:text="车辆信息查询"
-                android:textColor="#555"
+                android:text="车辆信息"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -77,8 +77,8 @@
                 android:background="@drawable/tab_text_seletor"
                 android:button="@null"
                 android:gravity="center"
-                android:text="通行记录查询"
-                android:textColor="#555"
+                android:text="通行记录"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -93,8 +93,8 @@
                 android:background="@drawable/tab_text_seletor"
                 android:button="@null"
                 android:gravity="center"
-                android:text="收费记录查询"
-                android:textColor="#555"
+                android:text="收费记录"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -116,5 +116,5 @@
         android:id="@+id/fl_search"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="3.4" />
 </LinearLayout>

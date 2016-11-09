@@ -2,6 +2,7 @@ package com.gz.gzcar.searchfragment;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
@@ -27,7 +30,10 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +62,8 @@ public class PrizeFragment extends BaseFragment {
     RecyclerView rcy;
     @Bind(R.id.tv_money)
     TextView mMoney;
+    @Bind(R.id.seach_money_progerssbar)
+    ProgressBar progerssbar;
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
@@ -206,8 +214,7 @@ public class PrizeFragment extends BaseFragment {
 
     }
 
-
-    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search})
+    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search, R.id.search_money_export})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_money_starttime:
@@ -222,6 +229,112 @@ public class PrizeFragment extends BaseFragment {
                 search();
 
                 break;
+
+            case R.id.search_money_export:
+                progerssbar.setVisibility(View.VISIBLE);
+                searchStart = mStartTime.getText().toString().trim();
+                searchEnd = mEndTime.getText().toString().trim();
+                new ExportTask().execute();
+                break;
+        }
+    }
+
+    class ExportTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... params) {
+            CsvWriter cw = null;
+
+            try {
+
+                L.showlogError("--- 开始查询数据库 ---");
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                        .and("receivable", ">", 0)
+                        .orderBy("update_time", true)
+                        .findAll();
+                if (all != null && all.size() > 0) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                    String current = format.format(System.currentTimeMillis());
+                    String fileName = "/" + current + ".csv";
+                    String usbDir = "/storage/uhost";
+                    String usbDir1 = "/storage/uhost1";
+
+                    L.showlogError("fileName===" + fileName);
+
+                    String[] title = new String[]{"车号", "车辆类型", "入场时间", "出场时间",
+                            "应收费用", "实收费用", "停车时长", "入场操作员", "出场操作员"};
+                    try {
+                        cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
+                        cw.writeRecord(title);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            L.showlogError("--- 1号位未找到U盘,开始检索2号位 ---");
+                            cw = new CsvWriter(usbDir + fileName, ',', Charset.forName("GBK"));
+                            cw.writeRecord(title);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            L.showlogError("--- 2号位未找到U盘,停止... ---");
+                            return -2;
+                        }
+                    }
+
+
+                    TrafficInfoTable traffic;
+                    for (int i = 0; i < all.size(); i++) {
+                        traffic = all.get(i);
+                        String car_type = traffic.getCar_type();
+                        String car_no = traffic.getCar_no();
+                        Date in_time = traffic.getIn_time();
+                        String in_user = traffic.getIn_user();
+                        String out_time = DateUtils.date2StringDetail(traffic.getOut_time());
+                        if (TextUtils.isEmpty(out_time))
+                            out_time = "无出场记录";
+                        String out_user = traffic.getOut_user();
+                        Double receivable = traffic.getReceivable();
+                        Double actual_money = traffic.getActual_money();
+                        String stall_time = traffic.getStall_time();
+                        String status = traffic.getStatus();
+
+                        String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
+                                receivable + "", actual_money + "", stall_time, in_user, out_user};
+
+                        cw.writeRecord(carInfo);
+                        L.showlogError("数据写入成功 数据:id==" + traffic.getId());
+                    }
+                    Thread.sleep(1000);
+                    return all.size();
+                } else {
+                    return 0;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            } finally {
+                if (cw != null)
+                    cw.close();
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            int i = integer.intValue();
+            if (i == -1) {
+                T.showShort(getContext(), "导出失败");
+            } else if (i == -2) {
+                T.showShort(getContext(), "请先插入U盘");
+
+            } else if (i == 0) {
+                T.showShort(getContext(), "当前时间段内无数据");
+            } else {
+
+                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+            }
+
+            progerssbar.setVisibility(View.GONE);
         }
     }
 
@@ -292,7 +405,7 @@ public class PrizeFragment extends BaseFragment {
                             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                                     .where("update_time", ">", dateFormatDetail.parse(searchStart))
                                     .and("update_time", "<", dateFormatDetail.parse(searchEnd))
-                                    .and("car_number", "like", "%"+searchNumber+"%")
+                                    .and("car_number", "like", "%" + searchNumber + "%")
                                     .and("receivable", ">", 0)
                                     .and("status", "=", "已出")
                                     .orderBy("update_time", true)
@@ -336,6 +449,7 @@ public class PrizeFragment extends BaseFragment {
 
         }
     };
+
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
