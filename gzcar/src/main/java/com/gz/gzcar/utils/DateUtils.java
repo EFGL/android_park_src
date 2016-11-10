@@ -32,7 +32,7 @@ public class DateUtils {
         try {
 
             return dateFormat.format(date);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
@@ -40,11 +40,11 @@ public class DateUtils {
 
     public static String date2StringDetail(Date date) {
         // Date -> String
-        if (date == null) {
-            return "";
-        } else {
+        try {
 
             return dateFormatDetail.format(date);
+        }catch (Exception e){
+            return "";
         }
     }
 

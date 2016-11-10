@@ -62,7 +62,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="车辆管理"
-                android:textColor="#555"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -78,7 +78,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="车位管理"
-                android:textColor="#555"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -94,7 +94,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="收费规则"
-                android:textColor="#555"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -110,7 +110,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="用户管理"
-                android:textColor="#555"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View
@@ -126,7 +126,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:text="系统设置"
-                android:textColor="#555"
+                android:textColor="@drawable/tab_text_color_seletor"
                 android:textSize="25sp" />
 
             <View

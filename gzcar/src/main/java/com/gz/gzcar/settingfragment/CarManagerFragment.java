@@ -17,8 +17,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gz.gzcar.Database.CarInfoTable;
@@ -28,6 +30,7 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
 import com.gz.gzcar.utils.CarInfoDbutils;
+import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
@@ -38,8 +41,10 @@ import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +54,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static android.os.Environment.getExternalStorageDirectory;
 
 /**
  * Created by Endeavor on 2016/8/8.
@@ -68,6 +74,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     TextView mBottomCarNumber;
     @Bind(R.id.car_import)
     Button buttonCarImport;
+    @Bind(R.id.exp_progress)
+    ProgressBar progressBar;
     private int TAG = 0;
     private String type = "";
 
@@ -75,6 +83,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
+    private AlertDialog dialog;
 
 
     @Override
@@ -205,7 +214,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 super.onScrollStateChanged(recyclerView, newState);
 
                 int lastVisibleItemPosition = lm.findLastVisibleItemPosition();
-                L.showlogError("lastVisibleItemPosition==="+lastVisibleItemPosition);
+                L.showlogError("lastVisibleItemPosition===" + lastVisibleItemPosition);
                 if (lastVisibleItemPosition == (allData.size() - 1) && newState == 0) {
                     pageIndex += 1;
                     loadMore(pageIndex);
@@ -290,11 +299,133 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    @OnClick({R.id.car_add})
+    @OnClick({R.id.car_add, R.id.car_export})
     public void onClick(View view) {
-        startActivity(new Intent(getActivity(), CarAdd.class));
+        switch (view.getId()) {
+            case R.id.car_add:
+                startActivity(new Intent(getActivity(), CarAdd.class));
+                break;
+            case R.id.car_export:
+//                showExport();
+                progressBar.setVisibility(View.VISIBLE);
+                new ExportTask().execute();
+//                File file = new File("/storage/uhost");
+//                File file1 = new File("/storage/uhost1");
+
+        }
     }
 
+    private void showExport() {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.export_dialog, null);
+        dialog = new AlertDialog.Builder(getContext()).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(false);
+        dialog.show();
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+    }
+
+    // TODO: 2016/11/7 0007
+    class ExportTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... params) {
+            CsvWriter cw = null;
+
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                String current = format.format(System.currentTimeMillis());
+                String fileName = "/" + current + ".csv";
+                String usbDir = "/storage/uhost";
+                String usbDir1 = "/storage/uhost1";
+
+                L.showlogError("fileName===" + fileName);
+
+
+
+                L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
+
+                String[] title = new String[]{"id", "组键", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
+                        "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间", "状态"};
+                try {
+                    cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
+                    cw.writeRecord(title);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    try {
+                        L.showlogError("--- 1号位未找到U盘,开始检索2号位 ---");
+                        cw = new CsvWriter(usbDir + fileName, ',', Charset.forName("GBK"));
+                        cw.writeRecord(title);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        L.showlogError("--- 未找到U盘,停止... ---");
+                        return -2;
+                    }
+                }
+
+                L.showlogError("--- 发现U盘,开始查询数据库 ---");
+                List<CarInfoTable> all = db.findAll(CarInfoTable.class);
+                if (all != null) {
+
+                    CarInfoTable carInfoTable;
+                    for (int i = 0; i < all.size(); i++) {
+                        carInfoTable = all.get(i);
+                        int id = carInfoTable.getId();
+                        String codeId = carInfoTable.getCodeId();
+                        String car_no = carInfoTable.getCar_no();
+                        String car_type = carInfoTable.getCar_type();
+                        String vehicle_type = carInfoTable.getVehicle_type();
+                        String fee_type = carInfoTable.getFee_type();
+                        String person_name = carInfoTable.getPerson_name();
+                        String person_tel = carInfoTable.getPerson_tel();
+                        String person_address = carInfoTable.getPerson_address();
+                        Date start_date = carInfoTable.getStart_date();
+                        Date stop_date = carInfoTable.getStop_date();
+                        int allow_count = carInfoTable.getAllow_count();
+                        int allow_park_time = carInfoTable.getAllow_park_time();
+                        Date created_at = carInfoTable.getCreated_at();
+                        String updated_at = carInfoTable.getUpdated_at();
+                        String status = carInfoTable.getStatus();
+
+                        String[] carInfo = new String[]{id + "", codeId, car_no, car_type, vehicle_type, fee_type, person_name, person_tel, person_address, DateUtils.date2String(start_date),
+                                DateUtils.date2String(stop_date), allow_count + "", allow_park_time + "", DateUtils.date2String(created_at), updated_at, status};
+
+                        cw.writeRecord(carInfo);
+                        L.showlogError("数据写入成功 数据:id==" + id);
+                    }
+                    return all.size();
+                } else {
+                    return 0;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            } finally {
+                if (cw != null)
+                    cw.close();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            int i = integer.intValue();
+            if (i == -1) {
+                T.showShort(getContext(), "导出失败");
+            } else if (i == -2) {
+                T.showShort(getContext(), "请先插入U盘");
+
+            }  else if (i == 0) {
+                T.showShort(getContext(), "暂无数据");
+            }else {
+
+                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+            }
+
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
@@ -348,9 +479,9 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     Intent i = new Intent(getContext(), CarUpdate.class);
                     i.putExtra("carNumber", carInfo.getCar_no());
 
-                    i.putExtra("vehicle_type",carInfo.getVehicle_type());// 固定车 特殊车
+                    i.putExtra("vehicle_type", carInfo.getVehicle_type());// 固定车 特殊车
                     i.putExtra("carTypeDetail", carInfo.getCar_type()); //固定车详情
-                    i.putExtra("fee_type",carInfo.getFee_type());//  特殊车详情
+                    i.putExtra("fee_type", carInfo.getFee_type());//  特殊车详情
                     i.putExtra("allow_count", carInfo.getAllow_count());// 免费次数
                     i.putExtra("allow_park_time", carInfo.getAllow_park_time());// 免费时长
 
@@ -468,40 +599,37 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 T.showLong(getActivity(), "文件类型错误，导入失败！！！");
                 return;
             }
-             ContentResolver cr = getActivity().getContentResolver();
+            ContentResolver cr = getActivity().getContentResolver();
 
-                BufferedReader reader=null;
-                try {
-                    reader= new BufferedReader(new InputStreamReader(cr.openInputStream(uri), Charset.forName("GBK")));
-                    ArrayList<CarInfoTable> list=new   ArrayList<CarInfoTable>();
-                    String  line= reader.readLine();
-                    L.showlogInfo(line);
-                    while ((line = reader.readLine())!= null)
-                    {
-                        String[] members=line.split(",");
-                        L.showlogInfo(members.toString());
-                        L.showlogError("line==="+line);
-                        try {
-                            CarInfoTable carInfoTable = new CarInfoTable(members);
-                            list.add(carInfoTable);
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                            continue;
-                        }
-                    }
-                    T.showLong(getActivity(),"已成功导入"+ CarInfoDbutils.save_carinfo(list)+"条数据！！");
-                } catch (Exception e) {
-                    T.showLong(getActivity(),"导入失败！！");
-                    e.printStackTrace();
-                } finally {
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(cr.openInputStream(uri), Charset.forName("GBK")));
+                ArrayList<CarInfoTable> list = new ArrayList<CarInfoTable>();
+                String line = reader.readLine();
+                L.showlogInfo(line);
+                while ((line = reader.readLine()) != null) {
+                    String[] members = line.split(",");
+                    L.showlogInfo(members.toString());
+                    L.showlogError("line===" + line);
                     try {
-                        reader.close();
-                    }catch (Exception e) {
+                        CarInfoTable carInfoTable = new CarInfoTable(members);
+                        list.add(carInfoTable);
+                    } catch (Exception e) {
                         e.printStackTrace();
+                        continue;
                     }
                 }
+                T.showLong(getActivity(), "已成功导入" + CarInfoDbutils.save_carinfo(list) + "条数据！！");
+            } catch (Exception e) {
+                T.showLong(getActivity(), "导入失败！！");
+                e.printStackTrace();
+            } finally {
+                try {
+                    reader.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

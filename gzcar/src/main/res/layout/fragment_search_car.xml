@@ -14,39 +14,44 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_weight="0.6"
             android:text="车牌号"
-            android:textSize="18sp" />
+            android:textSize="17sp" />
 
         <EditText
-            android:singleLine="true"
-            android:imeOptions="actionDone"
             android:id="@+id/et_search_car"
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:background="@drawable/tab_text_seletor"
-            android:textSize="18sp" />
+            android:background="@drawable/shape_white"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textSize="17sp" />
 
 
         <Button
             android:id="@+id/btn_search_car"
-            android:layout_width="0dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_weight="1"
             android:background="@drawable/shape_white"
             android:text="查询"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <View
             android:layout_width="0dp"
-
             android:layout_height="0dp"
-            android:layout_weight="3.5" />
+            android:layout_weight="2" />
+
+        <Button
+            android:id="@+id/search_carinfo_export"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/shape_white"
+            android:text="导出"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -74,6 +79,7 @@
                 android:gravity="center"
                 android:text="序号"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
@@ -86,10 +92,12 @@
                 android:gravity="center"
                 android:text="车牌号"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -97,10 +105,12 @@
                 android:gravity="center"
                 android:text="类型"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -108,10 +118,12 @@
                 android:gravity="center"
                 android:text="车位"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -119,10 +131,12 @@
                 android:gravity="center"
                 android:text="联系人"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -130,10 +144,12 @@
                 android:gravity="center"
                 android:text="电话"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -141,10 +157,12 @@
                 android:gravity="center"
                 android:text="有效开始时间"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -152,20 +170,35 @@
                 android:gravity="center"
                 android:text="有效结束时间"
                 android:textSize="18sp" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="#e4e4e4" />
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#e4e4e4" />
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/search_car_info_recyclerview"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1">
+
+            <ProgressBar
+                android:id="@+id/search_carinfo_progressbar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_car_info_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
