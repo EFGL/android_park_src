@@ -52,7 +52,7 @@ public class DownloadServerMessage {
 	/**
 	 * 检查完所以，开始休息一次
 	 */
-	public long sleeptime = 1000 * 60;
+	public long sleeptime = 6;
 
 	/**
 	 * 执行次数
@@ -126,42 +126,52 @@ public class DownloadServerMessage {
 			} catch (DbException e2) {
 				e2.printStackTrace();
 			}
-			for(int i=0;i<4;i++) {
-				//起动对应下载任务
-				switch (i) {
-				case 0:
-					sendtime = bean.getHandler_in_out_record_download_time();
-					showlog("下载通行记录 传入时间:" + sendtime);
-					get_in_out_record_download(url, sendtime, mycontroller_sn);
-					break;
-				case 1:
-					sendtime = bean.getHandler_down_info_stall_time();
-					showlog("下载车位表 传入时间:" + sendtime);
-					get_down_info_stall(url, sendtime, mycontroller_sn);
-					break;
-				case 2:
-					sendtime = bean.getHandler_down_info_vehicle_time();
-					showlog("下载固定车 传入时间:" + sendtime);
-					get_down_info_vehicle(url, sendtime, mycontroller_sn);
-					break;
-				case 3:
-					sendtime = bean.getHandler_down_record_stall_vehicle_time();
-					showlog("下载车辆和车位绑定 传入时间:" + sendtime);
-					get_down_record_stall_vehicle(url, sendtime, mycontroller_sn);
-					break;
-				}//end switch
+			try {
+				sendtime = bean.getHandler_in_out_record_download_time();
+				showlog("下载通行记录 传入时间:" + sendtime);
+				get_in_out_record_download(url, sendtime, mycontroller_sn);
 				//待待接收完成
 				while(ifinteriorok == false) {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(20);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-			}//end for
-			showlog("所有的接口都循环执行了一次，延时："+sleeptime + "ms");
-			try {
-				Thread.sleep(sleeptime);
+				count++;
+				if(count>=sleeptime)
+				{
+					count = 0;
+					for(int i=0;i<3;i++) {
+						//起动对应下载任务
+						switch (i) {
+							case 0:
+								sendtime = bean.getHandler_down_info_stall_time();
+								showlog("下载车位表 传入时间:" + sendtime);
+								get_down_info_stall(url, sendtime, mycontroller_sn);
+								break;
+							case 1:
+								sendtime = bean.getHandler_down_info_vehicle_time();
+								showlog("下载固定车 传入时间:" + sendtime);
+								get_down_info_vehicle(url, sendtime, mycontroller_sn);
+								break;
+							case 2:
+								sendtime = bean.getHandler_down_record_stall_vehicle_time();
+								showlog("下载车辆和车位绑定 传入时间:" + sendtime);
+								get_down_record_stall_vehicle(url, sendtime, mycontroller_sn);
+								break;
+						}//end switch
+						//待待接收完成
+						while(ifinteriorok == false) {
+							try {
+								Thread.sleep(20);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}//end for
+				}
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
