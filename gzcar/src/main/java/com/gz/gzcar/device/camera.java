@@ -178,6 +178,8 @@ public class camera {
     }};
     public enum msgType{PLATE,PIC,STREAM};
 
+    public String getPortName() {return portName;}
+
     //手动出场
     public void manualPassOutFunc(){
         Log.i("button:", "manualPassOutFunc");

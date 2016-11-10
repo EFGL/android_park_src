@@ -1,13 +1,18 @@
 package com.gz.gzcar;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,7 +32,9 @@ import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
+import com.gz.gzcar.module.delayTask;
 import com.gz.gzcar.server.DownLoadServer;
+import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
@@ -61,11 +68,12 @@ import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
 public class MainActivity extends BaseActivity {
-    final int ledDisplayDelay = 30 * 1000;
     DbManager db = x.getDb(daoConfig);
     public TrafficInfoTable outPortLog = new TrafficInfoTable();
+    public String waitEnterCarNumber = "";
     public FileUtils picFileManage = new FileUtils();
     public String loginUserName;
+    public int emptyParkCount = 0;
     //摄像机IP
     camera inCamera = new camera(this, "in", settingInfo.getString("inCameraIp"));
     camera outCamera = new camera(this, "out", settingInfo.getString("outCameraIp"));
@@ -106,49 +114,10 @@ public class MainActivity extends BaseActivity {
     private AlertDialog dialog;
     private byte[] outPortPicBuffer;
 
-    private Timer inLedTimer;
-    private Timer outLedTimer;
-    //入口更新显示定时器超时任务
-    TimerTask inLedTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            String[] dispInfo = new String[]{null, null,null,null};
-            //设定总车位
-            long value = MyApplication.settingInfo.getLong("allCarPlace");
-            //设定空闲车位
-            try {
-                value = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-            //显示
-            inCamera.ledDisplay("空位:" + value,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行");
-        }
-    };
-    //出口更新显示定时器超时任务
-    TimerTask outLedTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            String[] dispInfo = new String[]{null, null,null,null};
-            //设定总车位
-            long value = MyApplication.settingInfo.getLong("allCarPlace");
-            //设定空闲车位
-            try {
-                value = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-            //显示
-            outCamera.ledDisplay("空位:" + value,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行");
-        }
-    };
+    private delayTask delayServer;  //显示屏延时服务
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inLedTimer = new Timer();
-        inLedTimer.schedule(inLedTimerTask,1000);
-        outLedTimer = new Timer();
-        outLedTimer.schedule(outLedTimerTask,1000);
         setContentView(R.layout.activity_main);
         initLogin();
         context = MainActivity.this;
@@ -228,15 +197,35 @@ public class MainActivity extends BaseActivity {
         outPortLog.setCar_type("");
         outPortLog.setStall_time("待通行");
         showLogin();
+        //起动传输服务
         startmyserver();
+        //起动显示屏定时更新服务
+        Intent delayThread=new Intent(MainActivity.this,delayTask.class);
+        //startService(delayThread);
+        bindService(delayThread,conn, Service.BIND_AUTO_CREATE);
+       // delayTask delayThread;
     }
 
+    ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //返回一个MsgService对象
+            delayServer = ((delayTask.ServicesBinder)service).getService();
+            delayServer.initCamera(inCamera,outCamera,10);
+            delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
+            delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
+        }
+    };
     /**
      * 启动我的服务
      */
     public void startmyserver(){
-       // Intent intent=new Intent(MainActivity.this,SendService.class);
-       // startService(intent);
+        Intent intent=new Intent(MainActivity.this,SendService.class);
+        startService(intent);
         Intent intentDon=new Intent(MainActivity.this,DownLoadServer.class);
         startService(intentDon);
     }
@@ -413,6 +402,7 @@ public class MainActivity extends BaseActivity {
         } catch (DbException e) {
             e.printStackTrace();
         }
+        emptyParkCount = (int) value;
         textViewEmptyPlace.setText(String.format("空闲车位：%d个", value));
         value = MyApplication.settingInfo.getLong("inCarCount");
         textViewInCarCount.setText(String.format("当班入场：%d车次", value));
@@ -422,9 +412,13 @@ public class MainActivity extends BaseActivity {
         textViewUserName.setText("操作员：" + stringValue);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         try {
-            Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
-            long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
-            stringValue = String.format("登陆：%d天%d小时%d分钟", loginTimeMinute / (24 * 60), (loginTimeMinute % 24) / 60, loginTimeMinute % 60);
+            if(MyApplication.settingInfo.getString("loginTime") != null) {
+                Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
+                long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
+                stringValue = String.format("登陆：%d天%d小时%d分钟", loginTimeMinute / (24 * 60), (loginTimeMinute % 24) / 60, loginTimeMinute % 60);
+            }else {
+                stringValue = String.format("登陆：%d天%d小时%d分钟", 0, 0,0);
+            }
             textViewLoginTime.setText(stringValue);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -441,11 +435,6 @@ public class MainActivity extends BaseActivity {
         String ParkTime = chargeParkTime.getText().toString();
         if (ParkTime.indexOf("无入场记录") > 0 ) {
             T.showShort(context, "无可收费车辆");
-            //更新出口收费信息
-            chargeCarNumber.setText("");
-            chargeCarType.setText("");
-            chargeParkTime.setText("");
-            chargeMoney.setText("待通行");
             return;
         }
         //如开启0元收费自动放行，则点本按钮无效
@@ -453,19 +442,10 @@ public class MainActivity extends BaseActivity {
             boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
             if (!tempCarFree) {
                T.showShort(context,"该车无需收费，已放行！");
+                return;
             }
-            else{
-                T.showShort(context, "无可收费车辆");
-            }
-            //更新出口收费信息
-            chargeCarNumber.setText("");
-            chargeCarType.setText("");
-            chargeParkTime.setText("");
-            chargeMoney.setText("待通行");
-            upStatusInfoDisp();
-            return ;
         }
-        if (carProcess.saveOutTempCar(outPortPicBuffer)) {
+        if (carProcess.saveOutTempCar(chargeCarNumber.getText().toString(),outPortPicBuffer,outPortLog.getReceivable(),outPortLog.getReceivable(),outPortLog.getStall_time())) {
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
         }
         T.showShort(context, "收费完成");
@@ -475,16 +455,16 @@ public class MainActivity extends BaseActivity {
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
         upStatusInfoDisp();
-
-        // 打印
-        print();
+        if(outPortLog.getReceivable()>0) {
+            // 打印
+            print();
+        }
+        delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
     }
 
     private void print() {
-
         boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
-        L.showlogError("是否打印::" + isPrint);
-
+        L.showlogError("是否打印:" + isPrint);
         if (isPrint) {
             Gson gson = new Gson();
             PrintBean printBean = new PrintBean();
@@ -541,17 +521,14 @@ public class MainActivity extends BaseActivity {
         byte[] picBuffer = inCamera.CapturePic();
         if (picBuffer == null) {
             T.showShort(context, "拍照失败，请重新操作");
-        } else {
-            String picPath = picFileManage.savePicture(picBuffer);
-            try {
-                carProcess.saveInNoPlateCar(picPath);
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
+            return;
         }
-//        inLedTimer.cancel();
-        //      inLedTimer = new Timer();
-        //    inLedTimer.schedule(inLedTimerTask,10000);
+        try {
+            carProcess.saveInNoPlateCar(picBuffer);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
         upStatusInfoDisp();
     }
 
@@ -559,7 +536,6 @@ public class MainActivity extends BaseActivity {
     private void againIdentInFunc() {
         T.showShort(context, "入口重新识别中......");
         inCamera.againIdent();
-
     }
 
     //重新识别出场
@@ -571,16 +547,15 @@ public class MainActivity extends BaseActivity {
 
     //入口确认起杆
     private void manualInOpenFunc() {
-        T.showShort(context, "已完成确认通行");
+        if(waitEnterCarNumber.length()<1) {
+            T.showShort(context, "无待通行车辆");
+            return;
+        }
         byte[] picBuffer = inCamera.CapturePic();
         if (picBuffer == null) {
             T.showShort(context, "拍照失败，请重新操作");
         } else {
             try {
-                if (plateTextIn.getText().toString().contentEquals("待通行")) {
-                    T.showShort(context, "无可确认通行车辆");
-                    return;
-                }
                 inCamera.playAudio(camera.AudioList.get("欢迎光临"));
                 carProcess.saveInTempCar(plateTextIn.getText().toString(), picBuffer);
             } catch (DbException e) {
@@ -589,6 +564,7 @@ public class MainActivity extends BaseActivity {
         }
         plateTextIn.setText("待通行");
         T.showShort(context, "已完成确认通行");
+        delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
         upStatusInfoDisp();
     }
 
@@ -599,12 +575,12 @@ public class MainActivity extends BaseActivity {
         if (ParkTime.indexOf("无入场记录") > 0 || chargeCarNumber.getText().length() == 0) {
             //拍照
             byte[] picBuffer = outCamera.CapturePic();
-            carProcess.saveOutFreeCar(picBuffer);
+            carProcess.saveOutFreeCar(chargeCarNumber.getText().toString(),picBuffer);
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
         } else {
             outPortLog.setReceivable(0.0);
             outPortLog.setCar_type("免费车");
-            carProcess.saveOutTempCar(outPortPicBuffer);
+            carProcess.saveOutTempCar(chargeCarNumber.getText().toString(),outPortPicBuffer,outPortLog.getReceivable(),0.0,outPortLog.getStall_time());
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
             T.showShort(context, "已放行");
         }
@@ -613,6 +589,7 @@ public class MainActivity extends BaseActivity {
         chargeCarType.setText("");
         chargeParkTime.setText("");
         chargeMoney.setText("待通行");
+        delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
         upStatusInfoDisp();
     }
     @Override
@@ -688,20 +665,25 @@ public class MainActivity extends BaseActivity {
                             if(delay < MyApplication.settingInfo.getInt("enterDelay")*60*1000) {
                                 if(delay>5*1000){
                                 T.showShort(context, "该车出频繁，请稍后通行");}
+                                else{
+                                    T.showShort(context, "系统时间错误");
+                                }
                                 return;
                             }
                         }
                         if (info.getName().equals("in")) {
                             //入口处理
                             carProcess.processCarInFunc(info.getPlateNumber(), info.getCarPicdata());
+                            delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
                         }else if (info.getName().equals("out")) {
                             //出口处理
-                            if (carProcess.processCarOutFunc(info.getPlateNumber(), info.getCarPicdata())) {
+                            if (carProcess.processCarOutFunc(info.getPlateNumber(), info.getCarPicdata(),5000)) {
                                 //更新出口收费信息
                                 chargeCarNumber.setText(outPortLog.getCar_no());
                                 chargeCarType.setText(outPortLog.getCar_type());
                                 chargeParkTime.setText("停车：" + outPortLog.getStall_time());
                                 chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
+                                delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
                             }
                         }
                         upStatusInfoDisp();
@@ -817,8 +799,8 @@ public class MainActivity extends BaseActivity {
             case 1:
                 int id = data.getIntExtra("id", -1);
                 if (id >= 0) {
-                    //byte[] picBuffer = outCamera.CapturePic();
-                    carProcess.processManualSelectOut(id, outPortPicBuffer);
+                    byte[] picBuffer = outCamera.CapturePic();
+                    carProcess.processManualSelectOut(id, picBuffer);
                     //更新出口收费信息
                     chargeCarNumber.setText(outPortLog.getCar_no());
                     chargeCarType.setText(outPortLog.getCar_type());

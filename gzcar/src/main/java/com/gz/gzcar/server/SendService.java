@@ -48,7 +48,7 @@ public class SendService extends Service{
 	private static String mycontroller_sn = MyApplication.devID;
 	private static Boolean log=true;
 
-	private static long sendtime=5000;
+	private final long sendtime=10;
 
 	private static  String Myurl="http://221.204.11.69:3002/api/v1/in_out_record_upload"
 ;
@@ -65,9 +65,9 @@ public class SendService extends Service{
 			public void run() {
 				while(true){
 					try {
-						TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).findFirst();
+						TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).orderBy("update_time").findFirst();
 						if(table!=null){
-							showlog("立即执行更新方法");
+							showlog("开始上传记录");
 							String jsonstr=production_jsonstr(table);
 							post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
 							while(true){
@@ -75,23 +75,24 @@ public class SendService extends Service{
 									Thread.sleep(20);
 									table=db.selector(TrafficInfoTable.class).where("id", "=", table.getId()).findFirst();
 									if(table.isModifeFlage()){
+										showlog("完成上传一条记录");
 										break;
 									}
 									else
 									{
-										Thread.sleep(sendtime);
+										Thread.sleep(1000);
 									}
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
 							}
 						}else {
+							showlog("记录上传：没有需要上传的记录");
 							try {
-								Thread.sleep(5*1000);
+								Thread.sleep(sendtime*1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							showlog("没有需要更新的消息");
 						}
 					} catch (DbException e) {
 						e.printStackTrace();
@@ -192,11 +193,10 @@ public class SendService extends Service{
 			}else if(table.getStatus() != null && table.getStatus().equals("已出")){
 				params.addBodyParameter("out_imagefile",getbase64msg(out_imagefile));
 			}
-			showlog("开始上传记录，str为＝"+str);
-			showlog("开始上传记录，out_imagename为＝"+out_imagename);
-			showlog("开始上传记录，in_imagename为＝"+in_imagename);
-			showlog("开始上传记录，out_imagefile为＝"+getbase64msg(out_imagefile));
-			showlog("开始上传记录，in_imagefile为＝"+getbase64msg(in_imagefile));
+			showlog("str＝"+str);
+			showlog("out_imagename＝"+out_imagename);
+			showlog("in_imagename＝"+in_imagename);
+			showlog("in_imagename＝"+in_imagename);
 			showlog("开始上传记录");
 			x.http().post(params, new CommonCallback<String>() {
 				@Override

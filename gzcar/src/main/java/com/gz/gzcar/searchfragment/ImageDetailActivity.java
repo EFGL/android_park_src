@@ -78,7 +78,6 @@ public class ImageDetailActivity extends BaseActivity {
 
 
         loadImage(in_image, out_image);
-
         carNum.setText("车牌号:"+carNumber);
         mCarType.setText("车类型:"+carType);
         mUseCarwei.setText("占用车位:"+stall);

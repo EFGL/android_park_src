@@ -43,7 +43,7 @@
 
         <service android:name=".server.SendService" />
         <service android:name=".server.DownLoadServer" />
-
+        <service android:name=".module.delayTask"/>
         <activity android:name=".searchfragment.ImageDetailActivity"></activity>
     </application>
 

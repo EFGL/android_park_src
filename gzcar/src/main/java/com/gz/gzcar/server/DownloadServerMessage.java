@@ -31,17 +31,15 @@ public class DownloadServerMessage {
 	/**
 	 * DB
 	 */
-	public static DbManager db = x.getDb(MyApplication.daoConfig);
+	public static final DbManager db = x.getDb(MyApplication.daoConfig);
 	/**
 	 * 设备号
 	 */
-	public static String mycontroller_sn ="007438056864981";
-
+	public static final String mycontroller_sn = MyApplication.devID;
 	/**
 	 * url
 	 */
-	public static String url = "http://221.204.11.69:3002/api/v1";
-
+	public static final String url =  MyApplication.settingInfo.getString("serverIp") + "api/v1";
 	/**
 	 * 是否打印log
 	 */
@@ -60,7 +58,6 @@ public class DownloadServerMessage {
 	 * 执行次数
 	 */
 	public int count = 0;
-
 	/**
 	 * 开始下载全部数据
 	 */
@@ -121,6 +118,7 @@ public class DownloadServerMessage {
 		String sendtime;
 		DownloadTimeBean bean = null;
 		sendonfirst(bean);
+		showlog("起动下载" +"mycontroller_sn: "  + mycontroller_sn + ",URL:"+ url);
 		while (true) {
 			//取所有信息最后一次下载时间;
 			try {
@@ -129,7 +127,6 @@ public class DownloadServerMessage {
 				e2.printStackTrace();
 			}
 			for(int i=0;i<4;i++) {
-				showlog("进入循环");
 				//起动对应下载任务
 				switch (i) {
 				case 0:
@@ -189,6 +186,7 @@ public class DownloadServerMessage {
 
 			@Override
 			public void onError(Throwable arg0, boolean arg1) {
+				showlog(arg0.toString());
 				ifinteriorok = true;
 			}
 
@@ -209,26 +207,49 @@ public class DownloadServerMessage {
 							list = com.alibaba.fastjson.JSONObject.parseArray(result, DownloadinandoutRecordBean.class);
 							//下一步根据list来存数据库
 							for (int c = 0; c < list.size(); c++) {
-								//开始存数据
-								TrafficInfoTable table = new TrafficInfoTable();
-								table.setIn_user(list.get(c).getIn_operator());
-								table.setPass_no(list.get(c).getPass_no());
-								table.setCar_type(list.get(c).getCard_type());
-								table.setCar_no(list.get(c).getCar_no());
-								table.setIn_time(DownUtils.getstringtodate(list.get(c).getIn_time()));
-								table.setIn_image(list.get(c).getIn_image());
-								table.setOut_time(DownUtils.getstringtodate(list.get(c).getOut_time()));
-								table.setOut_image(list.get(c).getOut_image());
-								table.setOut_user(list.get(c).getOut_operator());
-								table.setStall(list.get(c).getStall_code());
-								table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
-								table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
-								table.setStall_time(list.get(c).getParked_time() + "");
-								table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
-								table.setStatus(list.get(c).getStatus());
-								table.setModifeFlage(false);
 								try {
-									db.save(table);
+									TrafficInfoTable table = db.selector(TrafficInfoTable.class).where("pass_no","=",list.get(c).getPass_no()).findFirst();
+									if (table == null) {
+										table = new TrafficInfoTable();
+										//开始存数据
+										table.setIn_user(list.get(c).getIn_operator());
+										table.setPass_no(list.get(c).getPass_no());
+										table.setCar_type(list.get(c).getCard_type());
+										table.setCar_no(list.get(c).getCar_no());
+										table.setIn_time(DownUtils.getstringtodate(list.get(c).getIn_time()));
+										table.setIn_image(list.get(c).getIn_image());
+										table.setOut_time(DownUtils.getstringtodate(list.get(c).getOut_time()));
+										table.setOut_image(list.get(c).getOut_image());
+										table.setOut_user(list.get(c).getOut_operator());
+										table.setStall(list.get(c).getStall_code());
+										table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
+										table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
+										table.setStall_time(list.get(c).getParked_time() + "");
+										table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
+										table.setStatus(list.get(c).getStatus());
+										table.setModifeFlage(true);
+										db.save(table);
+									}
+									else {
+										//开始存数据
+										table.setIn_user(list.get(c).getIn_operator());
+										table.setPass_no(list.get(c).getPass_no());
+										table.setCar_type(list.get(c).getCard_type());
+										table.setCar_no(list.get(c).getCar_no());
+										table.setIn_time(DownUtils.getstringtodate(list.get(c).getIn_time()));
+										table.setIn_image(list.get(c).getIn_image());
+										table.setOut_time(DownUtils.getstringtodate(list.get(c).getOut_time()));
+										table.setOut_image(list.get(c).getOut_image());
+										table.setOut_user(list.get(c).getOut_operator());
+										table.setStall(list.get(c).getStall_code());
+										table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
+										table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
+										table.setStall_time(list.get(c).getParked_time() + "");
+										table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
+										table.setStatus(list.get(c).getStatus());
+										table.setModifeFlage(true);
+										db.update(table);
+									}
 								} catch (DbException e) {
 									e.printStackTrace();
 								}
