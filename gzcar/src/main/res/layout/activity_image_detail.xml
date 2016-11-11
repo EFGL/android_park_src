@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -37,29 +36,30 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:scaleType="fitXY"
             android:id="@+id/in_image"
             android:layout_width="665dp"
             android:layout_height="375dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_img_car" />
 
         <ImageView
-            android:scaleType="fitXY"
             android:id="@+id/out_image"
             android:layout_width="665dp"
             android:layout_height="375dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_img_car" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:padding="16dp">
 
@@ -178,5 +178,20 @@
                 android:text="更新时间:2016-10-25 11:11:11"
                 android:textSize="18sp" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4">
+
+            <Button
+                android:layout_centerInParent="true"
+                android:id="@+id/btn_print"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_white"
+                android:text="打印信息"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

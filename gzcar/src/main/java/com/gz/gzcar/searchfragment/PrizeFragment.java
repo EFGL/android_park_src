@@ -490,7 +490,7 @@ public class PrizeFragment extends BaseFragment {
                     if (free.getCar_type() == null)
                         intent.putExtra("carType", "未知");
                     else
-                        intent.putExtra("carType", free.getCar_type() + "");
+                        intent.putExtra("carType", free.getCar_type());
 
                     if (free.getStall() == null)
                         intent.putExtra("stall", "无");//占用车位
