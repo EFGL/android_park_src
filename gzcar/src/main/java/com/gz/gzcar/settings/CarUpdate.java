@@ -377,7 +377,6 @@ public class CarUpdate extends BaseActivity {
                 db.update(mInfo, "car_no", "vehicle_type", "car_type", "fee_type", "allow_count", "allow_park_time", "person_name", "person_tel", "person_address", "start_date", "stop_date");
 
                 L.showlogError("当前车辆信息       " + mInfo.toString());
-                // TODO: 2016/10/17 0017
                 String carWei1 = mCarwei1.getText().toString().trim();
                 String carWei2 = mCarwei2.getText().toString().trim();
                 String carWei3 = mCarwei3.getText().toString().trim();

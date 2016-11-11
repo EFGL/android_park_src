@@ -287,7 +287,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     }
 
 
-    // TODO: 2016/11/7 0007
     class ExportTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
@@ -550,7 +549,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), CarAdd.class));
                 break;
             case R.id.car_import:
-                // TODO: 2016/11/10 0010
                 myImport();
                 break;
             case R.id.car_export:

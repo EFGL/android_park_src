@@ -39,7 +39,6 @@ public class DownUtils {
 				Date date=sdf.parse(time);
 				return date;
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else {

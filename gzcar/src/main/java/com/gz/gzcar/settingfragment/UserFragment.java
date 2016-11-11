@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +79,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         try {
             allData = db.selector(UserTable.class).orderBy("id", true).findAll();
-            Log.e("ende", "allData==" + allData.size());
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询全部异常");
