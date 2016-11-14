@@ -195,7 +195,7 @@ public class MainActivity extends BaseActivity {
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
-        outPortLog.setStall_time("待通行");
+        outPortLog.setStall_time(-3);
         showLogin();
         //起动传输服务
         startmyserver();
@@ -445,6 +445,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }
         }
+        outPortLog.setOut_user(MyApplication.settingInfo.getString("userName"));
         if (carProcess.saveOutTempCar(chargeCarNumber.getText().toString(),outPortPicBuffer,outPortLog.getReceivable(),outPortLog.getReceivable(),outPortLog.getStall_time())) {
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
         }
@@ -473,9 +474,10 @@ public class MainActivity extends BaseActivity {
             if (outPortLog.getActual_money() == null)
                 printBean.money = 0.00;
             else
-                printBean.money = outPortLog.getActual_money();
+                printBean.money = outPortLog.getReceivable();
             printBean.outTime = DateUtils.date2StringDetail(outPortLog.getOut_time());
-            printBean.parkTime = outPortLog.getStall_time();
+            long  timeLong = outPortLog.getStall_time();
+            printBean.parkTime = String.format("%d时%d分",timeLong/60,timeLong%60);
             printBean.type = outPortLog.getCar_type();
 
             String json = gson.toJson(printBean);
@@ -681,7 +683,21 @@ public class MainActivity extends BaseActivity {
                                 //更新出口收费信息
                                 chargeCarNumber.setText(outPortLog.getCar_no());
                                 chargeCarType.setText(outPortLog.getCar_type());
-                                chargeParkTime.setText("停车：" + outPortLog.getStall_time());
+                                //停车时长
+                                long timeLong = outPortLog.getStall_time();
+                                if(timeLong == -1){
+                                    chargeParkTime.setText("无入场记录");
+                                }else if(timeLong == -2){
+                                    chargeParkTime.setText("系统时间错误");
+                                }else if(timeLong == -2) {
+                                    chargeParkTime.setText("待通行");
+                                }
+                                else
+                                {
+                                    String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                                    chargeParkTime.setText("停车：" + stall_time);
+                                }
+                                //收费
                                 chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
                                 delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
                             }
@@ -801,11 +817,24 @@ public class MainActivity extends BaseActivity {
                 if (id >= 0) {
                     byte[] picBuffer = outCamera.CapturePic();
                     carProcess.processManualSelectOut(id, picBuffer);
-                    //更新出口收费信息
-                    chargeCarNumber.setText(outPortLog.getCar_no());
-                    chargeCarType.setText(outPortLog.getCar_type());
-                    chargeParkTime.setText("停车：" + outPortLog.getStall_time());
-                    chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
+                    //停车时长
+                    long timeLong = outPortLog.getStall_time();
+                    if(timeLong == -1){
+                        chargeParkTime.setText("无入场记录");
+                    }else if(timeLong == -2){
+                        chargeParkTime.setText("系统时间错误");
+                    }else if(timeLong == -3) {
+                        chargeParkTime.setText("待通行");
+                    }
+                    else
+                    {
+                        //更新出口收费信息
+                        chargeCarNumber.setText(outPortLog.getCar_no());
+                        chargeCarType.setText(outPortLog.getCar_type());
+                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                        chargeParkTime.setText("停车：" + stall_time);
+                        chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
+                    }
                 }
                 break;
             default:

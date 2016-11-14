@@ -65,7 +65,7 @@ public class SelectPassOut extends BaseActivity {
 
     private void initData() {
         try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status", "=", "已入").orderBy("id", true).findAll();
+            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("id", true).findAll();
 
             if (all != null) {
                 allData.addAll(all);
@@ -100,7 +100,7 @@ public class SelectPassOut extends BaseActivity {
                 String carNum = outCarnum.getText().toString().trim();
                 if (TextUtils.isEmpty(carNum)) {
                     try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status", "=", "已入").findAll();
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "like", "%"+carNum+"%").and("status", "=", "已入").findAll();
                         if (all != null) {
                             allData.addAll(all);
                         }
@@ -110,7 +110,7 @@ public class SelectPassOut extends BaseActivity {
                     }
                 } else {
                     try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "carNum").and("status", "=", "已入").findAll();
+                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "%"+carNum+"%").and("status", "=", "已入").findAll();
                         if (all != null) {
                             allData.addAll(all);
                         }
@@ -131,7 +131,7 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_nocarnum:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌车").and("status", "=", "已入").orderBy("in_time", true).findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("in_time", true).findAll();
                     if (all == null) {
                         T.showShort(this, "未查到相关数据");
                     } else {
@@ -159,7 +159,7 @@ public class SelectPassOut extends BaseActivity {
             case R.id.out_no_pass:
                 try {
                     allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "!=", "固定车").orderBy("in_time", true).findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "=", "临时车").orderBy("in_time", true).findAll();
                     if (all != null) {
                         T.showShort(this, "找到" + all.size() + "条相关数据");
                         allData.addAll(all);
@@ -200,7 +200,7 @@ public class SelectPassOut extends BaseActivity {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("in_time", ">", befor)
                     .and("in_time", "<", current)
-                    .and("car_type", "!=", "固定车")
+                    .and("car_type", "=", "临时车")
                     .and("status", "=", "已入")
                     .orderBy("in_time", true)
                     .findAll();

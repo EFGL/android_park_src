@@ -57,7 +57,7 @@ public class DownloadServerMessage {
 	/**
 	 * 执行次数
 	 */
-	public int count = 0;
+	public int count = 6;
 	/**
 	 * 开始下载全部数据
 	 */
@@ -234,7 +234,7 @@ public class DownloadServerMessage {
 										table.setStall(list.get(c).getStall_code());
 										table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
 										table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
-										table.setStall_time(list.get(c).getParked_time() + "");
+										table.setStall_time(list.get(c).getParked_time());
 										table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
 										table.setStatus(list.get(c).getStatus());
 										table.setModifeFlage(true);
@@ -254,7 +254,7 @@ public class DownloadServerMessage {
 										table.setStall(list.get(c).getStall_code());
 										table.setReceivable(DownUtils.getstringtodouble(list.get(c).getFee()));
 										table.setActual_money(DownUtils.getstringtodouble(list.get(c).getFact_fee()));
-										table.setStall_time(list.get(c).getParked_time() + "");
+										table.setStall_time(list.get(c).getParked_time());
 										table.setUpdateTime(DownUtils.getstringtodate(list.get(c).getUpdated_at()));
 										table.setStatus(list.get(c).getStatus());
 										table.setModifeFlage(true);

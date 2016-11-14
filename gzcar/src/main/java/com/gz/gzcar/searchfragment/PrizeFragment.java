@@ -294,9 +294,9 @@ public class PrizeFragment extends BaseFragment {
                         String out_user = traffic.getOut_user();
                         Double receivable = traffic.getReceivable();
                         Double actual_money = traffic.getActual_money();
-                        String stall_time = traffic.getStall_time();
+                        long timeLong = traffic.getStall_time();
+                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
                         String status = traffic.getStatus();
-
                         String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
                                 receivable + "", actual_money + "", stall_time, in_user, out_user};
 
@@ -467,7 +467,19 @@ public class PrizeFragment extends BaseFragment {
             holder.mId.setText(position + 1 + "");
             holder.mCarNum.setText(free.getCar_no());
             holder.mMoney.setText(free.getActual_money() + "");
-            holder.mParkingtime.setText(free.getStall_time());
+            long timeLong = free.getStall_time();
+            if(timeLong == -1){
+                holder.mParkingtime.setText("无入场记录");
+            }else if(timeLong == -2){
+                holder.mParkingtime.setText("系统时间错误");
+            }else if(timeLong == -2) {
+                holder.mParkingtime.setText("待通行");
+            }
+            else
+            {
+                String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                holder.mParkingtime.setText(stall_time);
+            }
             holder.mType.setText(free.getCar_type());
             Date inTime = free.getIn_time();
             if (inTime != null) {
@@ -520,11 +532,20 @@ public class PrizeFragment extends BaseFragment {
                         intent.putExtra("out_time", "未出场");
                     else
                         intent.putExtra("out_time", DateUtils.date2StringDetail(free.getOut_time()));
-
-                    if (free.getStall_time() == null)
-                        intent.putExtra("stall_time", "未知");//停车时长
+                    //停车时长
+                    long timeLong = free.getStall_time();
+                    if(timeLong == -1){
+                        intent.putExtra("stall_time", "无入场记录");
+                    }else if(timeLong == -2){
+                        intent.putExtra("stall_time", "系统时间错误");//停车时长
+                    }else if(timeLong == -2) {
+                        intent.putExtra("stall_time", "待通行");//停车时长
+                    }
                     else
-                        intent.putExtra("stall_time", free.getStall_time() + "");//停车时长
+                    {
+                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                        intent.putExtra("stall_time", stall_time);//停车时长
+                    }
                     intent.putExtra("update_time", DateUtils.date2StringDetail(free.getUpdateTime()));
                     startActivity(intent);
                 }

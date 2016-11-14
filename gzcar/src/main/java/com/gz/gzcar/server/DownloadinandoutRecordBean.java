@@ -40,7 +40,7 @@ public class DownloadinandoutRecordBean {
 	private String created_at;
 	private String updated_controller_sn;
 	private String updated_at;
-	private int parked_time;
+	private long parked_time;
 	public String getPass_no() {
 		return pass_no;
 	}
@@ -131,12 +131,9 @@ public class DownloadinandoutRecordBean {
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
 	}
-	public int getParked_time() {
-		return parked_time;
-	}
-	public void setParked_time(int parked_time) {
-		this.parked_time = parked_time;
-	}
+	public long getParked_time() {	return parked_time;}
+	public void setParked_time(long parked_time) {this.parked_time = parked_time;}
+
 	public String getUpdated_controller_sn() {return updated_controller_sn;}
 	public void setUpdated_controller_sn(String updated_controller_sn) {this.updated_controller_sn = updated_controller_sn;}
 }
