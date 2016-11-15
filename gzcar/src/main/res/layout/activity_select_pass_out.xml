@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/ic_bg_message"
-                android:text="无车牌车辆" />
+                android:text="无牌车辆" />
         </LinearLayout>
 
         <TextView
@@ -188,7 +188,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="@drawable/ic_bg_message"
-            android:text="今日所有车辆"
+            android:text="24小时内车辆"
             android:textSize="17sp" />
 
         <Button

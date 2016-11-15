@@ -44,7 +44,7 @@ public class UploadBean {
 	private String  fee;
 	private String  fact_fee;
 	private String  created_at;
-	private String parked_time ;
+	private long parked_time ;
 	private String updated_controller_sn;
 	public String getPass_no() {
 		return pass_no;
@@ -130,12 +130,10 @@ public class UploadBean {
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
-	public String getParked_time() {
+	public long getParked_time() {
 		return parked_time;
 	}
-	public void setParked_time(String parked_time) {
-		this.parked_time = parked_time;
-	}
+	public void setParked_time(long parked_time) {		this.parked_time = parked_time;	}
 	public String getUpdated_controller_sn() {return updated_controller_sn;}
 	public void setUpdated_controller_sn(String updated_controller_sn) {this.updated_controller_sn = updated_controller_sn;	}
 }

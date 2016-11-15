@@ -56,7 +56,7 @@ public class TrafficInfoTable {
     private Double actual_money;
     //停车时长
     @Column(name = "stall_time")
-    private String stall_time;
+    private long stall_time;
     //记录更新时间
     @Column(name = "update_time")
     private Date update_time;
@@ -172,9 +172,9 @@ public class TrafficInfoTable {
 
     public void setStall(String stall) {        this.stall = stall;    }
 
-    public String getStall_time() {        return stall_time;    }
+    public long getStall_time() {        return stall_time;    }
 
-    public void setStall_time(String stall_time) {this.stall_time = stall_time;}
+    public void setStall_time(long stall_time) {this.stall_time = stall_time;}
 
     public void setReceivable(Double receivable) {    this.receivable = receivable;    }
 

@@ -388,10 +388,10 @@ public class RunFragment extends BaseFragment {
                         String out_user = traffic.getOut_user();
                         Double receivable = traffic.getReceivable();
                         Double actual_money = traffic.getActual_money();
-                        String stall_time = traffic.getStall_time();
+                        Long stall_time = traffic.getStall_time();
 
                         String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
-                                receivable + "", actual_money + "", stall_time, in_user, out_user};
+                                receivable + "", actual_money + "", stall_time+"", in_user, out_user};
 
                         cw.writeRecord(carInfo);
                         L.showlogError("数据写入成功 数据:id==" + traffic.getId());
@@ -603,10 +603,20 @@ public class RunFragment extends BaseFragment {
                     else
                         intent.putExtra("out_time", DateUtils.date2StringDetail(traffic.getOut_time()));
 
-                    if (traffic.getStall_time() == null)
-                        intent.putExtra("stall_time", "未知");//停车时长
+                    //停车时长
+                    long timeLong = traffic.getStall_time();
+                    if(timeLong == -1){
+                        intent.putExtra("stall_time", "无入场记录");
+                    }else if(timeLong == -2){
+                        intent.putExtra("stall_time", "系统时间错误");//停车时长
+                    }else if(timeLong == -2) {
+                        intent.putExtra("stall_time", "待通行");//停车时长
+                    }
                     else
-                        intent.putExtra("stall_time", traffic.getStall_time() + "");//停车时长
+                    {
+                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                        intent.putExtra("stall_time", stall_time);//停车时长
+                    }
                     intent.putExtra("update_time", DateUtils.date2StringDetail(traffic.getUpdateTime()));
                     startActivity(intent);
                 }
