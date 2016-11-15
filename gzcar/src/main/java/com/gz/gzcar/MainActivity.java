@@ -54,11 +54,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
@@ -190,11 +190,12 @@ public class MainActivity extends BaseActivity {
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
-//        outPortLog.setStall_time("待通行");
+        outPortLog.setStall_time(-3);
         showLogin();
         //起动传输服务
         startmyserver();
         //起动显示屏定时更新服务
+        upStatusInfoDisp();
         Intent delayThread=new Intent(MainActivity.this,delayTask.class);
         //startService(delayThread);
         bindService(delayThread,conn, Service.BIND_AUTO_CREATE);
@@ -212,7 +213,7 @@ public class MainActivity extends BaseActivity {
             delayServer = ((delayTask.ServicesBinder)service).getService();
             delayServer.initCamera(inCamera,outCamera,10);
             delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
-            delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
+            delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
         }
     };
     /**
@@ -283,6 +284,7 @@ public class MainActivity extends BaseActivity {
         } catch (DbException e) {
             e.printStackTrace();
         }
+
     }
 
     private void showLogin() {
@@ -625,7 +627,7 @@ public class MainActivity extends BaseActivity {
                         TrafficInfoTable log = db.selector(TrafficInfoTable.class).where("car_no", "=", info.getPlateNumber()).orderBy("update_time",true).findFirst();
                         if(log != null ) {
                             long delay = new Date().getTime() - log.getUpdateTime().getTime();
-                            if(delay < MyApplication.settingInfo.getInt(AppConstants.ENTER_DELAY)*60*1000) {
+                            if(delay < MyApplication.settingInfo.getInt("enterDelay")*60*1000) {
                                 if(delay>5*1000){
                                 T.showShort(context, "该车出频繁，请稍后通行");}
                                 else{
@@ -650,7 +652,7 @@ public class MainActivity extends BaseActivity {
                                     chargeParkTime.setText("无入场记录");
                                 }else if(timeLong == -2){
                                     chargeParkTime.setText("系统时间错误");
-                                }else if(timeLong == -2) {
+                                }else if(timeLong == -3) {
                                     chargeParkTime.setText("待通行");
                                 }
                                 else
@@ -802,6 +804,4 @@ public class MainActivity extends BaseActivity {
                 break;
         }
     }
-
-
 }

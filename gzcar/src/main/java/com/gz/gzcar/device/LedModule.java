@@ -102,7 +102,7 @@ public  class  LedModule {
           info         显示的数据
           resBuf       返回的数据
     */
-    public static byte[] formatData(char line,String info,String devType)
+    public static byte[] formatData(char line,String info,String devType,String dispMode)
     {
         int len;
         byte[] formatBuffer = null;
@@ -126,7 +126,13 @@ public  class  LedModule {
             {
                 if(info.indexOf("\\D") < 0 )
                 {
-                    areaData[19] = DisplayModeMap.get("LEFT_MODE");
+                    areaData[19] = DisplayModeMap.get(dispMode);
+                    if(areaData[19] == DisplayModeMap.get("LEFT_MODE")){
+                        areaData[22] = 0x00;
+                    }
+                    else{
+                        areaData[22] = 0x03;
+                    }
                 }else
                 {
                     areaData[19] =  DisplayModeMap.get("STATIC_MODE");
