@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gz.gzcar.AppConstants;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
@@ -58,7 +59,7 @@ public class MoneyFragment extends Fragment {
     private List<MoneyTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
     private static int id = -1;
-    private SPUtils spUtils;
+    private SPUtils spUtils = MyApplication.settingInfo;;
     private boolean isFreeTemp = false;
     private boolean isHourAddTemp = false;
 
@@ -93,27 +94,23 @@ public class MoneyFragment extends Fragment {
     }
 
     private void saveConfig() {
-        String temp = mTemp.getText().trim();
-        if (spUtils == null) {
-
-            spUtils = new SPUtils(getContext(), "config");
-        }
-        spUtils.putInt("tempFree",Integer.valueOf(temp));
-        spUtils.putBoolean("isFree", isFreeTemp);
-        spUtils.putBoolean("isHourAdd", isHourAddTemp);
+        String temp = mTemp.getText();
+        String friend = mFriends.getText();
+        spUtils.putInt(AppConstants.TEMP_FREE,Integer.valueOf(temp));
+        spUtils.putInt(AppConstants.FRIEND_FREE,Integer.valueOf(friend));
+        spUtils.putBoolean(AppConstants.IS_FREE, isFreeTemp);
+        spUtils.putBoolean(AppConstants.IS_HOURADD, isHourAddTemp);
         T.showShort(getContext(), "保存成功");
     }
 
     private void readConfiig() {
-        if (spUtils == null) {
-
-            spUtils = new SPUtils(getContext(), "config");
-        }
-        final int tempFree = spUtils.getInt("tempFree");// 临时车免费时长
-        final boolean isFree = spUtils.getBoolean("isFree");// 核减免费
-        final boolean isHourAdd = spUtils.getBoolean("isHourAdd");// 24h累加
+        final int tempFree = spUtils.getInt(AppConstants.TEMP_FREE);// 临时车免费时长
+        int friends = spUtils.getInt(AppConstants.FRIEND_FREE);
+        final boolean isFree = spUtils.getBoolean(AppConstants.IS_FREE);// 核减免费
+        final boolean isHourAdd = spUtils.getBoolean(AppConstants.IS_HOURADD);// 24h累加
 
         mTemp.setText(String.valueOf(tempFree));
+        mFriends.setText(String.valueOf(friends));
         tbFree.setChecked(isFree);
         tbHourAdd.setChecked(isHourAdd);
         tbFree.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {

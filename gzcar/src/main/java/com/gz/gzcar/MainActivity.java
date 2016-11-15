@@ -54,11 +54,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity {
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
-        outPortLog.setStall_time("待通行");
+//        outPortLog.setStall_time("待通行");
         showLogin();
         //起动传输服务
         startmyserver();
@@ -283,7 +283,6 @@ public class MainActivity extends BaseActivity {
         } catch (DbException e) {
             e.printStackTrace();
         }
-
     }
 
     private void showLogin() {
@@ -301,8 +300,7 @@ public class MainActivity extends BaseActivity {
         Button login = (Button) view.findViewById(R.id.login_sign_in_button);
         try {
             ArrayList<String> userName = new ArrayList<>();
-            List<UserTable> all = db.findAll(UserTable.class);
-            Log.e("ende", "all.size==" + all.size());
+            List<UserTable> all = db.selector(UserTable.class).orderBy("id",true).findAll();
             if (all != null) {
                 for (int i = 0; i < all.size(); i++) {
                     userName.add(all.get(i).getUserName());
@@ -627,7 +625,7 @@ public class MainActivity extends BaseActivity {
                         TrafficInfoTable log = db.selector(TrafficInfoTable.class).where("car_no", "=", info.getPlateNumber()).orderBy("update_time",true).findFirst();
                         if(log != null ) {
                             long delay = new Date().getTime() - log.getUpdateTime().getTime();
-                            if(delay < MyApplication.settingInfo.getInt("enterDelay")*60*1000) {
+                            if(delay < MyApplication.settingInfo.getInt(AppConstants.ENTER_DELAY)*60*1000) {
                                 if(delay>5*1000){
                                 T.showShort(context, "该车出频繁，请稍后通行");}
                                 else{
