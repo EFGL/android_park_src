@@ -163,7 +163,7 @@ public class carInfoProcess {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        myCamera.playAudio(camera.AudioList.get("欢迎光临"));
+                        myCamera.playAudio(camera.AudioList.get("请通行"));
                     }}, 5000);
             }else {
                 //起杆
@@ -606,7 +606,7 @@ public class carInfoProcess {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    inCamera.playAudio(camera.AudioList.get("欢迎光临"));
+                    inCamera.playAudio(camera.AudioList.get("请通行"));
                 }}, 5000);
             return true;
         }else

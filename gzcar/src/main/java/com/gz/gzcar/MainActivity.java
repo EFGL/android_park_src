@@ -59,11 +59,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
@@ -471,7 +469,7 @@ public class MainActivity extends BaseActivity {
             PrintBean printBean = new PrintBean();
             printBean.carNumber = outPortLog.getCar_no();
             printBean.inTime = DateUtils.date2StringDetail(outPortLog.getIn_time());
-            if (outPortLog.getActual_money() == null)
+            if (outPortLog.getReceivable() == null)
                 printBean.money = 0.00;
             else
                 printBean.money = outPortLog.getReceivable();
@@ -479,12 +477,9 @@ public class MainActivity extends BaseActivity {
             long  timeLong = outPortLog.getStall_time();
             printBean.parkTime = String.format("%d时%d分",timeLong/60,timeLong%60);
             printBean.type = outPortLog.getCar_type();
-
             String json = gson.toJson(printBean);
             L.showlogError("Json==" + json);
-
             PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
-
             showPrintDialog();
         }
 
