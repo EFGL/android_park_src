@@ -190,11 +190,12 @@ public class MainActivity extends BaseActivity {
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
-        outPortLog.setStall_time("待通行");
+        outPortLog.setStall_time(-3);
         showLogin();
         //起动传输服务
         startmyserver();
         //起动显示屏定时更新服务
+        upStatusInfoDisp();
         Intent delayThread=new Intent(MainActivity.this,delayTask.class);
         //startService(delayThread);
         bindService(delayThread,conn, Service.BIND_AUTO_CREATE);
@@ -212,7 +213,7 @@ public class MainActivity extends BaseActivity {
             delayServer = ((delayTask.ServicesBinder)service).getService();
             delayServer.initCamera(inCamera,outCamera,10);
             delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
-            delayServer.display("in","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
+            delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
         }
     };
     /**
@@ -615,7 +616,7 @@ public class MainActivity extends BaseActivity {
 //                        finish();
 //                    }
 //                });
-        T.showShort(this,"主人,你又调皮了~~");
+        T.showShort(this,"该程序禁止退出!");
     }
 
     public Handler myHandler = new Handler() {
@@ -679,7 +680,7 @@ public class MainActivity extends BaseActivity {
                                     chargeParkTime.setText("无入场记录");
                                 }else if(timeLong == -2){
                                     chargeParkTime.setText("系统时间错误");
-                                }else if(timeLong == -2) {
+                                }else if(timeLong == -3) {
                                     chargeParkTime.setText("待通行");
                                 }
                                 else

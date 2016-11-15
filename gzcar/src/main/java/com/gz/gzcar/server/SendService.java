@@ -231,9 +231,9 @@ public class SendService extends Service{
 		 */
 		public void updateBean(TrafficInfoTable table){
 			try {
-				//db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
-				table.setModifeFlage(true);
-				db.update(table,"modife_flage");
+				//table.setModifeFlage(true);
+				//db.update(table,"modife_flage");
+				db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
 			} catch (DbException e) {
 				e.printStackTrace();
 			}

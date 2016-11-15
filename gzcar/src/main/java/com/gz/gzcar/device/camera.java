@@ -15,6 +15,8 @@ import com.gz.gzcar.MyApplication;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ice_ipcsdk.SDK;
@@ -309,25 +311,55 @@ public class camera {
         Log.i("log", "audio:" +audioStr);
         sdk.ICE_IPCSDK_BroadcastGroup(audioStr);
     }
+    public void ledDisplay(char dev,String info){
+        //发送语音
+        try {
+            byte[] infoBuffer = info.getBytes("GBK");
+            ArrayList<Character> buffer =  new ArrayList<>();
+            buffer.add((char)0xAA);
+            buffer.add((char)0x55);
+            buffer.add((char)0xAA);
+            buffer.add((char)0x66);
+            buffer.add(dev);
+            buffer.add((char)infoBuffer.length);
+            //加入数据
+            byte check = (byte)infoBuffer.length;
+            for(byte item:infoBuffer){
+                check ^= item;
+                buffer.add((char)item);
+            }
+            buffer.add((char)check);
+            //生成返回数据
+            byte sendBuffer[] = new byte[buffer.size()];
+            int count = 0;
+            for (Character item:buffer){
+                sendBuffer[count++] = (byte)(item&0xFF);
+            }
+            sdk.ICE_IPCSDK_TransSerialPort(sendBuffer);
+            Log.i("log",sendBuffer.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
     //透传显示屏接口
     public void ledDisplay(String line1,String line2,String line3,String line4) {
         if (!line1.isEmpty()){
-            byte[] buffer = LedModule.formatData((char) 1, line1, "BX_5K1");
+            byte[] buffer = LedModule.formatData((char) 1, line1, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
             Log.i("log", "ledDisplay:" + line1);
         }
         if (!line2.isEmpty()){
-            byte[] buffer = LedModule.formatData((char) 2, line2, "BX_5K1");
+            byte[] buffer = LedModule.formatData((char) 2, line2, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
             Log.i("log", "ledDisplay:" + line2);
         }
         if (!line3.isEmpty()){
-            byte[] buffer = LedModule.formatData((char) 3, line3, "BX_5K1");
+            byte[] buffer = LedModule.formatData((char) 3, line3, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
             Log.i("log", "ledDisplay:" + line3);
         }
         if (!line4.isEmpty()){
-            byte[] buffer = LedModule.formatData((char) 4, line4, "BX_5K1");
+            byte[] buffer = LedModule.formatData((char) 4, line4, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
             Log.i("log", "ledDisplay:" + line4);
         }

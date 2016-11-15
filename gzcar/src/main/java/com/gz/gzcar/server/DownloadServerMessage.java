@@ -326,7 +326,9 @@ public class DownloadServerMessage {
 								e.printStackTrace();
 							}
 							List<DownTemFeeBean> list = new ArrayList<DownTemFeeBean>();
-							list = com.alibaba.fastjson.JSONObject.parseArray(result, DownTemFeeBean.class);
+							if (list != null) {
+								list = com.alibaba.fastjson.JSONObject.parseArray(result, DownTemFeeBean.class);
+							}
 							//下一步根据list来存数据库
 							for (int c = 0; c < list.size(); c++) {
 								try {

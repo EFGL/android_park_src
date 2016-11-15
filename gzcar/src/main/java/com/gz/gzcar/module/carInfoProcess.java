@@ -857,7 +857,7 @@ public class carInfoProcess {
         mainActivity.outPortLog.setStall_time(timeLong);
         String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
         //显示
-        inCamera.ledDisplay(inLog.getCar_type(),inLog.getCar_no()," 停车：" + timeFormat,String.format("请缴费: %.2f元",mainActivity.outPortLog.getReceivable()));
+        outCamera.ledDisplay(inLog.getCar_type(),inLog.getCar_no()," 停车：" + timeFormat,String.format("请缴费: %.2f元",mainActivity.outPortLog.getReceivable()));
         boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
         //判断收费为0时是否需要确认
         if(money == 0) {
