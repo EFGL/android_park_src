@@ -2,11 +2,14 @@ package com.gz.gzcar.settingfragment;
 
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +20,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -29,7 +31,7 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
-import com.gz.gzcar.utils.CarInfoDbutils;
+import com.gz.gzcar.utils.CsvReader;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
@@ -40,9 +42,8 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,35 +94,21 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         ButterKnife.bind(this, view);
 
-        /*导入*/
-        buttonCarImport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(Intent.createChooser(intent, "请选择一个要上传的文件"), 1);
-
-                    /*Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*.csv");
-                startActivityForResult(intent, 1);*/
-            }
-        });
-
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         ArrayList<String> typeList = new ArrayList<>();
         typeList.add("所有车");
         typeList.add("固定车");
         typeList.add("其它车");
         mCarType.setPopList(typeList);
         mCarType.setText(typeList.get(0));
+
+        return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         pageIndex = 0;
         allData.clear();
         if (myAdapter != null)
@@ -299,74 +286,49 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    @OnClick({R.id.car_add, R.id.car_export})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.car_add:
-                startActivity(new Intent(getActivity(), CarAdd.class));
-                break;
-            case R.id.car_export:
-//                showExport();
-                progressBar.setVisibility(View.VISIBLE);
-                new ExportTask().execute();
-//                File file = new File("/storage/uhost");
-//                File file1 = new File("/storage/uhost1");
 
-        }
-    }
-
-    private void showExport() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.export_dialog, null);
-        dialog = new AlertDialog.Builder(getContext()).create();
-        dialog.setView(view, 0, 0, 0, 0);
-        dialog.setCancelable(false);
-        dialog.show();
-        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.width = 500;
-        params.height = 400;
-        dialog.getWindow().setAttributes(params);
-    }
-
-    // TODO: 2016/11/7 0007
     class ExportTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
             CsvWriter cw = null;
 
             try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-                String current = format.format(System.currentTimeMillis());
-                String fileName = "/" + current + ".csv";
-                String usbDir = "/storage/uhost";
-                String usbDir1 = "/storage/uhost1";
-
-                L.showlogError("fileName===" + fileName);
-
-
-
-                L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
-
-                String[] title = new String[]{"id", "组键", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
-                        "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间", "状态"};
-                try {
-                    cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
-                    cw.writeRecord(title);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    try {
-                        L.showlogError("--- 1号位未找到U盘,开始检索2号位 ---");
-                        cw = new CsvWriter(usbDir + fileName, ',', Charset.forName("GBK"));
-                        cw.writeRecord(title);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        L.showlogError("--- 未找到U盘,停止... ---");
-                        return -2;
-                    }
-                }
-
-                L.showlogError("--- 发现U盘,开始查询数据库 ---");
+                L.showlogError("--- 开始查询数据库 ---");
                 List<CarInfoTable> all = db.findAll(CarInfoTable.class);
-                if (all != null) {
+
+                if (all != null && all.size() > 0) {
+
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                    String current = format.format(System.currentTimeMillis());
+                    String fileName = "/" + current + ".csv";
+                    String usbDir = "/storage/uhost";
+                    String usbDir1 = "/storage/uhost1";
+
+                    L.showlogError("fileName===" + fileName);
+
+
+                    L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
+
+                    String[] title = new String[]{"id", "组键", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
+                            "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间", "状态"};
+                    try {
+                        cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
+                        cw.writeRecord(title);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            L.showlogError("--- 1号位未找到U盘,开始检索2号位 ---");
+                            cw = new CsvWriter(usbDir + fileName, ',', Charset.forName("GBK"));
+                            cw.writeRecord(title);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            L.showlogError("--- 未找到U盘,停止... ---");
+                            return -2;
+                        }
+                    }
+
+                    L.showlogError("--- 发现U盘 ---");
+
 
                     CarInfoTable carInfoTable;
                     for (int i = 0; i < all.size(); i++) {
@@ -416,9 +378,9 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             } else if (i == -2) {
                 T.showShort(getContext(), "请先插入U盘");
 
-            }  else if (i == 0) {
+            } else if (i == 0) {
                 T.showShort(getContext(), "暂无数据");
-            }else {
+            } else {
 
                 T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
             }
@@ -579,6 +541,34 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         builder.show();
     }
 
+
+    @OnClick({R.id.car_add, R.id.car_export, R.id.car_import})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.car_add:
+                startActivity(new Intent(getActivity(), CarAdd.class));
+                break;
+            case R.id.car_import:
+                myImport();
+                break;
+            case R.id.car_export:
+//                showExport();
+                progressBar.setVisibility(View.VISIBLE);
+                new ExportTask().execute();
+//                File file = new File("/storage/uhost");
+//                File file1 = new File("/storage/uhost1");
+
+        }
+    }
+
+    /*导入*/
+    private void myImport() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, "请选择一个要上传的文件"), 1);
+    }
+
     /*
     功能：
     1、重载onActivityResult方法
@@ -591,45 +581,59 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            String fileName = uri.toString();
-            T.showLong(getActivity(), fileName);
-            L.showlogError("fileName===" + fileName);
-            fileName = fileName.toString().substring(fileName.lastIndexOf(".") + 1);
-            if (!fileName.equalsIgnoreCase("csv")) {
+            String csvFilePath = getRealFilePath(getActivity(), uri);
+            L.showlogError("csvFilePath==" + csvFilePath);
+            String fileName = csvFilePath.substring(csvFilePath.lastIndexOf(".") + 1);
+            if (!fileName.equalsIgnoreCase("csv") || csvFilePath == null) {
                 T.showLong(getActivity(), "文件类型错误，导入失败！！！");
                 return;
             }
-            ContentResolver cr = getActivity().getContentResolver();
-
-            BufferedReader reader = null;
+            ArrayList<String[]> csvList = new ArrayList<String[]>(); // 保存数据
+            CsvReader reader = null;
             try {
-                reader = new BufferedReader(new InputStreamReader(cr.openInputStream(uri), Charset.forName("GBK")));
-                ArrayList<CarInfoTable> list = new ArrayList<CarInfoTable>();
-                String line = reader.readLine();
-                L.showlogInfo(line);
-                while ((line = reader.readLine()) != null) {
-                    String[] members = line.split(",");
-                    L.showlogInfo(members.toString());
-                    L.showlogError("line===" + line);
-                    try {
-                        CarInfoTable carInfoTable = new CarInfoTable(members);
-                        list.add(carInfoTable);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        continue;
-                    }
+                reader = new CsvReader(csvFilePath, ',', Charset.forName("GBK"));
+                reader.readHeaders(); // 跳过表头   如果需要表头的话，不要写这句。
+                while (reader.readRecord()) { //逐行读入除表头的数据
+                    csvList.add(reader.getValues());
                 }
-                T.showLong(getActivity(), "已成功导入" + CarInfoDbutils.save_carinfo(list) + "条数据！！");
-            } catch (Exception e) {
-                T.showLong(getActivity(), "导入失败！！");
+                for (int row = 0; row < csvList.size(); row++) {
+                    String number = csvList.get(row)[2]; //取得第row行第2列的数据
+                    L.showlogError("第"+row+"行元素个数=="+csvList.get(row).length+",车牌号==" + number);
+                    CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
+                    db.save(carInfoTable);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                try {
+                if (reader != null)
                     reader.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            }
+
+        }
+    }
+
+    private String getRealFilePath(final Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
                 }
+                cursor.close();
             }
         }
+        return data;
     }
 }

@@ -64,8 +64,8 @@ public class DateUtils {
             return dateFormatDetail.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     // 获取当前年份

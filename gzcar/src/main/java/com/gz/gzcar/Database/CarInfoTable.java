@@ -1,9 +1,12 @@
 package com.gz.gzcar.Database;
 
+import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.L;
+
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
+import org.xutils.ex.DbException;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -84,35 +87,45 @@ public class CarInfoTable {
                 ", status='" + status + '\'' +
                 '}';
     }
+
     public CarInfoTable() {
     }
 
-    public CarInfoTable(String[] members) throws Exception {
-        if (!members[0].isEmpty())
-            this.codeId = members[0];
+    public CarInfoTable(String[] members) throws DbException {
+
         if (!members[1].isEmpty())
-            this.car_no = members[1];
+            this.codeId = members[1];
         if (!members[2].isEmpty())
-            this.vehicle_type = members[2];
-//        if(!members[3].isEmpty())
-//            this.codeId=members[3];
+            this.car_no = members[2];
         if (!members[3].isEmpty())
-            this.person_tel = members[3];
+            this.car_type = members[3];
         if (!members[4].isEmpty())
-            this.person_name = members[4];
+            this.vehicle_type = members[4];
         if (!members[5].isEmpty())
-            this.person_address = members[5];
+            this.fee_type = members[5];
         if (!members[6].isEmpty())
-            this.status = members[6];
-        // try {
+            this.person_name = members[6];
         if (!members[7].isEmpty())
-            this.start_date = new SimpleDateFormat("yyyy-MM-dd").parse(members[7]);
+            this.person_tel = members[7];
         if (!members[8].isEmpty())
-            this.stop_date = new SimpleDateFormat("yyyy-MM-dd").parse(members[8]);
-        //}catch (Exception e) {
-        //throw e;
-        // }
+            this.person_address = members[8];
+        if (!members[9].isEmpty())
+            this.start_date =DateUtils.string2Date(members[9]);
+        if (!members[10].isEmpty())
+            this.stop_date =DateUtils.string2Date(members[10]);
+        if (!members[11].isEmpty())
+            this.allow_count = Integer.parseInt(members[11]);
+        if (!members[12].isEmpty())
+            this.allow_park_time = Integer.parseInt(members[12]);
+        L.showlogError("12=="+members[12]);
+        if (!members[13].isEmpty())
+            this.created_at = DateUtils.string2DateDetail(members[13]);
+        if (!members[14].isEmpty())
+            this.updated_at = members[14];
+        if (!members[15].isEmpty())
+            this.status = members[15];
     }
+
     public int getId() {
         return id;
     }

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,8 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.flyco.dialog.listener.OnBtnClickL;
-import com.flyco.dialog.widget.NormalDialog;
 import com.google.gson.Gson;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -193,7 +190,7 @@ public class MainActivity extends BaseActivity {
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
-        outPortLog.setStall_time(-3);
+        outPortLog.setStall_time("待通行");
         showLogin();
         //起动传输服务
         startmyserver();
@@ -443,7 +440,6 @@ public class MainActivity extends BaseActivity {
                 return;
             }
         }
-        outPortLog.setOut_user(MyApplication.settingInfo.getString("userName"));
         if (carProcess.saveOutTempCar(chargeCarNumber.getText().toString(),outPortPicBuffer,outPortLog.getReceivable(),outPortLog.getReceivable(),outPortLog.getStall_time())) {
             outCamera.playAudio(camera.AudioList.get("一路顺风"));
         }
@@ -480,7 +476,8 @@ public class MainActivity extends BaseActivity {
             String json = gson.toJson(printBean);
             L.showlogError("Json==" + json);
             PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
-            showPrintDialog();
+
+//            showPrintDialog();
         }
 
     }
@@ -591,36 +588,34 @@ public class MainActivity extends BaseActivity {
     }
     @Override
     public void onBackPressed() {
-        final NormalDialog dialog = new NormalDialog(mContext);
-        dialog.content("确认退出?")//
-//                .contentTextColor()
-                .style(NormalDialog.STYLE_TWO)//
-                .title("提示")
-//                .titleTextColor(Color.RED)
-                .titleTextSize(23)//
-                .btnText("取消", "确认")//
-                .btnTextColor(Color.parseColor("#383838"), Color.parseColor("#D4D4D4"))//
-                .btnTextSize(16f, 16f)//
-                .showAnim(mBasIn)//
-                .dismissAnim(mBasOut)//
-//                .widthScale(0.5f)
-                .heightScale(0.5f)
-                .show();
-
-        dialog.setOnBtnClickL(
-                new OnBtnClickL() {
-                    @Override
-                    public void onBtnClick() {
-                        dialog.dismiss();
-                    }
-                },
-                new OnBtnClickL() {
-                    @Override
-                    public void onBtnClick() {
-                        dialog.superDismiss();
-                        finish();
-                    }
-                });
+//        final NormalDialog dialog = new NormalDialog(mContext);
+//        dialog.content("确认退出?")//
+//                .style(NormalDialog.STYLE_TWO)//
+//                .title("提示")
+//                .titleTextSize(23)//
+//                .btnText("取消", "确认")//
+//                .btnTextColor(Color.parseColor("#383838"), Color.parseColor("#D4D4D4"))//
+//                .btnTextSize(16f, 16f)//
+//                .showAnim(mBasIn)//
+//                .dismissAnim(mBasOut)//
+//                .heightScale(0.5f)
+//                .show();
+//
+//        dialog.setOnBtnClickL(
+//                new OnBtnClickL() {
+//                    @Override
+//                    public void onBtnClick() {
+//                        dialog.dismiss();
+//                    }
+//                },
+//                new OnBtnClickL() {
+//                    @Override
+//                    public void onBtnClick() {
+//                        dialog.superDismiss();
+//                        finish();
+//                    }
+//                });
+        T.showShort(this,"主人,你又调皮了~~");
     }
 
     public Handler myHandler = new Handler() {

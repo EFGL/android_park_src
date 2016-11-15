@@ -3,7 +3,7 @@ package com.gz.gzcar.server;
 /**
  * 上传记录的json格式
  *@ClassName: UploadBean 
- * @Description: TODO(这里用一句话描述这个类的作用) 
+ * @Description: (这里用一句话描述这个类的作用)
  * @author A18ccms a18ccms_gmail_com
  * @date 2016-10-18 上午11:25:23 
  * @author jindanke

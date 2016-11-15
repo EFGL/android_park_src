@@ -322,6 +322,11 @@ public class CarInfoFragment extends Fragment {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            return super.getItemViewType(position);
+        }
+
+        @Override
         public void onBindViewHolder(final MyHolder holder, final int position) {
 //            if(clickItem!=-1){
 //                if(clickItem==position){
