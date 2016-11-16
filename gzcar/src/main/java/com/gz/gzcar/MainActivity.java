@@ -302,8 +302,7 @@ public class MainActivity extends BaseActivity {
         Button login = (Button) view.findViewById(R.id.login_sign_in_button);
         try {
             ArrayList<String> userName = new ArrayList<>();
-            List<UserTable> all = db.findAll(UserTable.class);
-            Log.e("ende", "all.size==" + all.size());
+            List<UserTable> all = db.selector(UserTable.class).orderBy("id",true).findAll();
             if (all != null) {
                 for (int i = 0; i < all.size(); i++) {
                     userName.add(all.get(i).getUserName());
@@ -590,34 +589,7 @@ public class MainActivity extends BaseActivity {
     }
     @Override
     public void onBackPressed() {
-//        final NormalDialog dialog = new NormalDialog(mContext);
-//        dialog.content("确认退出?")//
-//                .style(NormalDialog.STYLE_TWO)//
-//                .title("提示")
-//                .titleTextSize(23)//
-//                .btnText("取消", "确认")//
-//                .btnTextColor(Color.parseColor("#383838"), Color.parseColor("#D4D4D4"))//
-//                .btnTextSize(16f, 16f)//
-//                .showAnim(mBasIn)//
-//                .dismissAnim(mBasOut)//
-//                .heightScale(0.5f)
-//                .show();
-//
-//        dialog.setOnBtnClickL(
-//                new OnBtnClickL() {
-//                    @Override
-//                    public void onBtnClick() {
-//                        dialog.dismiss();
-//                    }
-//                },
-//                new OnBtnClickL() {
-//                    @Override
-//                    public void onBtnClick() {
-//                        dialog.superDismiss();
-//                        finish();
-//                    }
-//                });
-        T.showShort(this,"该程序禁止退出!");
+        T.showShort(this,"主人,你又调皮了~~");
     }
 
     public Handler myHandler = new Handler() {

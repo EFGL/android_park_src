@@ -1,9 +1,9 @@
 package com.gz.gzcar;
 
 import android.app.Application;
-import android.widget.Toast;
 
 import com.gz.gzcar.utils.GetImei;
+import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
 
 import org.xutils.DbManager;
@@ -22,7 +22,7 @@ public class MyApplication extends Application {
     public static int app_handler_down_record_stall_vehicle=1000*5;//下传车位和车辆绑定表
 
     public static String devID ;
-    public static String Baseurl="http://221.204.11.69:3002/api/v1/";
+//    public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
     public  DbManager db = null;
@@ -32,20 +32,21 @@ public class MyApplication extends Application {
         super.onCreate();
         devID = GetImei.getphoneimei(getApplicationContext());
         settingInfo = new SPUtils(this,"config");
-        if(settingInfo.getString("serverIp") == null) {
-            settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
-            settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址
-            settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
-            settingInfo.putString("userName", " ");
-            settingInfo.putBoolean("loginStatus", false);
-            settingInfo.putLong("allCarPlace",500);
-            settingInfo.putLong("inCarCount", 0);
-            settingInfo.putLong("outCarCount", 0);
-            settingInfo.putLong("chargeCarNumber", 0);
-            settingInfo.putString("chargeMoney", "0.00");
-            settingInfo.putInt("enterDelay",1);
-            settingInfo.putInt("tempFree",30);
-        }
+//        if(settingInfo.getString("serverIp") == null) {
+//            settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
+//            settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址
+//            settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
+//            settingInfo.putString("userName", " ");
+//            settingInfo.putBoolean("loginStatus", false);
+//            settingInfo.putLong("allCarPlace",500);
+//            settingInfo.putLong("inCarCount", 0);
+//            settingInfo.putLong("outCarCount", 0);
+//            settingInfo.putLong("chargeCarNumber", 0);
+//            settingInfo.putString("chargeMoney", "0.00");
+//            settingInfo.putInt("enterDelay",1);
+//            settingInfo.putInt("tempFree",30);
+//        }
+        InitUtils.init();
         x.Ext.init(this);
         daoConfig = new DbManager.DaoConfig()
                 .setDbName(mDBName)
@@ -63,14 +64,14 @@ public class MyApplication extends Application {
                     public void onDbOpened(DbManager db) {
                         // 开启WAL, 对写入加速提升巨大
                         db.getDatabase().enableWriteAheadLogging();
-                        Toast.makeText(getApplicationContext(), "数据库打开了...", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "数据库打开了...", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
                     @Override
                     public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
                         //
-                        Toast.makeText(getApplicationContext(), "数据库升级了...", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "数据库升级了...", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.gz.gzcar.AppConstants;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.T;
@@ -50,13 +51,16 @@ public class SettingsFragment extends Fragment {
     Button mSave;
     @Bind(R.id.textViewDevId)
     TextView textViewDevId;
-    private final String TEMP_CAR_IN = "tempCarIn";// 临时车入场是否确认
-    private final String TEMP_CAR_FREE = "tempCarFree";// 零收费车是否确认
-    private final String IS_PRINT_CARD = "isPrintCard";// 是否打印小票
-    private final String IS_USE_CARD_HELP = "isUseCardHelp";// 是否使用读卡器
-    private final String IS_USE_CHINA = "isUseChina";// 是否使用读卡器
     @Bind(R.id.company)
     EditText mCompany;
+
+    private boolean isTempCarIn;
+    private boolean isFree;
+    private boolean isPrint;
+    private boolean isCardRead;
+    private boolean isChina;
+    private int enterDelay;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,42 +73,64 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initData();
+        readConfig();
     }
 
-    private boolean isTempCarIn;
-    private boolean isFree;
-    private boolean isPrint;
-    private boolean isCardRead;
-    private boolean isChina;
-    private int enterDelay;
 
-    private void initData() {
-        textViewDevId.setText(MyApplication.devID);
-        String companyName = MyApplication.settingInfo.getString("companyName", "");// 单位名称
-        String serverIp = MyApplication.settingInfo.getString("serverIp", "");// 服务器地址url
-        String inCameraIp = MyApplication.settingInfo.getString("inCameraIp", "");// 入口相机地址
-        String outCameraIp = MyApplication.settingInfo.getString("outCameraIp", "");// 出口相机地址
-        long stallNum = MyApplication.settingInfo.getLong("allCarPlace");
-        enterDelay = MyApplication.settingInfo.getInt("enterDelay");
+    private void readConfig() {
+
+        String serverIp = MyApplication.settingInfo.getString(AppConstants.SERVER_IP, "");// 服务器地址url
+        String inCameraIp = MyApplication.settingInfo.getString(AppConstants.IN_CAMERA_IP, "");// 入口相机地址
+        String outCameraIp = MyApplication.settingInfo.getString(AppConstants.OUT_CAMERA_IP, "");// 出口相机地址
+        long stallNum = MyApplication.settingInfo.getLong(AppConstants.ALL_CAR_PLACE);
+        enterDelay = MyApplication.settingInfo.getInt(AppConstants.ENTER_DELAY);
+        String companyName = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME, "");// 单位名称
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
         stallNumber.setText(String.valueOf(stallNum));
+        editText_enterDelay.setText(String.valueOf(enterDelay));
         mCompany.setText(companyName);
+        textViewDevId.setText(MyApplication.devID);
 
-        isTempCarIn = MyApplication.settingInfo.getBoolean(TEMP_CAR_IN);
-        isFree = MyApplication.settingInfo.getBoolean(TEMP_CAR_FREE);
-        isPrint = MyApplication.settingInfo.getBoolean(IS_PRINT_CARD);
-        isCardRead = MyApplication.settingInfo.getBoolean(IS_USE_CARD_HELP);
-        isChina = MyApplication.settingInfo.getBoolean(IS_USE_CHINA);
+
+        isTempCarIn = MyApplication.settingInfo.getBoolean(AppConstants.TEMP_CAR_IN);
+        isFree = MyApplication.settingInfo.getBoolean(AppConstants.TEMP_CAR_FREE);
+        isPrint = MyApplication.settingInfo.getBoolean(AppConstants.IS_PRINT_CARD);
+        isCardRead = MyApplication.settingInfo.getBoolean(AppConstants.IS_USE_CARD_HELP);
+        isChina = MyApplication.settingInfo.getBoolean(AppConstants.IS_USE_CHINA);
 
         mTogglebutton1.setChecked(isTempCarIn);
         mTogglebutton2.setChecked(isFree);
         mTogglebutton3.setChecked(isPrint);
         mTogglebutton4.setChecked(isCardRead);
         getmTogglebuttonCarNumber.setChecked(isChina);
-        editText_enterDelay.setText(String.valueOf(enterDelay));
+
+    }
+
+
+    private void saveConfig() {
+        MyApplication.settingInfo.putBoolean(AppConstants.TEMP_CAR_IN, isTempCarIn);
+        MyApplication.settingInfo.putBoolean(AppConstants.TEMP_CAR_FREE, isFree);
+        MyApplication.settingInfo.putBoolean(AppConstants.IS_PRINT_CARD, isPrint);
+        MyApplication.settingInfo.putBoolean(AppConstants.IS_USE_CARD_HELP, isCardRead);
+        MyApplication.settingInfo.putBoolean(AppConstants.IS_USE_CHINA, isChina);
+        String serverAddress = mServerAddress.getText().toString().trim();
+        String inCameraIp = mInIp.getText().toString().trim();
+        String outCameraIp = mOutIp.getText().toString().trim();
+        String companyName = mCompany.getText().toString().trim();
+        Long stallNum = Long.valueOf(stallNumber.getText().toString().trim());
+        enterDelay = Integer.valueOf(editText_enterDelay.getText().toString().trim());
+        if (enterDelay < 1) {
+            enterDelay = 1;
+        }
+        MyApplication.settingInfo.putInt(AppConstants.ENTER_DELAY, enterDelay);
+        MyApplication.settingInfo.putString(AppConstants.SERVER_IP, serverAddress);
+        MyApplication.settingInfo.putString(AppConstants.IN_CAMERA_IP, inCameraIp);
+        MyApplication.settingInfo.putString(AppConstants.OUT_CAMERA_IP, outCameraIp);
+        MyApplication.settingInfo.putLong(AppConstants.ALL_CAR_PLACE, stallNum);
+        MyApplication.settingInfo.putString(AppConstants.COMPANY_NAME, companyName);
+        T.showShort(getContext(), "保存成功");
     }
 
     @Override
@@ -183,6 +209,11 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    @OnClick(R.id.btn_save_update)
+    public void onClick() {
+
+        saveConfig();
+    }
 
     @Override
     public void onDestroyView() {
@@ -190,29 +221,4 @@ public class SettingsFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.btn_save_update)
-    public void onClick() {
-
-        MyApplication.settingInfo.putBoolean(TEMP_CAR_IN, isTempCarIn);
-        MyApplication.settingInfo.putBoolean(TEMP_CAR_FREE, isFree);
-        MyApplication.settingInfo.putBoolean(IS_PRINT_CARD, isPrint);
-        MyApplication.settingInfo.putBoolean(IS_USE_CARD_HELP, isCardRead);
-        MyApplication.settingInfo.putBoolean(IS_USE_CHINA, isChina);
-        String serverAddress = mServerAddress.getText().toString().trim();
-        String inCameraIp = mInIp.getText().toString().trim();
-        String outCameraIp = mOutIp.getText().toString().trim();
-        String companyName = mCompany.getText().toString().trim();
-        Long stallNum = Long.valueOf(stallNumber.getText().toString().trim());
-        enterDelay = Integer.valueOf(editText_enterDelay.getText().toString().trim());
-        if (enterDelay < 1) {
-            enterDelay = 1;
-        }
-        MyApplication.settingInfo.putInt("enterDelay", enterDelay);
-        MyApplication.settingInfo.putString("serverIp", serverAddress);
-        MyApplication.settingInfo.putString("inCameraIp", inCameraIp);
-        MyApplication.settingInfo.putString("outCameraIp", outCameraIp);
-        MyApplication.settingInfo.putLong("allCarPlace", stallNum);
-        MyApplication.settingInfo.putString("companyName",companyName);
-        T.showShort(getContext(), "保存成功");
-    }
 }

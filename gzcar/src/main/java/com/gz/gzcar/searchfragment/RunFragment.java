@@ -396,7 +396,6 @@ public class RunFragment extends BaseFragment {
                         cw.writeRecord(carInfo);
                         L.showlogError("数据写入成功 数据:id==" + traffic.getId());
                     }
-                    Thread.sleep(3000);
                     return all.size();
                 } else {
                     return 0;
