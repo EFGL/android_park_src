@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -50,6 +51,8 @@ public class ImageDetailActivity extends BaseActivity {
     TextView mParkTime;
     @Bind(R.id.update_time)
     TextView mUpdateTime;
+    @Bind(R.id.relative_print)
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,12 @@ public class ImageDetailActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
+        int tag = intent.getIntExtra("tag", -1);
+        if (tag>0){
+            relativeLayout.setVisibility(View.VISIBLE);
+        }else {
+            relativeLayout.setVisibility(View.GONE);
+        }
         String in_image = intent.getStringExtra("in_image");
         String out_image = intent.getStringExtra("out_image");
 

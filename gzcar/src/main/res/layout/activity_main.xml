@@ -28,6 +28,7 @@
                 <ImageView
                     android:id="@+id/imageView_videoPlateIn"
                     android:layout_width="match_parent"
+                    android:src="@drawable/ic_img_car"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"/>
 
@@ -49,7 +50,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     android:id="@+id/imageView_PicPlateIn"
                     android:src="@drawable/ic_img_car" />
 
@@ -123,6 +124,7 @@
                 <ImageView
                     android:id="@+id/imageView_videoPlateOut"
                     android:layout_width="match_parent"
+                    android:src="@drawable/ic_img_car"
                     android:layout_height="match_parent"
                    android:scaleType="fitXY"/>
 
@@ -144,7 +146,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     android:id="@+id/imageView_PicPlateOut"
                     android:src="@drawable/ic_img_car" />
 
