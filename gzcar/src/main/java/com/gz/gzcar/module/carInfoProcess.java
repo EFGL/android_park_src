@@ -188,12 +188,6 @@ public class carInfoProcess {
             FileUtils picFileManage = new FileUtils();
             String picPath = picFileManage.savePicture(picBuffer);  //保存图片
             if(upFlag){
-                /*trafficInfo.setStatus("已出");
-                trafficInfo.setUpdateTime(new Date());
-                trafficInfo.setUpdated_controller_sn(MyApplication.devID);
-                trafficInfo.setModifeFlage(false);
-                trafficInfo.setReceivable(0.0);
-                trafficInfo.setActual_money(0.0);*/
                 db.update(TrafficInfoTable.class,
                         WhereBuilder.b("car_no","=",trafficInfo.getCar_no()),
                         new KeyValue("status","已出"),
@@ -743,7 +737,7 @@ public class carInfoProcess {
         inLog = findInPortLog(carNumber);
         if(inLog == null) {
             //显示
-            inCamera.ledDisplay("车牌识别  一车一杆  减速慢行",carType,carNumber,"未入场");
+            outCamera.ledDisplay("车牌识别  一车一杆  减速慢行",carType,carNumber,"未入场");
             //延时播放语音
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -793,7 +787,7 @@ public class carInfoProcess {
         mainActivity.outPortLog.setStall_time(timeLong);
         String timeFormat = String.format("%d时%d分",timeLong/60,timeLong%60);
         //显示
-        inCamera.ledDisplay(carType,carNumber," 停车：" + timeFormat,String.format("请缴费: %.2f元",mainActivity.outPortLog.getReceivable()));
+        outCamera.ledDisplay(carType,carNumber," 停车：" + timeFormat,String.format("请缴费: %.2f元",mainActivity.outPortLog.getReceivable()));
         boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
         //判断收费为0时是否需要确认
         if(money == 0) {

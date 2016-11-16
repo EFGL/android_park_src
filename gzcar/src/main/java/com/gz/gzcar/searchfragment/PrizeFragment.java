@@ -92,8 +92,6 @@ public class PrizeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
-//        Log.e("ende", "start==" + start);
-//        Log.e("ende", "end==" + end);
         mStartTime.setText(start);
         mEndTime.setText(end);
     }

@@ -453,6 +453,7 @@ public class MainActivity extends BaseActivity {
         upStatusInfoDisp();
         if(outPortLog.getReceivable()>0) {
             // 打印
+            outPortLog.setOut_user(MyApplication.settingInfo.getString("userName"));
             print();
         }
         delayServer.display("out","空位:" + emptyParkCount,"欢迎光临","\\DH时\\DM分","车牌识别 一车一杆 减速慢行",10);//显示
