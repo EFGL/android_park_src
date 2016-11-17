@@ -114,8 +114,11 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initLogin();
+        L.showlogError("---------MainActivty -------onCreate()------");
         context = MainActivity.this;
+        if (MyApplication.settingInfo == null) {
+            MyApplication.settingInfo = new SPUtils(MainActivity.this, "config");
+        }
         //注册线程通讯
         EventBus.getDefault().register(this);
         ButterKnife.bind(this);
@@ -191,6 +194,8 @@ public class MainActivity extends BaseActivity {
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
         outPortLog.setStall_time(-3);
+
+        makeUser();
         showLogin();
         //起动传输服务
         startmyserver();
@@ -226,16 +231,10 @@ public class MainActivity extends BaseActivity {
         startService(intentDon);
     }
 
-    private void initLogin() {
-        makeUser();
-        if (MyApplication.settingInfo == null) {
-            MyApplication.settingInfo = new SPUtils(MainActivity.this, "config");
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+        L.showlogError("---------MainActivty -------onResume()------");
         List<MoneyTable> all = null;
         try {
             all = db.findAll(MoneyTable.class);
@@ -244,6 +243,7 @@ public class MainActivity extends BaseActivity {
         }
         if (all == null || all.size() < 1)
             addMoneyBaseData();
+
     }
 
     // 生成收费表

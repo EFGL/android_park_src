@@ -207,6 +207,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
 
                         try {
+
                             db.deleteById(UserTable.class, id);
                             allData.clear();
                             allData.addAll(db.findAll(UserTable.class));

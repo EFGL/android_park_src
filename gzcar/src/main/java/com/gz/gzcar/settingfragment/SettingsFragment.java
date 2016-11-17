@@ -1,20 +1,43 @@
 package com.gz.gzcar.settingfragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gz.gzcar.AppConstants;
+import com.gz.gzcar.Database.CarInfoTable;
+import com.gz.gzcar.Database.CarWeiBindTable;
+import com.gz.gzcar.Database.CarWeiTable;
+import com.gz.gzcar.Database.FreeInfoTable;
+import com.gz.gzcar.Database.MoneyTable;
+import com.gz.gzcar.Database.TrafficInfoTable;
+import com.gz.gzcar.Database.UserTable;
+import com.gz.gzcar.MainActivity;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.server.DownloadTimeBean;
+import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.T;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
+
+import org.xutils.DbManager;
+import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
+import org.xutils.x;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,6 +84,7 @@ public class SettingsFragment extends Fragment {
     private boolean isChina;
     private int enterDelay;
 
+    private DbManager db = x.getDb(MyApplication.daoConfig);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -209,10 +233,103 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    @OnClick(R.id.btn_save_update)
-    public void onClick() {
 
-        saveConfig();
+    @OnClick({R.id.btn_save_update, R.id.btn_clear_all})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_save_update:
+                saveConfig();
+
+                break;
+            case R.id.btn_clear_all:
+                request();
+                break;
+        }
+    }
+    // TODO: 2016/11/17 0017
+
+    private void clear(String userName) {
+        try {
+            db.delete(CarInfoTable.class);
+            db.delete(CarWeiTable.class);
+            db.delete(CarWeiBindTable.class);
+            db.delete(FreeInfoTable.class);
+            db.delete(MoneyTable.class);
+            db.delete(TrafficInfoTable.class);
+//            db.delete(DownloadTimeBean.class);
+//            db.delete(UserTable.class);
+
+            db.update(DownloadTimeBean.class, WhereBuilder.b("myid","=",0),new KeyValue("handler_in_out_record_download_time","1970-1-1 01:00:00")
+                    ,new KeyValue("handler_down_tempfee_time","1970-1-1 01:00:00")
+                    ,new KeyValue("handler_down_info_stall_time","1970-1-1 01:00:00")
+                    ,new KeyValue("handler_down_info_vehicle_time","1970-1-1 01:00:00")
+                    ,new KeyValue("handler_down_record_stall_vehicle_time","1970-1-1 01:00:00"));
+            MyApplication.settingInfo.clear();
+            InitUtils.init();
+            MyApplication.settingInfo.putString(AppConstants.USER_NAME,userName);
+            T.showShort(getContext(),"初始化成功,数据已全部删除");
+            startActivity(new Intent(getContext(),MainActivity.class));
+
+
+        } catch (DbException e) {
+            e.printStackTrace();
+            T.showShort(getContext(),"初始化失败");
+        }
+    }
+
+    private void request() {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.clear_all_diglog, null);
+        final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(true);
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+        dialog.show();
+
+        final EditText pwd = (EditText) view.findViewById(R.id.clear_password);
+        TextView name = (TextView) view.findViewById(R.id.clear_name);
+        Button cancle = (Button) view.findViewById(R.id.clear_cancle);
+        final Button clear = (Button) view.findViewById(R.id.clear_clear);
+
+        final String username = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
+        name.setText(username);
+
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String password = pwd.getText().toString().trim();
+                if (TextUtils.isEmpty(password)) {
+                    T.showShort(getContext(), "请输入密码");
+                    return;
+                }
+
+                try {
+                    List<UserTable> all = db.selector(UserTable.class).where("userName", "=", username).and("password", "=", password).findAll();
+                    if (all!=null&&all.size()>0){
+                        dialog.dismiss();
+                        clear(username);
+                    }
+                    else{
+
+                        T.showShort(getContext(),"您输入的密码有误!");
+                    }
+
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
     }
 
     @Override

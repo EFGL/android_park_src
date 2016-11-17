@@ -28,7 +28,7 @@ public class InitUtils {
             spUtils.putInt(AppConstants.ENTER_DELAY,1);
             spUtils.putInt(AppConstants.TEMP_FREE,30);
 
-            spUtils.putString("userName", " ");
+            spUtils.putString(AppConstants.USER_NAME, " ");
             spUtils.putLong("inCarCount", 0);
             spUtils.putLong("outCarCount", 0);
             spUtils.putLong("chargeCarNumber", 0);

@@ -70,6 +70,7 @@ public class DownloadServerMessage {
 			} else {
 				//初始化新至进去
 				DownloadTimeBean timeBean = new DownloadTimeBean();
+				timeBean.setMyid(0);
 				timeBean.setHandler_down_info_stall_time("1970-1-1 01:00:00");
 				timeBean.setHandler_down_info_vehicle_time("1970-1-1 01:00:00");
 				timeBean.setHandler_down_record_stall_vehicle_time("1970-1-1 01:00:00");
@@ -267,7 +268,7 @@ public class DownloadServerMessage {
 							//得到最后一条的更新时间，进行修改数据库
 							String updatetiem = list.get(list.size() - 1).getUpdated_at();
 							try {
-								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1), new KeyValue("handler_in_out_record_download_time", updatetiem));
+								db.update(DownloadTimeBean.class, WhereBuilder.b("myid", "=", 0), new KeyValue("handler_in_out_record_download_time", updatetiem));
 							} catch (DbException e) {
 								e.printStackTrace();
 							}
@@ -455,7 +456,7 @@ public class DownloadServerMessage {
 							//得到最后一条的更新时间，进行修改数据库
 							String updatetiem = list.get(list.size() - 1).getUpdated_at();
 							try {
-								db.update(DownloadTimeBean.class, WhereBuilder.b("id", "=", 1), new KeyValue("handler_down_info_stall_time", updatetiem));
+								db.update(DownloadTimeBean.class, WhereBuilder.b("myid", "=", 0), new KeyValue("handler_down_info_stall_time", updatetiem));
 							} catch (DbException e) {
 								e.printStackTrace();
 							}

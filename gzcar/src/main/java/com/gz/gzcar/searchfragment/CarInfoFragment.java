@@ -59,7 +59,7 @@ public class CarInfoFragment extends Fragment {
     TextView mBottomCarNumber;
     @Bind(R.id.search_carinfo_progressbar)
     ProgressBar mProgressbar;
-    private DbManager db = x.getDb(MyApplication.daoConfig);
+    private DbManager db=x.getDb(MyApplication.daoConfig);
     private RecyclerView rcy;
     private View view;
     private List<CarInfoTable> allData = new ArrayList<>();
@@ -436,6 +436,7 @@ public class CarInfoFragment extends Fragment {
     class SumTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
+
             try {
                 List<CarInfoTable> all = db.findAll(CarInfoTable.class);
                 return all.size() + "";
