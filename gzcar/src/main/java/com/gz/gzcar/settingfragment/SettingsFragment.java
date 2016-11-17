@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -246,7 +245,6 @@ public class SettingsFragment extends Fragment {
                 break;
         }
     }
-    // TODO: 2016/11/17 0017
 
     private void clear(String userName) {
         try {
