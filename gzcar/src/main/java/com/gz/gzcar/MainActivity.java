@@ -895,16 +895,22 @@ public class MainActivity extends BaseActivity {
 
     private void ask() {
         View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
+//        final AlertDialog dialog = new AlertDialog.Builder(this).create();
         final AlertDialog dialog = new AlertDialog.Builder(this).create();
         dialog.setView(view, 0, 0, 0, 0);
         dialog.setCancelable(true);
-        dialog.show();
+
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
         params.width = 500;
         params.height = 400;
+//        params.alpha = 0.5f;//dialog的透明度
+//        params.dimAmount = 1.0f;//窗体颜色 0为不变色 1为黑色
         dialog.getWindow().setAttributes(params);
         Button cencle = (Button) view.findViewById(R.id.ask_cencle);
         Button ok = (Button) view.findViewById(R.id.ask_ok);
+
+        dialog.show();
+
         cencle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

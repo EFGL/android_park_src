@@ -618,6 +618,7 @@ public class RunFragment extends BaseFragment {
                         intent.putExtra("stall_time", stall_time);//停车时长
                     }
                     intent.putExtra("update_time", DateUtils.date2StringDetail(traffic.getUpdateTime()));
+                    intent.putExtra("tag",-1);
                     startActivity(intent);
                 }
             });
