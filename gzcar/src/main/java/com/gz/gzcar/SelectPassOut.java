@@ -1,6 +1,8 @@
 package com.gz.gzcar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -45,40 +48,51 @@ public class SelectPassOut extends BaseActivity {
     ImageView outPhoto;
     @Bind(R.id.out_ph_carnum)
     TextView outPhCarnum;
-    private DbManager db = x.getDb(MyApplication.daoConfig);
+    private DbManager db = null;
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private int clickItem = -1;
     private MyAdapter myAdapter;
-
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_pass_out);
         ButterKnife.bind(this);
+        context = SelectPassOut.this;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
+        new initData().execute();
     }
 
-    private void initData() {
-        try {
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("id", true).findAll();
+    class initData extends AsyncTask<Void,Void,Integer>{
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                if (db == null)
+                {
+                    db = x.getDb(MyApplication.daoConfig);
+                }
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("id", true).findAll();
+                if (all != null) {
+                    allData.addAll(all);
+                }
 
-            if (all != null) {
-                allData.addAll(all);
+            } catch (DbException e) {
+                e.printStackTrace();
             }
-            initViews();
-
-        } catch (DbException e) {
-            e.printStackTrace();
+            return null;
         }
+        @Override
+        protected void onPostExecute(Integer integer) {
+            initViews();
+        }
+
     }
 
     private void initViews() {
-
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();
@@ -88,7 +102,6 @@ public class SelectPassOut extends BaseActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -96,31 +109,98 @@ public class SelectPassOut extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
                 String carNum = outCarnum.getText().toString().trim();
-                if (TextUtils.isEmpty(carNum)) {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "like", "%"+carNum+"%").and("status", "=", "已入").findAll();
-                        if (all != null) {
-                            allData.addAll(all);
-                        }
-                        myAdapter.notifyDataSetChanged();
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "%"+carNum+"%").and("status", "=", "已入").findAll();
-                        if (all != null) {
-                            allData.addAll(all);
-                        }
-                        myAdapter.notifyDataSetChanged();
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
-                }
+                new findCarNumberDatas(carNum).execute();
             }
         });
+    }
+    //按车号查找数据
+    class  findCarNumberDatas extends AsyncTask<Void,Void,Integer>{
+        private String carNum;
+        public findCarNumberDatas(String carNum){
+            this.carNum = carNum;
+        }
+        @Override
+        protected Integer doInBackground(Void... params) {
+            if (TextUtils.isEmpty(carNum)) {
+                try {
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "like", "%"+carNum+"%").and("status", "=", "已入").findAll();
+                    if (all != null) {
+                        allData.addAll(all);
+                    }
+                    myAdapter.notifyDataSetChanged();
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "%"+carNum+"%").and("status", "=", "已入").findAll();
+                    if (all != null) {
+                        allData.addAll(all);
+                    }
+                    myAdapter.notifyDataSetChanged();
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+    //查询所有示出场车辆
+    class findAllNoPass extends AsyncTask<Void,Void,Integer> {
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                allData.clear();
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "=", "临时车").orderBy("in_time", true).findAll();
+                if (all != null) {
+                    T.showShort(context, "找到" + all.size() + "条相关数据");
+                    allData.addAll(all);
+                } else {
+                    T.showShort(context, "未查到相关数据");
+                }
+                myAdapter.notifyDataSetChanged();
+            } catch (DbException e) {
+                T.showShort(context, "查询异常");
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    //查询无牌车
+    class findNoPlateCar extends AsyncTask<Void,Void,Integer>{
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                allData.clear();
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("in_time", true).findAll();
+                if (all == null) {
+                    return 0;
+                } else {
+                    allData.addAll(all);
+                }
+                myAdapter.notifyDataSetChanged();
+            } catch (DbException e) {
+                e.printStackTrace();
+                return -1;
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Integer result){
+            switch (result){
+                case 0:
+                    T.showShort(context, "未查到相关数据");
+                    break;
+                case -1:
+                    T.showShort(context, "查询异常");
+                default:
+                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    break;
+            }
+        }
     }
 
     @OnClick({R.id.out_nocarnum, R.id.out_1hour, R.id.out_2hour, R.id.out_4hour, R.id.out_all_car, R.id.out_no_pass, R.id.out_cancel, R.id.out_ok})
@@ -129,48 +209,22 @@ public class SelectPassOut extends BaseActivity {
         int id;
         switch (view.getId()) {
             case R.id.out_nocarnum:
-                try {
-                    allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("in_time", true).findAll();
-                    if (all == null) {
-                        T.showShort(this, "未查到相关数据");
-                    } else {
-                        T.showShort(this, "找到" + all.size() + "条相关数据");
-                        allData.addAll(all);
-                    }
-                    myAdapter.notifyDataSetChanged();
-                } catch (DbException e) {
-                    T.showShort(this, "查询异常");
-                    e.printStackTrace();
-                }
+                new findNoPlateCar().execute();
                 break;
             case R.id.out_1hour:
-                searchWithTime(1, 0);
+                new searchWithTime(1, 0).execute();
                 break;
             case R.id.out_2hour:
-                searchWithTime(2, 1);
+                new searchWithTime(2, 1).execute();
                 break;
             case R.id.out_4hour:
-                searchWithTime(4, 2);
+                new searchWithTime(4, 2).execute();
                 break;
             case R.id.out_all_car:
-                searchWithTime(24, 0);
+                new searchWithTime(24, 0).execute();
                 break;
             case R.id.out_no_pass:
-                try {
-                    allData.clear();
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "=", "临时车").orderBy("in_time", true).findAll();
-                    if (all != null) {
-                        T.showShort(this, "找到" + all.size() + "条相关数据");
-                        allData.addAll(all);
-                    } else {
-                        T.showShort(this, "未查到相关数据");
-                    }
-                    myAdapter.notifyDataSetChanged();
-                } catch (DbException e) {
-                    T.showShort(this, "查询异常");
-                    e.printStackTrace();
-                }
+                new findAllNoPass().execute();
                 break;
             case R.id.out_cancel:
                 finish();//结束当前的activity的生命周期
@@ -191,29 +245,39 @@ public class SelectPassOut extends BaseActivity {
         }
     }
 
-    private void searchWithTime(int start, int end) {
-        Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
-        Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000 + 60 * 1000)));
-        Log.e("ende", "befor==" + befor + "：：current==" + current);
-        try {
-            allData.clear();
-            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("in_time", ">", befor)
-                    .and("in_time", "<", current)
-                    .and("car_type", "=", "临时车")
-                    .and("status", "=", "已入")
-                    .orderBy("in_time", true)
-                    .findAll();
-            if (all != null) {
-                allData.addAll(all);
-                T.showShort(this, "找到" + allData.size() + "条相关数据");
-            } else {
-                T.showShort(this, "未查到相关数据");
+    class searchWithTime extends AsyncTask<Void,Void,Integer > {
+        private int start;
+        private int end;
+        public searchWithTime(int start,int end){
+            this.start = start;
+            this.end = end;
+        }
+        @Override
+        protected Integer doInBackground(Void... params) {
+            Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
+            Date current = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - end * 60 * 60 * 1000 + 60 * 1000)));
+            Log.e("ende", "befor==" + befor + "：：current==" + current);
+            try {
+                allData.clear();
+                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                        .where("in_time", ">", befor)
+                        .and("in_time", "<", current)
+                        .and("car_type", "=", "临时车")
+                        .and("status", "=", "已入")
+                        .orderBy("in_time", true)
+                        .findAll();
+                if (all != null) {
+                    allData.addAll(all);
+                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                } else {
+                    T.showShort(context, "未查到相关数据");
+                }
+                myAdapter.notifyDataSetChanged();
+            } catch (DbException e) {
+                T.showShort(context, "查询异常");
+                e.printStackTrace();
             }
-            myAdapter.notifyDataSetChanged();
-        } catch (DbException e) {
-            T.showShort(this, "查询异常");
-            e.printStackTrace();
+            return null;
         }
     }
 

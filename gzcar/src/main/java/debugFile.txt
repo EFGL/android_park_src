@@ -50,3 +50,8 @@
     @Column(name = "fee_type")
     private String fee_type;
 
+
+2016年11月16日
+ web端问题
+ 1.车位是否可增加复先框，全选按钮，做仳量删除
+ 2.特殊车收费规则不能删除

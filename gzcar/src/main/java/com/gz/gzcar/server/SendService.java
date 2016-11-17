@@ -2,6 +2,7 @@ package com.gz.gzcar.server;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -43,7 +44,7 @@ public class SendService extends Service{
 	/**
 	 * DB
 	 */
-	private static DbManager db =x.getDb(MyApplication.daoConfig);
+	private static DbManager db = null;
 
 	private static String mycontroller_sn = MyApplication.devID;
 	private static Boolean log=true;
@@ -63,6 +64,9 @@ public class SendService extends Service{
 		Runnable runnable=new Runnable() {
 			@Override
 			public void run() {
+				if (db == null){
+					db =x.getDb(MyApplication.daoConfig);
+				}
 				while(true){
 					try {
 						TrafficInfoTable table=db.selector(TrafficInfoTable.class).where("modife_flage", "=", false).orderBy("update_time").findFirst();
@@ -103,7 +107,6 @@ public class SendService extends Service{
 		Thread thread=new Thread(runnable);
 		thread.start();
 	}
-
 	Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -215,9 +218,7 @@ public class SendService extends Service{
 						JSONObject object=new JSONObject(arg0);
 						if(0==object.getInt("ref")){
 							//上传成功，开始修改传入的bean
-							updateBean(table);
-							//修改完成后，继续查
-							showlog("修改成功");
+							new updateBean(table).execute();
 						};
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -225,19 +226,23 @@ public class SendService extends Service{
 				}
 			});
 		}
-		/**
-		 * 修改传入的数据，把false改完true，根据自增长的id修改
-		 * @param table
-		 */
-		public void updateBean(TrafficInfoTable table){
-			try {
-				//table.setModifeFlage(true);
-				//db.update(table,"modife_flage");
-				db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
-			} catch (DbException e) {
-				e.printStackTrace();
+		//更新记录
+		class updateBean extends AsyncTask<Void,Void,Integer>{
+			private TrafficInfoTable table;
+			public updateBean(TrafficInfoTable table){
+				this.table = table;
 			}
-			showlog("修改数据库完成");
+
+			@Override
+			protected Integer doInBackground(Void... params) {
+				try {
+					db.update(TrafficInfoTable.class, WhereBuilder.b("id", "=", table.getId()),new KeyValue("modife_flage",true));
+				} catch (DbException e) {
+					e.printStackTrace();
+				}
+				showlog("修改数据库完成");
+				return null;
+			}
 		}
 		private static byte[] readInputStream(InputStream inputStream)throws IOException {
 			byte[] buffer = new byte[4096];

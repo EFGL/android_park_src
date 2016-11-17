@@ -333,14 +333,14 @@ public class RunFragment extends BaseFragment {
                 if (exportType.equals("所有车")) {
 
                     all = db.selector(TrafficInfoTable.class)
-                            .where("update_time", ">", dateFormatDetail.parse(exportStart))
-                            .and("update_time", "<", dateFormatDetail.parse(exportEnd))
+                            .where("update_time", ">=", dateFormatDetail.parse(exportStart))
+                            .and("update_time", "<=", dateFormatDetail.parse(exportEnd))
                             .orderBy("update_time", true)
                             .findAll();
                 } else {
                     all = db.selector(TrafficInfoTable.class)
-                            .where("update_time", ">", dateFormatDetail.parse(exportStart))
-                            .and("update_time", "<", dateFormatDetail.parse(exportEnd))
+                            .where("update_time", ">=", dateFormatDetail.parse(exportStart))
+                            .and("update_time", "<=", dateFormatDetail.parse(exportEnd))
                             .and("car_type", "=", exportType)
                             .orderBy("update_time", true)
                             .findAll();
@@ -455,8 +455,8 @@ public class RunFragment extends BaseFragment {
     private void searchWithType(String start, String end, String type) {
         try {
             all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .where("update_time", ">=", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<=", DateUtils.string2DateDetail(end))
                     .and("car_type", "=", type)
                     .orderBy("update_time", true)
                     .findAll();
@@ -479,8 +479,8 @@ public class RunFragment extends BaseFragment {
     private void searchAll(String start, String end) {
         try {
             all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .where("update_time", ">=", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<=", DateUtils.string2DateDetail(end))
                     .orderBy("id", true)
                     .findAll();
             updaterecycltviewadapter();
@@ -503,8 +503,8 @@ public class RunFragment extends BaseFragment {
     private void searchAllWithCarNum(String start, String end, String number) {
         try {
             all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", DateUtils.string2DateDetail(start))
-                    .and("update_time", "<", DateUtils.string2DateDetail(end))
+                    .where("update_time", ">=", DateUtils.string2DateDetail(start))
+                    .and("update_time", "<=", DateUtils.string2DateDetail(end))
                     .and("car_no", "like", "%" + number + "%")
                     .orderBy("id", true)
                     .findAll();

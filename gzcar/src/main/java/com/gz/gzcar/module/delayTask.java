@@ -59,6 +59,7 @@ public class delayTask extends Service {
                     runFlagIn = true;
                 }else{
                     cameraIn.ledDisplay(str1,str2,str3,str4);
+                    cameraIn.ledDisplay(1,str1 + "车牌识别 一车一杆 减速慢行");
                 }
             }
             else{
@@ -71,6 +72,7 @@ public class delayTask extends Service {
                     runFlagOut = true;
                 }else{
                     cameraOut.ledDisplay(str1,str2,str3,str4);
+                    cameraOut.ledDisplay(1,str1+ "车牌识别 一车一杆 减速慢行");
                 }
             }
         }
