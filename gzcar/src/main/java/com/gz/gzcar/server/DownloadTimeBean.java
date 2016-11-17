@@ -18,13 +18,6 @@ public class DownloadTimeBean {
 	private int id;
 
 	/**
-	 * 不是自增长id,始终为0,拿这个作为查询条件
-	 *
-	 */
-	@Column(name = "myid")
-	private int myid;
-
-	/**
 	 * 下载通行记录的时间
 	 */
 	@Column(name="handler_in_out_record_download_time")
@@ -90,11 +83,7 @@ public class DownloadTimeBean {
 	}
 
 
-	public int getMyid() {
-		return myid;
-	}
 
-	public void setMyid(int myid) {
-		this.myid = myid;
-	}
+
+
 }
