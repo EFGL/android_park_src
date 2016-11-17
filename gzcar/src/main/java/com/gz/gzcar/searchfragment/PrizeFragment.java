@@ -214,8 +214,8 @@ public class PrizeFragment extends BaseFragment {
         L.showlogError("====车牌&时间&用户查===");
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                     .and("car_number", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -241,8 +241,8 @@ public class PrizeFragment extends BaseFragment {
         L.showlogError("====时间&用户查===");
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)
@@ -267,8 +267,8 @@ public class PrizeFragment extends BaseFragment {
         L.showlogError("====车号&时间查询===");
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                     .and("car_number", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -293,8 +293,8 @@ public class PrizeFragment extends BaseFragment {
         L.showlogError("====时间查询===");
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                     .and("status", "=", "已出")
                     .and("receivable", ">", 0)
                     .limit(15)
@@ -488,8 +488,8 @@ public class PrizeFragment extends BaseFragment {
 
                         try {
                             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                                     .and("status", "=", "已出")
                                     .and("receivable", ">", 0)
                                     .orderBy("update_time", true)
@@ -521,8 +521,8 @@ public class PrizeFragment extends BaseFragment {
 
                         try {
                             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                    .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                                    .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                                     .and("car_number", "like", "%" + searchNumber + "%")
                                     .and("receivable", ">", 0)
                                     .and("status", "=", "已出")

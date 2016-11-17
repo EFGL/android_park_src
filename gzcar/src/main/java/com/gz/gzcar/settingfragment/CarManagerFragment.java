@@ -124,12 +124,10 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 TAG = 0;
@@ -142,7 +140,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     new SumTask().execute();
                 } else {
                     try {
-
                         List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
                         if (all != null) {
                             allData.clear();

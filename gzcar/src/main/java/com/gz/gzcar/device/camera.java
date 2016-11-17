@@ -6,6 +6,7 @@ package com.gz.gzcar.device;
 
 
  */
+import android.os.AsyncTask;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
@@ -178,7 +179,7 @@ public class camera {
         put("请尽快延期","144");
         put("此卡可用日期","145");
     }};
-    public enum msgType{PLATE,PIC,STREAM};
+    public enum msgType{PLATE,PIC,STREAM,UPDATE_SHOW};
 
     public String getPortName() {return portName;}
 
@@ -233,35 +234,45 @@ public class camera {
             CarPicdata = carPicdata;
         }
     }
+    //初始化
+    class syncCamera extends AsyncTask<Void,Void,Integer>{
+        @Override
+        protected Integer doInBackground(Void... params) {
+            sdk = new SDK();
+            //设置视频流缓存
+            streamInfo.setName(portName);
+            streamInfo.msgType = msgType.STREAM;
+            PlateCallback = new plate_callback();
+            MjpegCallback = new mjpeg_callback();
+            sdk.ICE_IPCSDK_Open(cameraIp, null);// 1.连接相机
+            sdk.ICE_ICPSDK_SetPlateCallback(PlateCallback);// 35.设置断网续传事件
+            sdk.ICE_IPCSDK_SetMJpegallback_Static(MjpegCallback);// 37.设置mjpeg码流回调
+            //同步显示屏时间
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            byte[] ledClockBuffer = LedModule.FormatClock();
+            sdk.ICE_IPCSDK_TransSerialPort(ledClockBuffer);
+            return null;
+        }
+    }
     public  camera(MainActivity myActive,String name, String ip){
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build());
-        Log.i("log","connect camera " + name +  " " + ip);
         mainActivity = myActive;
-        sdk = new SDK();
         portName = name;
         cameraIp = ip;
-        //设置视频流缓存
-        streamInfo.setName(portName);
-        streamInfo.msgType = msgType.STREAM;
-        PlateCallback = new plate_callback();
-        MjpegCallback = new mjpeg_callback();
-        sdk.ICE_IPCSDK_Open(cameraIp, null);// 1.连接相机
-        sdk.ICE_ICPSDK_SetPlateCallback(PlateCallback);// 35.设置断网续传事件
-        sdk.ICE_IPCSDK_SetMJpegallback_Static(MjpegCallback);// 37.设置mjpeg码流回调
-        //同步显示屏时间
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        byte[] ledClockBuffer = LedModule.FormatClock();
-        sdk.ICE_IPCSDK_TransSerialPort(ledClockBuffer);
+        Log.i("log","connect camera " + name +  " " + ip);
+        new syncCamera().execute();
     }
     //重新识别
-    public void againIdent(){
-       // PlateInfo info = new PlateInfo();
-        sdk.ICE_IPCSDK_Trigger();
+    class syncAgainIdent extends AsyncTask<Void,Void,Integer>{
+        @Override
+        protected Integer doInBackground(Void... params) {
+            // PlateInfo info = new PlateInfo();
+            sdk.ICE_IPCSDK_Trigger();
         /*Log.i("log","againIdent");
        SDK.TriggerResult result =  sdk.ICE_IPCSDK_Trigger();
        if(result != null){
@@ -278,6 +289,11 @@ public class camera {
                 e.printStackTrace();
             }
         }*/
+            return null;
+        }
+    }
+    public void againIdent(){
+       new syncAgainIdent().execute();
     }
     //手动获取图片
     public byte[] CapturePic(){
@@ -290,6 +306,7 @@ public class camera {
             info.CarPicdata = result.picdata;
             info.msgType = msgType.PIC;
             Message msg = new Message();
+            msg.what =1;
             msg.obj = info;
             mainActivity.myHandler.sendMessage(msg);
           //  MainActivity.myHandler.sendMessage(msg);
@@ -298,48 +315,86 @@ public class camera {
         return null;
     }
     //起杆
-    public void openGate(){
-        sdk.ICE_IPCSDK_OpenGate();
-        if (portName.equals("in")) {
-            MyApplication.settingInfo.putLong("inCarCount", MyApplication.settingInfo.getLong("inCarCount") + 1);
-        }else{
-            MyApplication.settingInfo.putLong("outCarCount", MyApplication.settingInfo.getLong("outCarCount") + 1);
+    class syncOpenGate extends AsyncTask<Void,Void,Integer>{
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            sdk.ICE_IPCSDK_OpenGate();
+            if (portName.equals("in")) {
+                MyApplication.settingInfo.putLong("inCarCount", MyApplication.settingInfo.getLong("inCarCount") + 1);
+            }else{
+                MyApplication.settingInfo.putLong("outCarCount", MyApplication.settingInfo.getLong("outCarCount") + 1);
+            }
+            return null;
         }
+    }
+    public void openGate(){
+       new syncOpenGate().execute();
     }
     //报放语音
-    public void playAudio(String audioStr){
-        Log.i("log", "audio:" +audioStr);
-        sdk.ICE_IPCSDK_BroadcastGroup(audioStr);
-    }
-    public void ledDisplay(char dev,String info){
-        //发送语音
-        try {
-            byte[] infoBuffer = info.getBytes("GBK");
-            ArrayList<Character> buffer =  new ArrayList<>();
-            buffer.add((char)0xAA);
-            buffer.add((char)0x55);
-            buffer.add((char)0xAA);
-            buffer.add((char)0x66);
-            buffer.add(dev);
-            buffer.add((char)infoBuffer.length);
-            //加入数据
-            byte check = (byte)infoBuffer.length;
-            for(byte item:infoBuffer){
-                check ^= item;
-                buffer.add((char)item);
-            }
-            buffer.add((char)check);
-            //生成返回数据
-            byte sendBuffer[] = new byte[buffer.size()];
-            int count = 0;
-            for (Character item:buffer){
-                sendBuffer[count++] = (byte)(item&0xFF);
-            }
-            sdk.ICE_IPCSDK_TransSerialPort(sendBuffer);
-            Log.i("log",sendBuffer.toString());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+    class syncPlayAudio extends AsyncTask<Void,Void,Integer>{
+        String audioStr;
+        public syncPlayAudio(String audioStr){
+            this.audioStr = audioStr;
         }
+        @Override
+        protected Integer doInBackground(Void... params) {
+            Log.i("log", "audio:" +audioStr);
+            sdk.ICE_IPCSDK_BroadcastGroup(audioStr);
+            return null;
+        }
+    }
+    public void playAudio(String audioStr){
+       new syncPlayAudio(audioStr).execute();
+    }
+    //刚正显示屏显示
+    final  boolean GZ_LED = true;
+    class syncLedDisplay extends AsyncTask<Void,Void,Integer>{
+        int dev;
+        String info;
+        public  syncLedDisplay(int dev,String info){
+            this.dev = dev;
+            this.info = info;
+        }
+        @Override
+        protected Integer doInBackground(Void... params) {
+            //发送语音
+            if(!GZ_LED)
+            {
+                return null;
+            }
+            try {
+                byte[] infoBuffer = info.getBytes("GBK");
+                ArrayList<Character> buffer =  new ArrayList<>();
+                buffer.add((char)0xAA);
+                buffer.add((char)0x55);
+                buffer.add((char)0xAA);
+                buffer.add((char)0x66);
+                buffer.add((char)dev);
+                buffer.add((char)infoBuffer.length);
+                //加入数据
+                byte check = (byte)infoBuffer.length;
+                for(byte item:infoBuffer){
+                    check ^= item;
+                    buffer.add((char)item);
+                }
+                buffer.add((char)check);
+                //生成返回数据
+                byte sendBuffer[] = new byte[buffer.size()];
+                int count = 0;
+                for (Character item:buffer){
+                    sendBuffer[count++] = (byte)(item&0xFF);
+                }
+                sdk.ICE_IPCSDK_TransSerialPort(sendBuffer);
+                Log.i("log",sendBuffer.toString());
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        return  null;
+        }
+    }
+    public void ledDisplay(int dev,String info){
+       new syncLedDisplay(dev,info).execute();
     }
     //透传显示屏接口
     public void ledDisplay(String line1,String line2,String line3,String line4) {
@@ -382,6 +437,7 @@ public class camera {
             System.arraycopy(bPicData, nOffset,plateinfo.CarPicdata, 0, nLen);
             plateinfo.msgType = msgType.PLATE;
             Message msg = new Message();
+            msg.what = 1;
             msg.obj = plateinfo;
            // MainActivity.myHandler.sendMessage(msg);
             mainActivity.myHandler.sendMessage(msg);
