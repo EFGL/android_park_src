@@ -52,7 +52,7 @@ public class carInfoProcess {
         String stall = null;
         try {
             //查找车位
-            List<CarWeiBindTable> bindTable =  db.selector(CarWeiBindTable.class).where("car_no","=",carNumber).findAll();
+            List<CarWeiBindTable> bindTable =  db.selector(CarWeiBindTable.class).where("car_no","like","%"+carNumber).findAll();
             if(bindTable == null || bindTable.size()==0){
                 stall =  "未分配";
             }else
@@ -208,7 +208,7 @@ public class carInfoProcess {
             trafficInfo.setIn_time(new Date());
             trafficInfo.setIn_image(picPath);
             trafficInfo.setOut_time(null);
-            trafficInfo.setStall(null);
+            trafficInfo.setOut_image(null);
             trafficInfo.setIn_user(mainActivity.loginUserName);
             trafficInfo.setStatus("已入");
             trafficInfo.setUpdateTime(new Date());
