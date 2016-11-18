@@ -12,7 +12,6 @@ public class DownInfoStallBean {
 	      "updated_at": "2016-08-29 16:29:22"            //时间戳
 	      status
 	 */
-
 	private String stall_code;
 	private String area_code;
 	private String print_code;

@@ -50,7 +50,6 @@ import static android.os.Environment.getExternalStorageDirectory;
  * 车辆信息查询
  */
 public class CarInfoFragment extends Fragment {
-
     @Bind(R.id.et_search_car)
     EditText mCarNumber;
     @Bind(R.id.btn_search_car)
@@ -65,7 +64,6 @@ public class CarInfoFragment extends Fragment {
     private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
     private int pageIndex = 0;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -328,13 +326,6 @@ public class CarInfoFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final MyHolder holder, final int position) {
-//            if(clickItem!=-1){
-//                if(clickItem==position){
-//                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-//                }else{
-//                    holder.mRoot.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-//                }
-//            }
             final CarInfoTable carInfo = allData.get(position);
             holder.id.setText(position + 1 + "");
             holder.carNum.setText(carInfo.getCar_no());
@@ -344,7 +335,7 @@ public class CarInfoFragment extends Fragment {
                 holder.cartype.setText(carInfo.getFee_type());
             }
             try {
-                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no ", "=", carInfo.getCar_no()).orderBy("id", true).findAll();
+                List<CarWeiBindTable> all = db.selector(CarWeiBindTable.class).where("car_no", "=", carInfo.getCar_no()).findAll();
                 if (all != null) {
                     holder.carwei.setText(all.size() + "个");
                 }
@@ -355,44 +346,16 @@ public class CarInfoFragment extends Fragment {
             holder.phone.setText(carInfo.getPerson_tel());
             Date start_date = carInfo.getStart_date();
             Date stop_date = carInfo.getStop_date();
-//            Date created_at = carInfo.getCreated_at();
-//            Date updated_at = carInfo.getUpdated_at();
-
-//            final Intent intent = new Intent(getContext(), ImageDetailActivity.class);
-//            intent.putExtra("carNumber", carInfo.getCar_no());
-//            intent.putExtra("carType", carInfo.getCar_type());
-//            intent.putExtra("personName", carInfo.getPerson_name());
-
-//            if (created_at != null)
-//                intent.putExtra("createTime", DateUtils.date2String(created_at));// 创建时间
-//            else
-//                intent.putExtra("createTime", "");
-//            if (updated_at != null)
-//                intent.putExtra("updateTime", DateUtils.date2String(updated_at));// 更新时间
-//            else
-//                intent.putExtra("createTime", "");
-
 
             if (start_date != null) {
 
                 holder.startTime.setText(DateUtils.date2String(start_date));
-//                intent.putExtra("startTime", DateUtils.date2String(start_date));
             }
 
             if (stop_date != null) {
 
                 holder.endTime.setText(DateUtils.date2String(stop_date));
-//                intent.putExtra("endTime", DateUtils.date2String(stop_date));
             }
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-////                    clickItem=position;
-////                    myAdapter.notifyDataSetChanged();
-//
-//                    startActivity(intent);
-//                }
-//            });
 
         }
 

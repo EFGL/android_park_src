@@ -15,7 +15,6 @@ public class DownRecordStallVehicleBean {
 		      "created_at": "2016-08-29 16:29:46",                         //记录创建时间
 		      "updated_at": "2016-08-29 16:29:49"                          //时间戳
 	 */
-	
 	private String code;
 	private String car_no;
 	private String stall_code;

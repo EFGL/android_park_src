@@ -26,6 +26,7 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.server.DownloadTimeBean;
 import com.gz.gzcar.utils.InitUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
@@ -285,13 +286,11 @@ public class SettingsFragment extends Fragment {
         params.height = 400;
         dialog.getWindow().setAttributes(params);
         dialog.show();
-
         final EditText pwd = (EditText) view.findViewById(R.id.clear_password);
         TextView name = (TextView) view.findViewById(R.id.clear_name);
         Button cancle = (Button) view.findViewById(R.id.clear_cancle);
         final Button clear = (Button) view.findViewById(R.id.clear_clear);
-
-        final String username = MyApplication.settingInfo.getString("userName", "");
+        final String username = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
         name.setText(username);
 
         cancle.setOnClickListener(new View.OnClickListener() {

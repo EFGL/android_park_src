@@ -39,7 +39,6 @@ import butterknife.OnClick;
  * 车位管理
  */
 public class ParkingManagerFragment extends Fragment implements View.OnClickListener {
-
     @Bind(R.id.parking_add)
     Button mAdd;
     @Bind(R.id.recyclerview)
@@ -48,7 +47,6 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
     ProgressBar mProgressBar;
     @Bind(R.id.tv_bottom)
     TextView mBottom;
-
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<CarWeiTable> allData = new ArrayList<CarWeiTable>();

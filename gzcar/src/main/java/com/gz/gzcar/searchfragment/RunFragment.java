@@ -623,7 +623,6 @@ public class RunFragment extends BaseFragment {
                 }
             });
         }
-
         @Override
         public int getItemCount() {
             return allData.size();

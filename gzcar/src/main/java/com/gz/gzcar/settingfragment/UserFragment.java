@@ -205,9 +205,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         try {
-
                             db.deleteById(UserTable.class, id);
                             allData.clear();
                             allData.addAll(db.findAll(UserTable.class));

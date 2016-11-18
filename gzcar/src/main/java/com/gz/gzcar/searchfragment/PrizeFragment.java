@@ -671,7 +671,6 @@ public class PrizeFragment extends BaseFragment {
             });
 
         }
-
         @Override
         public int getItemCount() {
             return allData.size();

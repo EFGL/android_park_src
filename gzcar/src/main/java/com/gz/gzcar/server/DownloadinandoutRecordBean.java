@@ -4,7 +4,6 @@ package com.gz.gzcar.server;
  * 下传通行记录bean
  */
 public class DownloadinandoutRecordBean {
-
 	/**
 	 * "pass_no": "string",
 		      "card_type": "string",

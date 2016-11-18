@@ -121,6 +121,9 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         new initLogin().execute();
         context = MainActivity.this;
+        if (MyApplication.settingInfo == null) {
+            MyApplication.settingInfo = new SPUtils(MainActivity.this, "config");
+        }
         //注册线程通讯
         EventBus.getDefault().register(this);
         ButterKnife.bind(this);
@@ -257,34 +260,44 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                L.showlogError("------onResume------ ");
+                addMoneyBaseData();
+            }
+        }.start();
+
     }
 
     // 生成收费表
-    private void addMoneyBaseData(){
-            MoneyTable m;
-             List<MoneyTable> all = null;
-             try {
-                 all = db.findAll(MoneyTable.class);
-             } catch (DbException e) {
-                 e.printStackTrace();
-             }
-             if (all == null || all.size() < 1) {
-                 for (int i = 0; i < 48; i++) {
-                     m = new MoneyTable();
-                     m.setFee_code(String.valueOf(i + 1));
-                     m.setFee_detail_code(null);
-                     m.setMoney(i / 2 + 1);
-                     m.setFee_name("临时车");
-                     m.setCar_type_name("临时车");
-                     m.setParked_min_time(i * 30);
-                     m.setParked_max_time((i + 1) * 30);
-                     try {
-                         db.save(m);
-                     } catch (DbException e) {
-                         e.printStackTrace();
-                     }
-                 }
-             }
+    private void addMoneyBaseData() {
+        MoneyTable m;
+        List<MoneyTable> all = null;
+        try {
+            all = db.findAll(MoneyTable.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        if (all == null || all.size() < 1) {
+            for (int i = 0; i < 48; i++) {
+                m = new MoneyTable();
+                m.setFee_code(String.valueOf(i + 1));
+                m.setFee_detail_code(null);
+                m.setMoney(i / 2 + 1);
+                m.setFee_name("临时车");
+                m.setCar_type_name("临时车");
+                m.setParked_min_time(i * 30);
+                m.setParked_max_time((i + 1) * 30);
+                try {
+                    db.save(m);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // 生成管理员基本帐号
@@ -433,7 +446,7 @@ public class MainActivity extends BaseActivity {
             if (dialog != null) {
                 dialog.dismiss();
             }
-        }}
+        }
     }
     //更新状态信息
     class upStatusInfoDisp extends AsyncTask<Void,Void,Long>{

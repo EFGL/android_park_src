@@ -9,7 +9,6 @@ import java.util.Date;
  */
 
 public class DownInfoUser {
-
     private int id;
     private String login;
     private String password;

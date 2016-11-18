@@ -1,32 +1,28 @@
 package com.gz.gzcar.module;
 
-import android.net.rtp.AudioStream;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
-import android.renderscript.Sampler;
-import android.security.keystore.KeyNotYetValidException;
 import android.util.Log;
 
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
-import com.gz.gzcar.Database.FreeInfoTable;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MainActivity;
 import com.gz.gzcar.MyApplication;
-import com.gz.gzcar.R;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.utils.FileUtils;
-import com.gz.gzcar.utils.T;
 
-import org.xutils.*;
+import org.xutils.DbManager;
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
 
 /**
  * Created by Administrator on 2016/9/30.

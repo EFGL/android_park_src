@@ -15,7 +15,6 @@ import com.gz.gzcar.settingfragment.SettingsFragment;
 import com.gz.gzcar.settingfragment.UserFragment;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener {
-
     private RadioButton back;
     private RadioButton r1;
     private RadioButton r2;

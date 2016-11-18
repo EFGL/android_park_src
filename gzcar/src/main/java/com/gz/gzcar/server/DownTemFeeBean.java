@@ -4,7 +4,6 @@ package com.gz.gzcar.server;
  * 下传临时车收费明细返回的javabean
  */
 public class DownTemFeeBean {
-
 	/**
 	 *     "fee_detail_code": "W0401040001600000000",
             "fee_code": "1",

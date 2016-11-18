@@ -44,4 +44,9 @@ public class AppConstants {
     public static final String COMPANY_NAME = "companyName";
 
 
+    // 当前登录用户名
+    public static final String USER_NAME = "userName";
+
+
+
 }
