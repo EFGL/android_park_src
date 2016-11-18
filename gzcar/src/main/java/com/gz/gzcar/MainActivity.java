@@ -36,6 +36,7 @@ import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.PrintBean;
 import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.SPUtils;
@@ -111,6 +112,7 @@ public class MainActivity extends BaseActivity {
     private byte[] outPortPicBuffer;
 
     private delayTask delayServer;  //显示屏延时服务
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,22 +170,22 @@ public class MainActivity extends BaseActivity {
         ButtonManualOutOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new manualOutOpenFunc(chargeCarNumber.getText().toString(),chargeParkTime.getText().toString()).execute();
+                new manualOutOpenFunc(chargeCarNumber.getText().toString(), chargeParkTime.getText().toString()).execute();
             }
         });
-        ButtonEnterCharge = (Button)findViewById(R.id.enterCharge);
+        ButtonEnterCharge = (Button) findViewById(R.id.enterCharge);
         ButtonEnterCharge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                new enterChangeFunc(chargeParkTime.getText().toString(),outPortLog).execute();
+                new enterChangeFunc(chargeParkTime.getText().toString(), outPortLog).execute();
             }
         });
         //状态信息
-         textViewAllPlace = (TextView) findViewById(R.id.textViewAllPlace);       //总车位
-         textViewEmptyPlace = (TextView) findViewById(R.id.textViewEmptyPlace);     //空闲车位
-         textViewInCarCount = (TextView) findViewById(R.id.textViewInCarCount);     //入场数量
-         textViewOutCarCount = (TextView) findViewById(R.id.textViewOutCarCount);    //出场数量
+        textViewAllPlace = (TextView) findViewById(R.id.textViewAllPlace);       //总车位
+        textViewEmptyPlace = (TextView) findViewById(R.id.textViewEmptyPlace);     //空闲车位
+        textViewInCarCount = (TextView) findViewById(R.id.textViewInCarCount);     //入场数量
+        textViewOutCarCount = (TextView) findViewById(R.id.textViewOutCarCount);    //出场数量
         //当班信息
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);       //操作员
         textViewLoginTime = (TextView) findViewById(R.id.textViewloginTime);      //登录长
@@ -196,25 +198,25 @@ public class MainActivity extends BaseActivity {
         outPortLog.setStall_time(-3);
         //起动传输服务
         startmyserver();
-        Intent delayThread=new Intent(MainActivity.this,delayTask.class);
-        bindService(delayThread,conn, Service.BIND_AUTO_CREATE);
+        Intent delayThread = new Intent(MainActivity.this, delayTask.class);
+        bindService(delayThread, conn, Service.BIND_AUTO_CREATE);
         //起动定时刷新显示任务
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 while (true) {
-                        try {
-                            Thread.sleep(60*1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Message msg = new Message();
-                        msg.what = 2;
-                        myHandler.sendMessage(msg);
+                    try {
+                        Thread.sleep(60 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                    Message msg = new Message();
+                    msg.what = 2;
+                    myHandler.sendMessage(msg);
+                }
             }
-        },3000);
+        }, 3000);
         //显示登陆
         showLogin();
     }
@@ -223,25 +225,27 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
         }
+
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             //返回一个MsgService对象
-            delayServer = ((delayTask.ServicesBinder)service).getService();
-            delayServer.initCamera(inCamera,outCamera,10);
+            delayServer = ((delayTask.ServicesBinder) service).getService();
+            delayServer.initCamera(inCamera, outCamera, 10);
             new upStatusInfoDisp().execute();
         }
     };
+
     /**
      * 启动我的服务
      */
-    public void startmyserver(){
-        Intent intent=new Intent(MainActivity.this,SendService.class);
+    public void startmyserver() {
+        Intent intent = new Intent(MainActivity.this, SendService.class);
         startService(intent);
-        Intent intentDon=new Intent(MainActivity.this,DownLoadServer.class);
+        Intent intentDon = new Intent(MainActivity.this, DownLoadServer.class);
         startService(intentDon);
     }
 
-    class initLogin extends AsyncTask<Void,Void,Integer> {
+    class initLogin extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
             makeUser();
@@ -256,39 +260,49 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                L.showlogError("------onResume------ ");
+                addMoneyBaseData();
+            }
+        }.start();
+
     }
 
     // 生成收费表
-    private void addMoneyBaseData(){
-            MoneyTable m;
-             List<MoneyTable> all = null;
-             try {
-                 all = db.findAll(MoneyTable.class);
-             } catch (DbException e) {
-                 e.printStackTrace();
-             }
-             if (all == null || all.size() < 1) {
-                 for (int i = 0; i < 48; i++) {
-                     m = new MoneyTable();
-                     m.setFee_code(String.valueOf(i + 1));
-                     m.setFee_detail_code(null);
-                     m.setMoney(i / 2 + 1);
-                     m.setFee_name("临时车");
-                     m.setCar_type_name("临时车");
-                     m.setParked_min_time(i * 30);
-                     m.setParked_max_time((i + 1) * 30);
-                     try {
-                         db.save(m);
-                     } catch (DbException e) {
-                         e.printStackTrace();
-                     }
-                 }
-             }
+    private void addMoneyBaseData() {
+        MoneyTable m;
+        List<MoneyTable> all = null;
+        try {
+            all = db.findAll(MoneyTable.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        if (all == null || all.size() < 1) {
+            for (int i = 0; i < 48; i++) {
+                m = new MoneyTable();
+                m.setFee_code(String.valueOf(i + 1));
+                m.setFee_detail_code(null);
+                m.setMoney(i / 2 + 1);
+                m.setFee_name("临时车");
+                m.setCar_type_name("临时车");
+                m.setParked_min_time(i * 30);
+                m.setParked_max_time((i + 1) * 30);
+                try {
+                    db.save(m);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // 生成管理员基本帐号
     private void makeUser() {
-        try{
+        try {
             List<UserTable> all = db.findAll(UserTable.class);
             if (all == null || all.size() < 1) {
                 UserTable user = new UserTable();
@@ -305,17 +319,20 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-    class findUserList extends AsyncTask<Void,Void,Integer>{
+
+    class findUserList extends AsyncTask<Void, Void, Integer> {
         MyPullText mUser;
         ArrayList<String> userName;
-        public findUserList(MyPullText mUser){
-           this.mUser = mUser;
+
+        public findUserList(MyPullText mUser) {
+            this.mUser = mUser;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                 userName = new ArrayList<>();
-                List<UserTable> all = db.selector(UserTable.class).orderBy("id",true).findAll();
+                userName = new ArrayList<>();
+                List<UserTable> all = db.selector(UserTable.class).orderBy("id", true).findAll();
                 if (all != null) {
                     for (int i = 0; i < all.size(); i++) {
                         userName.add(all.get(i).getUserName());
@@ -327,6 +344,7 @@ public class MainActivity extends BaseActivity {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             mUser.setPopList(userName);
@@ -336,6 +354,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
     private void showLogin() {
         View view = LayoutInflater.from(this).inflate(R.layout.login_diglog, null);
         dialog = new AlertDialog.Builder(this).create();
@@ -353,7 +372,7 @@ public class MainActivity extends BaseActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user = mUser.getText().toString();
+                String user = mUser.getText();
                 String password = mPasswordView.getText().toString();
                 if (TextUtils.isEmpty(user)) {
                     T.showShort(MainActivity.this, "请选择用户名");
@@ -368,13 +387,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    class match extends AsyncTask<Void,Void,String>{
+    class match extends AsyncTask<Void, Void, String> {
         private String userName;
         private String password;
-        public match(String userName,String password){
+
+        public match(String userName, String password) {
             this.userName = userName;
             this.password = password;
         }
+
         @Override
         protected String doInBackground(Void... params) {
             try {
@@ -397,8 +418,8 @@ public class MainActivity extends BaseActivity {
                     //上次非本用户或用户退出,则清空数据
                     userName = MyApplication.settingInfo.getString("userName");
                     MyApplication.settingInfo.putString("userName", userName);
-                    if (!MyApplication.settingInfo.getBoolean("loginStatus")   || !userName.equals(loginUserName)) {
-                        MyApplication.settingInfo.putString("userName",loginUserName);
+                    if (!MyApplication.settingInfo.getBoolean("loginStatus") || !userName.equals(loginUserName)) {
+                        MyApplication.settingInfo.putString("userName", loginUserName);
                         MyApplication.settingInfo.putBoolean("loginStatus", true);
                         MyApplication.settingInfo.putLong("inCarCount", 0);
                         MyApplication.settingInfo.putLong("outCarCount", 0);
@@ -417,67 +438,71 @@ public class MainActivity extends BaseActivity {
             }
             return "";
         }
+
         @Override
-        protected void onPostExecute(String type) {{
-            //进入主页面
-            if(type.isEmpty())
+        protected void onPostExecute(String type) {
             {
-                T.showShort(context, "用户名或密码错误");
-                return;
+                //进入主页面
+                if (type.isEmpty()) {
+                    T.showShort(context, "用户名或密码错误");
+                    return;
+                } else if (type.equals("system")) {
+                    mainSetting.setVisibility(View.VISIBLE);
+                    new upStatusInfoDisp().execute();
+                } else {
+                    mainSetting.setVisibility(View.GONE);
+                    new upStatusInfoDisp().execute();
+                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             }
-            else if (type.equals("system")) {
-                mainSetting.setVisibility(View.VISIBLE);
-                new upStatusInfoDisp().execute();
-            } else{
-                mainSetting.setVisibility(View.GONE);
-                new upStatusInfoDisp().execute();
-            }
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        }}
+        }
     }
+
     //更新状态信息
-    class upStatusInfoDisp extends AsyncTask<Void,Void,Long>{
+    class upStatusInfoDisp extends AsyncTask<Void, Void, Long> {
         String[] str = new String[8];
+
         protected Long doInBackground(Void... params) {
             Log.i("log", "刷新车位显示数据");
             long emptyCount;    //空闲车位
-             //设定总车位
-             long value = MyApplication.settingInfo.getLong("allCarPlace");
-             str[0] = String.format("总车位：%d个", value);
-             emptyCount = value;
-             //设定空闲车位
-             try {
-                 emptyCount = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
-             } catch (DbException e) {
-                 e.printStackTrace();
-             }
-             str[1] = String.format("空闲车位：%d个", emptyCount);
-             value = MyApplication.settingInfo.getLong("inCarCount");
-             str[2] = String.format("当班入场：%d车次", value);
-             value = MyApplication.settingInfo.getLong("outCarCount");
-             str[3] = String.format("当班出场：%d车次", value);
-             str[4] = "操作员：" + MyApplication.settingInfo.getString("userName");
-             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-             try {
-                 if(MyApplication.settingInfo.getString("loginTime") != null) {
-                     Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
-                     long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
-                     str[5] = String.format("登陆：%d天%d小时%d分钟", loginTimeMinute / (24 * 60), (loginTimeMinute % 24) / 60, loginTimeMinute % 60);
-                 }else {
-                     str[5] = String.format("登陆：%d天%d小时%d分钟", 0, 0,0);
-                 }
+            //设定总车位
+            long value = MyApplication.settingInfo.getLong("allCarPlace");
+            str[0] = String.format("总车位：%d个", value);
+            emptyCount = value;
+            //设定空闲车位
+            try {
+                emptyCount = value - db.selector(TrafficInfoTable.class).where("status", "=", "已入").count();
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
+            str[1] = String.format("空闲车位：%d个", emptyCount);
+            value = MyApplication.settingInfo.getLong("inCarCount");
+            str[2] = String.format("当班入场：%d车次", value);
+            value = MyApplication.settingInfo.getLong("outCarCount");
+            str[3] = String.format("当班出场：%d车次", value);
+            str[4] = "操作员：" + MyApplication.settingInfo.getString("userName");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            try {
+                if (MyApplication.settingInfo.getString("loginTime") != null) {
+                    Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
+                    long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
+                    str[5] = String.format("登陆：%d天%d小时%d分钟", loginTimeMinute / (24 * 60), (loginTimeMinute % 24) / 60, loginTimeMinute % 60);
+                } else {
+                    str[5] = String.format("登陆：%d天%d小时%d分钟", 0, 0, 0);
+                }
 
-             } catch (ParseException e) {
-                 e.printStackTrace();
-             }
-             long chargeNum = MyApplication.settingInfo.getLong("chargeCarNumer");
-             str[6] = String.format("收费车辆：%d辆",chargeNum);
-             str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long chargeNum = MyApplication.settingInfo.getLong("chargeCarNumer");
+            str[6] = String.format("收费车辆：%d辆", chargeNum);
+            str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
             Log.i("log", "刷新车位显示UI");
             return emptyCount;
         }
+
         @Override
         protected void onPostExecute(Long emypyCount) {
             textViewAllPlace.setText(str[0]);
@@ -488,7 +513,7 @@ public class MainActivity extends BaseActivity {
             textViewLoginTime.setText(str[5]);
             textViewSumCar.setText(str[6]);
             textViewSumMoney.setText(str[7]);
-            if(delayServer != null) {
+            if (delayServer != null) {
                 delayServer.display("in", "空位:" + emypyCount, "欢迎光临", "\\DH时\\DM分", "车牌识别 一车一杆 减速慢行", 15);//显示
                 delayServer.display("out", "空位:" + emypyCount, "欢迎光临", "\\DH时\\DM分", "车牌识别 一车一杆 减速慢行", 15);//显示
             }
@@ -496,40 +521,43 @@ public class MainActivity extends BaseActivity {
     }
 
     //确认收费
-    class enterChangeFunc extends AsyncTask<Void,Void,Integer> {
+    class enterChangeFunc extends AsyncTask<Void, Void, Integer> {
         TrafficInfoTable inLog;
         String parkTime;
-        public enterChangeFunc(String parkTime,TrafficInfoTable inLog){
+
+        public enterChangeFunc(String parkTime, TrafficInfoTable inLog) {
             this.parkTime = parkTime;
             this.inLog = inLog;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
-            if (parkTime.indexOf("无入场记录") > 0 || parkTime.length()<1) {
+            if (parkTime.indexOf("无入场记录") > 0 || parkTime.length() < 1) {
                 return 1;
             }
             //如开启0元收费自动放行，则点本按钮无效
-            if(inLog.getReceivable() == 0) {
+            if (inLog.getReceivable() == 0) {
                 boolean tempCarFree = MyApplication.settingInfo.getBoolean("tempCarFree");
                 if (!tempCarFree) {
                     return 2;
                 }
             }
-            if (carProcess.saveOutTempCar(inLog.getCar_no(),outPortPicBuffer,inLog.getReceivable(),inLog.getReceivable(),inLog.getStall_time())) {
+            if (carProcess.saveOutTempCar(inLog.getCar_no(), outPortPicBuffer, inLog.getReceivable(), inLog.getReceivable(), inLog.getStall_time())) {
                 outCamera.playAudio(camera.AudioList.get("一路顺风"));
-                outCamera.ledDisplay(2,"一路平安，请出场");
+                outCamera.ledDisplay(2, "一路平安，请出场");
             }
 
-            if(inLog.getReceivable()>0) {
+            if (inLog.getReceivable() > 0) {
                 // 打印
                 inLog.setOut_user(MyApplication.settingInfo.getString("userName"));
                 print();
             }
             return 0;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
-            switch (integer){
+            switch (integer) {
                 case 0:
                     T.showShort(context, "收费完成");
                     break;
@@ -537,7 +565,7 @@ public class MainActivity extends BaseActivity {
                     T.showShort(context, "无可收费车辆");
                     break;
                 case 2:
-                    T.showShort(context,"该车无需收费，已放行！");
+                    T.showShort(context, "该车无需收费，已放行！");
                     break;
                 default:
                     break;
@@ -563,17 +591,18 @@ public class MainActivity extends BaseActivity {
             else
                 printBean.money = outPortLog.getReceivable();
             printBean.outTime = DateUtils.date2StringDetail(outPortLog.getOut_time());
-            long  timeLong = outPortLog.getStall_time();
-            printBean.parkTime = String.format("%d时%d分",timeLong/60,timeLong%60);
+            long timeLong = outPortLog.getStall_time();
+            printBean.parkTime = String.format("%d时%d分", timeLong / 60, timeLong % 60);
             printBean.type = outPortLog.getCar_type();
             String json = gson.toJson(printBean);
-           // L.showlogError("Json==" + json);
+            // L.showlogError("Json==" + json);
             PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
         }
 
     }
+
     //无牌入场
-    class manualPassInFunc extends AsyncTask<Void,Void,Integer>{
+    class manualPassInFunc extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
             byte[] picBuffer = inCamera.CapturePic();
@@ -589,9 +618,10 @@ public class MainActivity extends BaseActivity {
             }
             return -1;
         }
+
         @Override
-        protected void onPostExecute(Integer integer){
-            switch (integer){
+        protected void onPostExecute(Integer integer) {
+            switch (integer) {
                 case 0:
                     T.showShort(context, "已完成无牌入场!");
                     new upStatusInfoDisp().execute();
@@ -607,26 +637,28 @@ public class MainActivity extends BaseActivity {
     private void againIdentInFunc() {
         T.showShort(context, "入口重新识别中......");
         inCamera.againIdent();
-        inCamera.ledDisplay(2,"欢迎光临");
+        inCamera.ledDisplay(2, "欢迎光临");
     }
 
     //重新识别出场
     private void againIdentOutFunc() {
         T.showShort(context, "出口重新识别中......");
         outCamera.againIdent();
-        outCamera.ledDisplay(2,"欢迎光临");
+        outCamera.ledDisplay(2, "欢迎光临");
 
     }
 
     //入口确认起杆
-    class manualInOpenFunc extends AsyncTask<Void,Void,Integer>{
+    class manualInOpenFunc extends AsyncTask<Void, Void, Integer> {
         String carNumber;
-        public  manualInOpenFunc(String carNumber){
+
+        public manualInOpenFunc(String carNumber) {
             this.carNumber = carNumber;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
-            if(waitEnterCarNumber.length()<1) {
+            if (waitEnterCarNumber.length() < 1) {
                 return -1;
             }
             byte[] picBuffer = inCamera.CapturePic();
@@ -635,7 +667,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 try {
                     inCamera.playAudio(camera.AudioList.get("欢迎光临"));
-                    inCamera.ledDisplay(2,"欢迎光临 "+carNumber+ " 请入场");
+                    inCamera.ledDisplay(2, "欢迎光临 " + carNumber + " 请入场");
                     carProcess.saveInTempCar(carNumber, picBuffer);
                     return 0;
                 } catch (DbException e) {
@@ -644,9 +676,10 @@ public class MainActivity extends BaseActivity {
             }
             return null;
         }
+
         @Override
-        protected void onPostExecute(Integer integer){
-            switch (integer){
+        protected void onPostExecute(Integer integer) {
+            switch (integer) {
                 case 0:
                     plateTextIn.setText("待通行");
                     T.showShort(context, "已完成确认通行");
@@ -663,30 +696,33 @@ public class MainActivity extends BaseActivity {
     }
 
     //出口手免费通行
-    class manualOutOpenFunc extends AsyncTask<Void,Void,Integer> {
+    class manualOutOpenFunc extends AsyncTask<Void, Void, Integer> {
         String carNumber;
         String ParkTime;
-        public manualOutOpenFunc(String carNumber,String ParkTime){
+
+        public manualOutOpenFunc(String carNumber, String ParkTime) {
             this.carNumber = carNumber;
             this.ParkTime = ParkTime;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             if (ParkTime.indexOf("无入场记录") > 0 || carNumber.length() == 0) {
                 //拍照
                 byte[] picBuffer = outCamera.CapturePic();
-                carProcess.saveOutFreeCar(carNumber,picBuffer);
+                carProcess.saveOutFreeCar(carNumber, picBuffer);
                 outCamera.playAudio(camera.AudioList.get("一路顺风"));
-                outCamera.ledDisplay(2,carNumber + "一路平安,请出场");
+                outCamera.ledDisplay(2, carNumber + "一路平安,请出场");
             } else {
                 outPortLog.setReceivable(0.0);
                 outPortLog.setCar_type("免费车");
-                carProcess.saveOutTempCar(carNumber,outPortPicBuffer,outPortLog.getReceivable(),0.0,outPortLog.getStall_time());
+                carProcess.saveOutTempCar(carNumber, outPortPicBuffer, outPortLog.getReceivable(), 0.0, outPortLog.getStall_time());
                 outCamera.playAudio(camera.AudioList.get("一路顺风"));
-                outCamera.ledDisplay(2,carNumber + "一路平安,请出场");
+                outCamera.ledDisplay(2, carNumber + "一路平安,请出场");
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             //更新出口收费信息
@@ -700,28 +736,30 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        T.showShort(this,"禁止退出应用!");
+        T.showShort(this, "禁止退出应用!");
     }
+
     //处理车牌识别事件
-    class processPlateEvent extends AsyncTask<Void,Void,Integer>{
+    class processPlateEvent extends AsyncTask<Void, Void, Integer> {
         public camera.PlateInfo info;
         public Bitmap bmp;
-        public  processPlateEvent(camera.PlateInfo info,Bitmap bmp){
+
+        public processPlateEvent(camera.PlateInfo info, Bitmap bmp) {
             this.info = info;
             this.bmp = bmp;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             //查询最近通行记录，如果通行时间小于设定时间则禁止通行，防止重复识别
             try {
-                TrafficInfoTable log = db.selector(TrafficInfoTable.class).where("car_no", "=", info.getPlateNumber()).orderBy("update_time",true).findFirst();
-                if(log != null ) {
+                TrafficInfoTable log = db.selector(TrafficInfoTable.class).where("car_no", "=", info.getPlateNumber()).orderBy("update_time", true).findFirst();
+                if (log != null) {
                     long delay = new Date().getTime() - log.getUpdateTime().getTime();
-                    if(delay < MyApplication.settingInfo.getInt("enterDelay")*60*1000) {
-                        if(delay>5*1000){
+                    if (delay < MyApplication.settingInfo.getInt("enterDelay") * 60 * 1000) {
+                        if (delay > 5 * 1000) {
                             return -1;
-                        }
-                        else{
+                        } else {
                             return -2;
                         }
                     }
@@ -730,17 +768,18 @@ public class MainActivity extends BaseActivity {
                     //入口处理
                     carProcess.processCarInFunc(info.getPlateNumber(), info.getCarPicdata());
                     return 1;
-                }else if (info.getName().equals("out")) {
+                } else if (info.getName().equals("out")) {
                     //出口处理
-                    if (carProcess.processCarOutFunc(info.getPlateNumber(), info.getCarPicdata(),5000)) {
+                    if (carProcess.processCarOutFunc(info.getPlateNumber(), info.getCarPicdata(), 5000)) {
                         return 2;
                     }
                 }
-        }catch (DbException e) {
-            e.printStackTrace();
-        }
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
             return 0;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             switch (integer) {
@@ -761,16 +800,14 @@ public class MainActivity extends BaseActivity {
                     chargeCarType.setText(outPortLog.getCar_type());
                     //停车时长
                     long timeLong = outPortLog.getStall_time();
-                    if(timeLong == -1){
+                    if (timeLong == -1) {
                         chargeParkTime.setText("无入场记录");
-                    }else if(timeLong == -2){
+                    } else if (timeLong == -2) {
                         chargeParkTime.setText("系统时间错误");
-                    }else if(timeLong == -3) {
+                    } else if (timeLong == -3) {
                         chargeParkTime.setText("待通行");
-                    }
-                    else
-                    {
-                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                    } else {
+                        String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                         chargeParkTime.setText("停车：" + stall_time);
                     }
                     //收费
@@ -780,10 +817,10 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
     public Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if(msg.what == 2)
-            {
+            if (msg.what == 2) {
                 new upStatusInfoDisp().execute();
                 return;
             }
@@ -816,7 +853,7 @@ public class MainActivity extends BaseActivity {
                         //缓存出口图片
                         outPortPicBuffer = info.getCarPicdata();
                     }
-                   new processPlateEvent(info,bmp).execute();
+                    new processPlateEvent(info, bmp).execute();
                     break;
                 case PIC:
                     Log.i("log", info.getPlateNumber());
@@ -879,7 +916,7 @@ public class MainActivity extends BaseActivity {
                 Intent intent = new Intent(this, SelectPassOut.class);
                 startActivityForResult(intent, 101);
                 outCamera.againIdent();
-                outCamera.ledDisplay(2,"欢迎光临");
+                outCamera.ledDisplay(2, "欢迎光临");
                 break;
             case R.id.main_setting:
                 startActivity(new Intent(this, SettingActivity.class));
@@ -927,11 +964,14 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-    class syncProcessSelectOut extends AsyncTask<Void,Void,Integer>{
+
+    class syncProcessSelectOut extends AsyncTask<Void, Void, Integer> {
         private int id;
-        public syncProcessSelectOut(int id){
+
+        public syncProcessSelectOut(int id) {
             this.id = id;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             if (id >= 0) {
@@ -940,28 +980,28 @@ public class MainActivity extends BaseActivity {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             //停车时长
             long timeLong = outPortLog.getStall_time();
-            if(timeLong == -1){
+            if (timeLong == -1) {
                 chargeParkTime.setText("无入场记录");
-            }else if(timeLong == -2){
+            } else if (timeLong == -2) {
                 chargeParkTime.setText("系统时间错误");
-            }else if(timeLong == -3) {
+            } else if (timeLong == -3) {
                 chargeParkTime.setText("待通行");
-            }
-            else
-            {
+            } else {
                 //更新出口收费信息
                 chargeCarNumber.setText(outPortLog.getCar_no());
                 chargeCarType.setText(outPortLog.getCar_type());
-                String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                 chargeParkTime.setText("停车：" + stall_time);
                 chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
             }
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("log", "requestCode:" + requestCode + "   resultCode:" + resultCode);

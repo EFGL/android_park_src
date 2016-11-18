@@ -26,6 +26,7 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.server.DownloadTimeBean;
 import com.gz.gzcar.utils.InitUtils;
+import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
@@ -309,6 +310,8 @@ public class SettingsFragment extends Fragment {
                 }
 
                 try {
+                    List<UserTable> allUser = db.findAll(UserTable.class);
+                    L.showlogError("allUser====="+allUser.toString());
                     List<UserTable> all = db.selector(UserTable.class).where("userName", "=", username).and("password", "=", password).findAll();
                     if (all!=null&&all.size()>0){
                         dialog.dismiss();
