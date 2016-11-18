@@ -10,7 +10,6 @@ package com.gz.gzcar.server;
  *
  */
 public class UploadBean {
-
 	/**
 	 *  "pass_no": "P040103001600001112",   （数据主键，保证各设备不重复）
 			    "card_type": "临时车",              （车辆类型：临时车 : 固定车）

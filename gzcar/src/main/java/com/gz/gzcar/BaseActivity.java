@@ -1,22 +1,16 @@
 package com.gz.gzcar;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.TimePickerView;
 import com.flyco.animation.BaseAnimatorSet;
 import com.flyco.animation.BounceEnter.BounceTopEnter;
 import com.flyco.animation.SlideExit.SlideBottomExit;
 import com.gz.gzcar.utils.DateUtils;
-import com.gz.gzcar.utils.L;
 
 import java.util.Date;
 
@@ -60,7 +54,6 @@ public class BaseActivity extends AppCompatActivity {
                 star.setText(DateUtils.date2String(date));
             }
         });
-
         pvTime2 = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
         pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear() + 1) + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay()));
         pvTime2.setCyclic(true);

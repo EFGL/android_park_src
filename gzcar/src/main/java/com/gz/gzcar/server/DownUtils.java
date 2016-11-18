@@ -25,7 +25,6 @@ public class DownUtils {
 		}
 		return null;
 	}
-
 	/**
 	 * 字符串转date
 	 * @param time

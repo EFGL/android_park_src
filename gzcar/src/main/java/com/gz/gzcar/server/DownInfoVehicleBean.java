@@ -16,7 +16,6 @@ public class DownInfoVehicleBean {
 		      "created_at": "2016-08-29 16:28:06",                       //创建时间
 		      "updated_at": "2016-08-29 16:30:21"                        //时间戳
 	 */
-
 	private String id;
 	private String car_no;
 	private String car_type;

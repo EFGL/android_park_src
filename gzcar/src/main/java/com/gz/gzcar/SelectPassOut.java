@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -39,7 +38,6 @@ import butterknife.OnClick;
 
 // 选车出场
 public class SelectPassOut extends BaseActivity {
-
     @Bind(R.id.out_carnum)
     EditText outCarnum;
     @Bind(R.id.select_out_car_rcy)

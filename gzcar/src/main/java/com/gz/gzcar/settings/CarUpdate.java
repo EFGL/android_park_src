@@ -35,7 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CarUpdate extends BaseActivity {
-
     @Bind(R.id.up_et_carnum)
     EditText mCarnum;
     @Bind(R.id.car_update_type)

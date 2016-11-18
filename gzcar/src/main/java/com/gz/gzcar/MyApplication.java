@@ -20,7 +20,6 @@ public class MyApplication extends Application {
     public static int app_handler_down_info_stall=1000*5;//下传车位表
     public static int app_handler_down_info_vehicle=1000*5;//下传固定车信息表
     public static int app_handler_down_record_stall_vehicle=1000*5;//下传车位和车辆绑定表
-
     public static String devID ;
 //    public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";

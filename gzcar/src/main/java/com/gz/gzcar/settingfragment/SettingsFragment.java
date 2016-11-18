@@ -285,12 +285,10 @@ public class SettingsFragment extends Fragment {
         params.height = 400;
         dialog.getWindow().setAttributes(params);
         dialog.show();
-
         final EditText pwd = (EditText) view.findViewById(R.id.clear_password);
         TextView name = (TextView) view.findViewById(R.id.clear_name);
         Button cancle = (Button) view.findViewById(R.id.clear_cancle);
         final Button clear = (Button) view.findViewById(R.id.clear_clear);
-
         final String username = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
         name.setText(username);
 

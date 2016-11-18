@@ -79,13 +79,10 @@ public class ImageDetailActivity extends BaseActivity {
         final String carType = intent.getStringExtra("carType");
         String stall = intent.getStringExtra("stall");//占用车位
         String status = intent.getStringExtra("status");
-
         final String out_user = intent.getStringExtra("out_user");
         String in_user = intent.getStringExtra("in_user");
         String receivable = intent.getStringExtra("receivable");//应收费用
         final String actual_money = intent.getStringExtra("actual_money");
-
-
         final String in_time = intent.getStringExtra("in_time");
         final String out_time = intent.getStringExtra("out_time");
         final String stall_time = intent.getStringExtra("stall_time");//停车时长

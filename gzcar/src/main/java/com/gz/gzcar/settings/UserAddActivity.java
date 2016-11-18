@@ -71,7 +71,6 @@ public class UserAddActivity extends BaseActivity {
             T.showShort(this, "信息不完整");
             return;
         }
-
         DbManager db = x.getDb(MyApplication.daoConfig);
         try {
             List<UserTable> user = db.selector(UserTable.class).where("userName", "=", name).findAll();

@@ -50,7 +50,6 @@ import static android.os.Environment.getExternalStorageDirectory;
  * 车辆信息查询
  */
 public class CarInfoFragment extends Fragment {
-
     @Bind(R.id.et_search_car)
     EditText mCarNumber;
     @Bind(R.id.btn_search_car)
@@ -65,7 +64,6 @@ public class CarInfoFragment extends Fragment {
     private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
     private int pageIndex = 0;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

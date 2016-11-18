@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class UserUpdateActivity extends BaseActivity {
-
     @Bind(R.id.user_up_name)
     EditText mName;
     @Bind(R.id.user_update_type)

@@ -18,9 +18,7 @@ import org.xutils.x;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 public class ParkingAddActivity extends BaseActivity {
-
     @Bind(R.id.et_id)
     EditText mInfo;
     @Bind(R.id.et_start)

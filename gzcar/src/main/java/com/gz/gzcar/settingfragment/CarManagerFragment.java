@@ -79,8 +79,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     ProgressBar progressBar;
     private int TAG = 0;
     private String type = "";
-
-
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;

@@ -311,7 +311,6 @@ public class DownloadServerMessage {
 			@Override
 			public void onFinished() {
 			}
-
 			@Override
 			public void onSuccess(String arg0) {
 				try {

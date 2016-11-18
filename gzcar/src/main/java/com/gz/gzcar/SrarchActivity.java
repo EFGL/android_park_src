@@ -21,7 +21,6 @@ public class SrarchActivity extends BaseActivity implements View.OnClickListener
     private RunFragment fragment2;
     private PrizeFragment fragment3;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -189,12 +189,10 @@ public class MainActivity extends BaseActivity {
                 enterChangeFunc();
             }
         });
-
         outPortLog.setReceivable(0.0);
         outPortLog.setCar_no("");
         outPortLog.setCar_type("");
         outPortLog.setStall_time(-3);
-
         makeUser();
         showLogin();
         //起动传输服务

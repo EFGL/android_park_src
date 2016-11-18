@@ -103,7 +103,6 @@ public class CarAdd extends BaseActivity {
 
         init();
     }
-
     // 初始化
     private void init() {
         initViews();

@@ -102,7 +102,6 @@ public class MoneyFragment extends Fragment {
         spUtils.putBoolean(AppConstants.IS_HOURADD, isHourAddTemp);
         T.showShort(getContext(), "保存成功");
     }
-
     private void readConfiig() {
         final int tempFree = spUtils.getInt(AppConstants.TEMP_FREE);// 临时车免费时长
         int friends = spUtils.getInt(AppConstants.FRIEND_FREE);

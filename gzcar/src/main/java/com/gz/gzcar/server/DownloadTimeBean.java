@@ -88,8 +88,6 @@ public class DownloadTimeBean {
 			String handler_down_record_stall_vehicle_time) {
 		this.handler_down_record_stall_vehicle_time = handler_down_record_stall_vehicle_time;
 	}
-
-
 	public int getMyid() {
 		return myid;
 	}
