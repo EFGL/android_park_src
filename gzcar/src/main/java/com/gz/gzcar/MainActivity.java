@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
+import com.gz.gzcar.device.LedModule;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.module.delayTask;
@@ -408,10 +409,7 @@ public class MainActivity extends BaseActivity {
                         MyApplication.settingInfo.putString("loginTime", format.format(new Date()));
                     }
                     return type;
-                } else {
-                    return "system";
                 }
-
             } catch (DbException e) {
                 e.printStackTrace();
             }
@@ -439,7 +437,7 @@ public class MainActivity extends BaseActivity {
     }
     //更新状态信息
     class upStatusInfoDisp extends AsyncTask<Void,Void,Long>{
-        String[] str = new String[8];
+        String[] str = new String[10];
         protected Long doInBackground(Void... params) {
             Log.i("log", "刷新车位显示数据");
             long emptyCount;    //空闲车位
@@ -475,6 +473,8 @@ public class MainActivity extends BaseActivity {
              long chargeNum = MyApplication.settingInfo.getLong("chargeCarNumer");
              str[6] = String.format("收费车辆：%d辆",chargeNum);
              str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
+             str[8] = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME);
+            LedModule.udpLedDispaly("192.168.10.16",5005,str[8]+"\r\n" + str[0] + "\r\n" + str[1]+ "\r\n"+ "一车一杆，减速慢行");
             Log.i("log", "刷新车位显示UI");
             return emptyCount;
         }

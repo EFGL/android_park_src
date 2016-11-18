@@ -264,7 +264,7 @@ public class SettingsFragment extends Fragment {
                     ,new KeyValue("handler_down_record_stall_vehicle_time","1970-1-1 01:00:00"));
             MyApplication.settingInfo.clear();
             InitUtils.init();
-            MyApplication.settingInfo.putString(AppConstants.USER_NAME,userName);
+            MyApplication.settingInfo.putString("userName",userName);
             T.showShort(getContext(),"初始化成功,数据已全部删除");
             startActivity(new Intent(getContext(),MainActivity.class));
 
@@ -291,7 +291,7 @@ public class SettingsFragment extends Fragment {
         Button cancle = (Button) view.findViewById(R.id.clear_cancle);
         final Button clear = (Button) view.findViewById(R.id.clear_clear);
 
-        final String username = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
+        final String username = MyApplication.settingInfo.getString("userName", "");
         name.setText(username);
 
         cancle.setOnClickListener(new View.OnClickListener() {

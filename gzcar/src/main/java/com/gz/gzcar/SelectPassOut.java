@@ -127,50 +127,84 @@ public class SelectPassOut extends BaseActivity {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "like", "%"+carNum+"%").and("status", "=", "已入").findAll();
                     if (all != null) {
                         allData.addAll(all);
+                        return allData.size();
+                    }else
+                    {
+                        return 0;
                     }
-                    myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
                     e.printStackTrace();
+                    return -1;
                 }
             } else {
                 try {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "%"+carNum+"%").and("status", "=", "已入").findAll();
                     if (all != null) {
                         allData.addAll(all);
+                        return allData.size();
+                    }else{
+                        return 0;
                     }
-                    myAdapter.notifyDataSetChanged();
                 } catch (DbException e) {
                     e.printStackTrace();
+                    return -1;
                 }
             }
-            return null;
+        }
+        @Override
+        protected void onPostExecute(Integer result){
+            switch (result)
+            {
+                case 0:
+                    T.showShort(context, "未查到相关数据");
+                    break;
+                case -1:
+                    T.showShort(context, "查询异常");
+                    break;
+                default:
+                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    myAdapter.notifyDataSetChanged();
+                    break;
+            }
         }
     }
     //查询所有示出场车辆
     class findAllNoPass extends AsyncTask<Void,Void,Integer> {
-
         @Override
         protected Integer doInBackground(Void... params) {
             try {
                 allData.clear();
                 List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("status", "=", "已入").and("car_type", "=", "临时车").orderBy("in_time", true).findAll();
                 if (all != null) {
-                    T.showShort(context, "找到" + all.size() + "条相关数据");
                     allData.addAll(all);
+                    return all.size();
                 } else {
-                    T.showShort(context, "未查到相关数据");
+                    return 0;
                 }
-                myAdapter.notifyDataSetChanged();
             } catch (DbException e) {
-                T.showShort(context, "查询异常");
                 e.printStackTrace();
+                return -1;
             }
-            return null;
+        }
+        @Override
+        protected void onPostExecute(Integer result){
+            switch (result)
+            {
+                case 0:
+                    T.showShort(context, "未查到相关数据");
+                    break;
+                case -1:
+                    T.showShort(context, "查询异常");
+                    break;
+                default:
+                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    myAdapter.notifyDataSetChanged();
+                    break;
+            }
         }
     }
     //查询无牌车
     class findNoPlateCar extends AsyncTask<Void,Void,Integer>{
-
         @Override
         protected Integer doInBackground(Void... params) {
             try {
@@ -180,13 +214,12 @@ public class SelectPassOut extends BaseActivity {
                     return 0;
                 } else {
                     allData.addAll(all);
+                    return allData.size();
                 }
-                myAdapter.notifyDataSetChanged();
             } catch (DbException e) {
                 e.printStackTrace();
                 return -1;
             }
-            return null;
         }
         @Override
         protected void onPostExecute(Integer result){
@@ -198,6 +231,7 @@ public class SelectPassOut extends BaseActivity {
                     T.showShort(context, "查询异常");
                 default:
                     T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    myAdapter.notifyDataSetChanged();
                     break;
             }
         }
@@ -268,19 +302,30 @@ public class SelectPassOut extends BaseActivity {
                         .findAll();
                 if (all != null) {
                     allData.addAll(all);
-                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    return allData.size();
                 } else {
-                    T.showShort(context, "未查到相关数据");
+                    return 0;
                 }
-                myAdapter.notifyDataSetChanged();
             } catch (DbException e) {
-                T.showShort(context, "查询异常");
                 e.printStackTrace();
+                return -1;
             }
-            return null;
+        }
+        @Override
+        protected void onPostExecute(Integer result){
+            switch (result){
+                case 0:
+                    T.showShort(context, "未查到相关数据");
+                    break;
+                case -1:
+                    T.showShort(context, "查询异常");
+                default:
+                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    myAdapter.notifyDataSetChanged();
+                    break;
+            }
         }
     }
-
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

@@ -949,6 +949,7 @@ public class carInfoProcess {
         }
         return true;
     }
+
     //保存免费出口车辆
     public boolean saveOutFreeCar(String carNumber,byte[] picBuffer){
         TrafficInfoTable inLog = null;
