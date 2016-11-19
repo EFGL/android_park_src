@@ -92,20 +92,15 @@ public class CarInfoFragment extends Fragment {
             CsvWriter cw = null;
 
             try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                SimpleDateFormat format = new SimpleDateFormat("yy年MM月dd日HH时mm分");
                 String current = format.format(System.currentTimeMillis());
-                String fileName = "/" + current + ".csv";
+                String fileName = "/车辆信息表" + current + ".csv";
                 String usbDir = "/storage/uhost";
                 String usbDir1 = "/storage/uhost1";
-
-                L.showlogError("fileName===" + fileName);
-
-
-
-                L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
-
-                String[] title = new String[]{"id", "组键", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
-                        "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间", "状态"};
+                //L.showlogError("fileName===" + fileName);
+                //L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
+                String[] title = new String[]{"序号", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
+                        "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间"};
                 try {
                     cw = new CsvWriter(usbDir1 + fileName, ',', Charset.forName("GBK"));
                     cw.writeRecord(title);
@@ -130,7 +125,6 @@ public class CarInfoFragment extends Fragment {
                     for (int i = 0; i < all.size(); i++) {
                         carInfoTable = all.get(i);
                         int id = carInfoTable.getId();
-                        String codeId = carInfoTable.getCodeId();
                         String car_no = carInfoTable.getCar_no();
                         String car_type = carInfoTable.getCar_type();
                         String vehicle_type = carInfoTable.getVehicle_type();
@@ -144,13 +138,11 @@ public class CarInfoFragment extends Fragment {
                         int allow_park_time = carInfoTable.getAllow_park_time();
                         Date created_at = carInfoTable.getCreated_at();
                         String updated_at = carInfoTable.getUpdated_at();
-                        String status = carInfoTable.getStatus();
-
-                        String[] carInfo = new String[]{id + "", codeId, car_no, car_type, vehicle_type, fee_type, person_name, person_tel, person_address, DateUtils.date2String(start_date),
-                                DateUtils.date2String(stop_date), allow_count + "", allow_park_time + "", DateUtils.date2String(created_at), updated_at, status};
+                        String[] carInfo = new String[]{id + "", car_no, car_type, vehicle_type, fee_type, person_name, person_tel, person_address, DateUtils.date2String(start_date),
+                                DateUtils.date2String(stop_date), allow_count + "", allow_park_time + "", DateUtils.date2String(created_at), updated_at};
 
                         cw.writeRecord(carInfo);
-                        L.showlogError("数据写入成功 数据:id==" + id);
+                       // L.showlogError("数据写入成功 数据:id==" + id);
                     }
                     return all.size();
                 } else {

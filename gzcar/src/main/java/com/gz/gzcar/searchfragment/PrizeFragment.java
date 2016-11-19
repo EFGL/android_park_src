@@ -347,7 +347,6 @@ public class PrizeFragment extends BaseFragment {
             CsvWriter cw = null;
 
             try {
-
                 L.showlogError("--- 开始查询数据库 ---");
                 List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                         .where("update_time", ">", dateFormatDetail.parse(searchStart))
@@ -356,9 +355,9 @@ public class PrizeFragment extends BaseFragment {
                         .orderBy("update_time", true)
                         .findAll();
                 if (all != null && all.size() > 0) {
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                    SimpleDateFormat format = new SimpleDateFormat("yy年MM月dd日HH时mm分");
                     String current = format.format(System.currentTimeMillis());
-                    String fileName = "/" + current + ".csv";
+                    String fileName = "/收费记录表" + current + ".csv";
                     String usbDir = "/storage/uhost";
                     String usbDir1 = "/storage/uhost1";
 
@@ -388,19 +387,25 @@ public class PrizeFragment extends BaseFragment {
                         traffic = all.get(i);
                         String car_type = traffic.getCar_type();
                         String car_no = traffic.getCar_no();
-                        Date in_time = traffic.getIn_time();
+                        String in_time = DateUtils.date2StringDetail(traffic.getIn_time());
+                        if (TextUtils.isEmpty(in_time))
+                            in_time = "无入场记录";
                         String in_user = traffic.getIn_user();
                         String out_time = DateUtils.date2StringDetail(traffic.getOut_time());
-                        if (TextUtils.isEmpty(out_time))
-                            out_time = "无出场记录";
+                        if (TextUtils.isEmpty(out_time)) {
+                            if (traffic.getStatus().equals("已出")) {
+                                out_time = "异常出场";
+                            }else{
+                                out_time = "未出场";
+                            }
+                        }
                         String out_user = traffic.getOut_user();
                         Double receivable = traffic.getReceivable();
                         Double actual_money = traffic.getActual_money();
                         long timeLong = traffic.getStall_time();
                         String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
-                        String status = traffic.getStatus();
-                        String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
-                                receivable + "", actual_money + "", stall_time, in_user, out_user};
+                        String[] carInfo = new String[]{car_no, car_type, in_time, out_time,
+                                receivable + "元", actual_money + "元", stall_time, in_user, out_user};
 
                         cw.writeRecord(carInfo);
                         L.showlogError("数据写入成功 数据:id==" + traffic.getId());

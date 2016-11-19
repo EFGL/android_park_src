@@ -347,14 +347,11 @@ public class RunFragment extends BaseFragment {
                 }
                 L.showlogError("--- 数据库查询完成,all ---" + all);
                 if (all != null && all.size() > 0) {
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                    SimpleDateFormat format = new SimpleDateFormat("yy年MM月dd日HH时mm分");
                     String current = format.format(System.currentTimeMillis());
-                    String fileName = "/" + current + ".csv";
+                    String fileName = "/通行记录表" + current + ".csv";
                     String usbDir = "/storage/uhost";
                     String usbDir1 = "/storage/uhost1";
-
-                    L.showlogError("fileName===" + fileName);
-
                     String[] title = new String[]{"车号", "车辆类型", "入场时间", "出场时间",
                             "应收费用", "实收费用", "停车时长", "入场操作员", "出场操作员"};
                     try {
@@ -388,10 +385,15 @@ public class RunFragment extends BaseFragment {
                         String out_user = traffic.getOut_user();
                         Double receivable = traffic.getReceivable();
                         Double actual_money = traffic.getActual_money();
-                        Long stall_time = traffic.getStall_time();
-
+                        long timeLong = traffic.getStall_time();
+                        String stall_time;
+                        if(timeLong >0) {
+                            stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
+                        }else{
+                            stall_time = "0小时0分";
+                        }
                         String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
-                                receivable + "", actual_money + "", stall_time+"", in_user, out_user};
+                                receivable + "元", actual_money + "元", stall_time, in_user, out_user};
 
                         cw.writeRecord(carInfo);
                         L.showlogError("数据写入成功 数据:id==" + traffic.getId());
@@ -424,7 +426,6 @@ public class RunFragment extends BaseFragment {
 
                 T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
             }
-
             progressbar.setVisibility(View.GONE);
         }
     }

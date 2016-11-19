@@ -29,6 +29,7 @@ public class camera {
     mjpeg_callback MjpegCallback;
     String portName;
     String cameraIp;
+    boolean videoFlag;
     PlateInfo streamInfo = new PlateInfo();
     PlateInfo plateinfo = new PlateInfo();
     //定义语音
@@ -182,15 +183,9 @@ public class camera {
     public enum msgType{PLATE,PIC,STREAM,UPDATE_SHOW};
 
     public String getPortName() {return portName;}
-
-    //手动出场
-    public void manualPassOutFunc(){
-        Log.i("button:", "manualPassOutFunc");
-    }
     public class PlateInfo{
         public msgType msgType;
         String name;
-        String ip;
         String PlateNumber;
         String PlateColor;
         byte[] CarPicdata;
@@ -200,14 +195,6 @@ public class camera {
 
         public void setName(String name) {
             this.name = name;
-        }
-
-        public String getIp() {
-            return ip;
-        }
-
-        public void setIp(String ip) {
-            this.ip = ip;
         }
 
         public String getPlateNumber() {
@@ -258,12 +245,13 @@ public class camera {
             return null;
         }
     }
-    public  camera(MainActivity myActive,String name, String ip){
+    public  camera(MainActivity myActive,String name, String ip,boolean videoFlag){
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build());
         mainActivity = myActive;
         portName = name;
         cameraIp = ip;
+        this.videoFlag = videoFlag;
         Log.i("log","connect camera " + name +  " " + ip);
         new syncCamera().execute();
     }
@@ -446,9 +434,11 @@ public class camera {
     // mjpeg码流回调
     class mjpeg_callback implements SDK.IMJpegCallback_Static {
         public void ICE_IPCSDK_MJpeg(String strIP, byte[] bData, int length) {// 参数：1.相机ip  2.mjpeg数据 3.jpg图片长度
-            streamInfo.setCarPicdata(new byte[length]);
-            System.arraycopy(bData, 0,streamInfo.CarPicdata, 0, length);
-            EventBus.getDefault().post(streamInfo);
+            if (videoFlag) {
+                streamInfo.setCarPicdata(new byte[length]);
+                System.arraycopy(bData, 0, streamInfo.CarPicdata, 0, length);
+                EventBus.getDefault().post(streamInfo);
+            }
         }
     }
 }
