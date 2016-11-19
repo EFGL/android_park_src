@@ -23,6 +23,7 @@ import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
+import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
@@ -46,6 +47,8 @@ public class SelectPassOut extends BaseActivity {
     ImageView outPhoto;
     @Bind(R.id.out_ph_carnum)
     TextView outPhCarnum;
+    @Bind(R.id.spinner_car_type)
+    MyPullText car_type_select;
     private DbManager db = null;
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private int clickItem = -1;
@@ -89,8 +92,16 @@ public class SelectPassOut extends BaseActivity {
         }
 
     }
-
+    private void initSpinner() {
+        ArrayList<String> popListItem = new ArrayList<String>();
+        popListItem.add("临时车");
+        popListItem.add("内部车");
+        car_type_select.setTextSize(16);
+        car_type_select.setPopList(popListItem);
+        car_type_select.setText(popListItem.get(0));
+    }
     private void initViews() {
+        initSpinner();
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();

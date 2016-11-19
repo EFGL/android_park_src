@@ -14,7 +14,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:layout_marginRight="8dp"
             android:layout_weight="3"
             android:focusable="true"
@@ -35,17 +35,20 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/ic_bg_message"
-                android:hint="请输入车号"
+                android:hint="输入车号"
                 android:imeOptions="actionDone"
                 android:singleLine="true" />
-
-            <Button
-                android:id="@+id/out_nocarnum"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/ic_bg_message"
-                android:text="无牌车辆" />
+                android:text="车辆类型"
+                android:textSize="18sp" />
+
+            <com.gz.gzcar.weight.MyPullText
+                android:id="@+id/spinner_car_type"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:textSize="18sp"/>
         </LinearLayout>
 
         <TextView
@@ -151,6 +154,14 @@
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+        <Button
+            android:id="@+id/out_nocarnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/ic_bg_message"
+            android:text="无牌车辆"
+            android:textSize="17sp"/>
 
         <Button
             android:id="@+id/out_1hour"
@@ -188,7 +199,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="@drawable/ic_bg_message"
-            android:text="24小时内车辆"
+            android:text="24小时内"
             android:textSize="17sp" />
 
         <Button
@@ -198,7 +209,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="@drawable/ic_bg_message"
-            android:text="所有未出场车辆"
+            android:text="场内车辆"
             android:textSize="17sp" />
 
         <Button
