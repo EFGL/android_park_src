@@ -74,7 +74,7 @@ public class RunFragment extends BaseFragment {
     private List<TrafficInfoTable> allData;
     private MyPullText myPullText;
     private RecyclerView.LayoutManager lm;
-    private List<TrafficInfoTable> all;
+    private List<TrafficInfoTable> all = new ArrayList<>();
     private String exportStart;
     private String exportEnd;
     private String exportType;
@@ -257,9 +257,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", date)
                     .orderBy("update_time", true)
                     .findAll();
-            if (all != null) {
                 sumBottomCarNum(all.size());
-            }
 
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
@@ -451,7 +449,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "=", "临时车")
                     .orderBy("update_time", true)
                     .findAll();
-
+            sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
@@ -469,6 +467,8 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "!=", "临时车")
                     .orderBy("id", true)
                     .findAll();
+
+            sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
@@ -485,7 +485,7 @@ public class RunFragment extends BaseFragment {
                     .and("car_no", "like", "%" + number + "%")
                     .orderBy("id", true)
                     .findAll();
-
+            sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
