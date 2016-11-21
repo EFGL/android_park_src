@@ -21,9 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-
-
 /**
  * Created by Administrator on 2016/9/30.
  */
@@ -195,7 +192,7 @@ public class carInfoProcess {
                         new KeyValue("updated_controller_sn",MyApplication.devID),
                         new KeyValue("modife_flage",false),
                         new KeyValue("receivable",0.0),
-                        new KeyValue("stall_time",0),
+                        new KeyValue("stall_time",0.0),
                         new KeyValue("actual_money",0.0));
             }
             //
@@ -205,6 +202,9 @@ public class carInfoProcess {
             trafficInfo.setIn_image(picPath);
             trafficInfo.setOut_time(null);
             trafficInfo.setOut_image(null);
+            trafficInfo.setReceivable(0.0);
+            trafficInfo.setActual_money(0.0);
+            trafficInfo.setStall_time(0);
             trafficInfo.setIn_user(mainActivity.loginUserName);
             trafficInfo.setStatus("已入");
             trafficInfo.setUpdateTime(new Date());
@@ -238,6 +238,11 @@ public class carInfoProcess {
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                 trafficInfo.setPass_no(MyApplication.devID + dateFormat.format(new Date()));
+                trafficInfo.setIn_time(null);
+                trafficInfo.setIn_image(null);
+                trafficInfo.setReceivable(0.0);
+                trafficInfo.setActual_money(0.0);
+                trafficInfo.setStall_time(0);
                 db.save(trafficInfo);
             }
             return true;
@@ -945,6 +950,7 @@ public class carInfoProcess {
         }
         return true;
     }
+
     //保存免费出口车辆
     public boolean saveOutFreeCar(String carNumber,byte[] picBuffer){
         TrafficInfoTable inLog = null;
