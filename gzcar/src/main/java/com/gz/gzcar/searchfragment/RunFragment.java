@@ -75,7 +75,6 @@ public class RunFragment extends BaseFragment {
     private MyPullText myPullText;
     private RecyclerView.LayoutManager lm;
     private List<TrafficInfoTable> all;
-    private String TAG = "chenghao";
     private String exportStart;
     private String exportEnd;
     private String exportType;
@@ -100,7 +99,6 @@ public class RunFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(TAG, "onStart");
         String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
         mStartTime.setText(start);
@@ -197,19 +195,11 @@ public class RunFragment extends BaseFragment {
     private void initSpinner() {
         myPullText = (MyPullText) view.findViewById(R.id.mypulltext);
         ArrayList<String> popListItem = new ArrayList<String>();
-        popListItem.add("所有车");
-        popListItem.add("固定车");
         popListItem.add("临时车");
-        popListItem.add("特殊车");
+        popListItem.add("内部车");
         myPullText.setTextSize(16);
         myPullText.setPopList(popListItem);
         myPullText.setText(popListItem.get(0));
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     private void initViews() {
@@ -436,7 +426,7 @@ public class RunFragment extends BaseFragment {
         String carNum = mCarNumber.getText().toString().trim();
         String start = mStartTime.getText().toString().trim();
         String end = mEndTime.getText().toString().trim();
-        if (type.equals("所有车")) {
+        if (type.equals("内部车")) {
             if (TextUtils.isEmpty(carNum)) {
                 searchAll(start, end);
             } else {
@@ -444,7 +434,7 @@ public class RunFragment extends BaseFragment {
             }
         } else {
             if (TextUtils.isEmpty(carNum)) {
-                searchWithType(start, end, type);
+                searchWithType(start, end);
             } else {
                 searchAllWithCarNum(start, end, carNum);
             }
@@ -453,23 +443,17 @@ public class RunFragment extends BaseFragment {
     }
 
     /*按类型查找记录*/
-    private void searchWithType(String start, String end, String type) {
+    private void searchWithType(String start, String end) {
         try {
             all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", DateUtils.string2DateDetail(start))
                     .and("update_time", "<=", DateUtils.string2DateDetail(end))
-                    .and("car_type", "=", type)
+                    .and("car_type", "=", "临时车")
                     .orderBy("update_time", true)
                     .findAll();
 
             updaterecycltviewadapter();
-//            if (all != null) {
-//                allData.clear();
-//                allData.addAll(all);
-//                myAdapter.notifyDataSetChanged();
-//            } else {
-//                T.showShort(getContext(), "未查到相关数据");
-//            }
+
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询异常");
@@ -479,22 +463,14 @@ public class RunFragment extends BaseFragment {
     /*查询所有车*/
     private void searchAll(String start, String end) {
         try {
-            all = db.selector(TrafficInfoTable.class)
+           all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", DateUtils.string2DateDetail(start))
                     .and("update_time", "<=", DateUtils.string2DateDetail(end))
+                    .and("car_type", "!=", "临时车")
                     .orderBy("id", true)
                     .findAll();
             updaterecycltviewadapter();
 
-
-//            if (allData != null&&all!=null&&all.size()>0) {
-//                allData.clear();
-//                allData.addAll(all);
-//                myAdapter.notifyDataSetChanged();
-//                sumBottomCarNum(allData.size());
-//            }else {
-//                T.showShort(getContext(),"未查到相关数据");
-//            }
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询异常");
@@ -512,14 +488,6 @@ public class RunFragment extends BaseFragment {
 
             updaterecycltviewadapter();
 
-//            if (allData != null && all != null && all.size() > 0) {
-//                allData.clear();
-//                allData.addAll(all);
-//                myAdapter.notifyDataSetChanged();
-//                sumBottomCarNum(allData.size());
-//            } else {
-//                T.showShort(getContext(), "未查到相关数据");
-//            }
         } catch (DbException e) {
             e.printStackTrace();
             T.showShort(getContext(), "查询异常");

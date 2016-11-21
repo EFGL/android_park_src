@@ -66,26 +66,13 @@ public class TrafficInfoTable {
     //记录修改标志
     @Column(name = "modife_flage")
     private boolean modife_flage;
+
     @Override
     public String toString() {
         return "TrafficInfoTable{" +
-                "id=" + id +
-                ", car_type='" + car_type + '\'' +
+                "car_type='" + car_type + '\'' +
                 ", car_no='" + car_no + '\'' +
-                ", in_time=" + in_time +
-                ", in_image='" + in_image + '\'' +
-                ", in_user='" + in_user + '\'' +
-                ", out_time=" + out_time +
-                ", out_image='" + out_image + '\'' +
-                ", out_user='" + out_user + '\'' +
-                ", receivable=" + receivable +
-                ", actual_money=" + actual_money +
-                ", stall=" + stall +
-                ", stall_time=" + stall_time +
-                ", update_time=" + update_time +
-                ", modife_flage=" + modife_flage +
-                ", updated_controller_sn=" + updated_controller_sn +
-        '}';
+                '}';
     }
 
     public int getId() {
