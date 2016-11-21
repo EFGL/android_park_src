@@ -76,6 +76,12 @@ public class SettingsFragment extends Fragment {
     TextView textViewDevId;
     @Bind(R.id.company)
     EditText mCompany;
+    @Bind(R.id.et_support_in_ip)
+    EditText mSupportInIp;
+    @Bind(R.id.et_support_out_ip)
+    EditText mSupportOutIp;
+    @Bind(R.id.display_ip)
+    EditText mDisplayIp;
 
     private boolean isTempCarIn;
     private boolean isFree;
@@ -106,12 +112,18 @@ public class SettingsFragment extends Fragment {
         String serverIp = MyApplication.settingInfo.getString(AppConstants.SERVER_IP, "");// 服务器地址url
         String inCameraIp = MyApplication.settingInfo.getString(AppConstants.IN_CAMERA_IP, "");// 入口相机地址
         String outCameraIp = MyApplication.settingInfo.getString(AppConstants.OUT_CAMERA_IP, "");// 出口相机地址
+        String supportInIp = MyApplication.settingInfo.getString(AppConstants.SUPPORT_IN_IP, "");
+        String supportOutIp = MyApplication.settingInfo.getString(AppConstants.SUPPORT_OUT_IP, "");
+        String displayIp = MyApplication.settingInfo.getString(AppConstants.DISPLAY_IP, "");
         long stallNum = MyApplication.settingInfo.getLong(AppConstants.ALL_CAR_PLACE);
         enterDelay = MyApplication.settingInfo.getInt(AppConstants.ENTER_DELAY);
         String companyName = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME, "");// 单位名称
         mServerAddress.setText(serverIp);
         mInIp.setText(inCameraIp);
         mOutIp.setText(outCameraIp);
+        mSupportInIp.setText(supportInIp);
+        mSupportOutIp.setText(supportOutIp);
+        mDisplayIp.setText(displayIp);
         stallNumber.setText(String.valueOf(stallNum));
         editText_enterDelay.setText(String.valueOf(enterDelay));
         mCompany.setText(companyName);
@@ -142,6 +154,9 @@ public class SettingsFragment extends Fragment {
         String serverAddress = mServerAddress.getText().toString().trim();
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();
+        String supportInIp = mSupportInIp.getText().toString().trim();
+        String supportOutIp = mSupportOutIp.getText().toString().trim();
+        String displayIp = mDisplayIp.getText().toString().trim();
         String companyName = mCompany.getText().toString().trim();
         Long stallNum = Long.valueOf(stallNumber.getText().toString().trim());
         enterDelay = Integer.valueOf(editText_enterDelay.getText().toString().trim());
@@ -152,6 +167,9 @@ public class SettingsFragment extends Fragment {
         MyApplication.settingInfo.putString(AppConstants.SERVER_IP, serverAddress);
         MyApplication.settingInfo.putString(AppConstants.IN_CAMERA_IP, inCameraIp);
         MyApplication.settingInfo.putString(AppConstants.OUT_CAMERA_IP, outCameraIp);
+        MyApplication.settingInfo.putString(AppConstants.SUPPORT_IN_IP,supportInIp);
+        MyApplication.settingInfo.putString(AppConstants.SUPPORT_OUT_IP,supportOutIp);
+        MyApplication.settingInfo.putString(AppConstants.DISPLAY_IP,displayIp);
         MyApplication.settingInfo.putLong(AppConstants.ALL_CAR_PLACE, stallNum);
         MyApplication.settingInfo.putString(AppConstants.COMPANY_NAME, companyName);
         T.showShort(getContext(), "保存成功");

@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/et_run_carnumber"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_white"
             android:imeOptions="actionDone"
@@ -39,7 +39,7 @@
 
         <com.gz.gzcar.weight.MyPullText
             android:id="@+id/mypulltext"
-            android:layout_width="120dp"
+            android:layout_width="130dp"
             android:layout_height="30dp"
             android:layout_marginLeft="10dp" />
 

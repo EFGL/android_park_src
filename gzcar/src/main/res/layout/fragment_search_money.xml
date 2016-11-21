@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/et_money_carnumber"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_white"
             android:imeOptions="actionDone"
@@ -30,7 +30,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="操作员"
@@ -38,7 +38,7 @@
 
         <com.gz.gzcar.weight.MyPullText
             android:id="@+id/search_money_spinner"
-            android:layout_width="110dp"
+            android:layout_width="140dp"
             android:layout_height="30dp"/>
 
         <TextView

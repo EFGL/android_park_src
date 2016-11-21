@@ -137,7 +137,7 @@ public class PrizeFragment extends BaseFragment {
 
             mSpinner.setPopList(userList);
             mSpinner.setText(userList.get(0));
-            mSpinner.setTextSize(16);
+            mSpinner.setTextSize(15);
 
         }
     }

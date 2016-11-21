@@ -42,6 +42,12 @@ public class AppConstants {
     public static final String IS_USE_CHINA = "isUseChina";
     // 车牌是否匹配汉字
     public static final String COMPANY_NAME = "companyName";
+    // 辅助相机入口ip
+    public static final String SUPPORT_IN_IP = "supportInIp";
+    // 辅助相机出口ip
+    public static final String SUPPORT_OUT_IP = "supportOutIp";
+    // 显示屏ip
+    public static final String DISPLAY_IP = "displayIP";
 
 
     // 当前登录用户名
