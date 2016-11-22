@@ -12,6 +12,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MyApplication;
+import com.gz.gzcar.utils.DateUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,10 +28,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
+
 /**
  * 上传和下行服务
  *@ClassName: SendService  程浩
@@ -51,6 +52,8 @@ public class SendService extends Service{
 	private static Boolean log=true;
 
 	private final long sendtime=10;
+
+	private FileUtils fileUtils =new FileUtils();
 
 	private static  String Myurl=MyApplication.settingInfo.getString("serverIp") + "/api/v1/in_out_record_upload"
 ;
@@ -138,18 +141,18 @@ public class SendService extends Service{
 		 */
 		public void showlog(String msg){
 			if(log){
-
-                try {
-                    FileWriter file = new FileWriter("/sdcard/log.txt",true);
-                    file.write(msg);
-                    file.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    FileWriter file = new FileWriter("/sdcard/log.txt",true);
+//                    file.write(msg);
+//                    file.close();
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
                 Log.i("chenghaosend", msg);
+				fileUtils.witefile(msg, DateUtils.date2String(new Date()));
 			}
 		}
 		/**

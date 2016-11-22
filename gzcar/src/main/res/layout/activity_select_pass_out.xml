@@ -22,33 +22,53 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="检索"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/out_carnum"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/ic_bg_message"
-                android:hint="输入车号"
-                android:imeOptions="actionDone"
-                android:singleLine="true" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="车辆类型"
-                android:textSize="18sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <com.gz.gzcar.weight.MyPullText
-                android:id="@+id/spinner_car_type"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:textSize="18sp"/>
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_height="wrap_content"
+                    android:text="检索" />
+
+                <EditText
+                    android:id="@+id/out_carnum"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:hint="输入车号"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:textColor="#666"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_height="wrap_content"
+                    android:text="车辆类型" />
+
+                <com.gz.gzcar.weight.MyPullText
+                    android:id="@+id/spinner_selector"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="17sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
@@ -128,9 +148,9 @@
 
             <ImageView
                 android:id="@+id/out_photo"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_img_car" />
 
             <TextView
@@ -154,6 +174,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/out_nocarnum"
             android:layout_width="wrap_content"
@@ -161,7 +182,7 @@
             android:layout_marginLeft="5dp"
             android:background="@drawable/ic_bg_message"
             android:text="无牌车辆"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
 
         <Button
             android:id="@+id/out_1hour"
