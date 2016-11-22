@@ -313,10 +313,10 @@ public class MainActivity extends BaseActivity {
                 UserTable user = new UserTable();
                 user.setUserName("管理员");
                 user.setPassword("123456p");
-                user.setType("管理员");
+                user.setType("system");
                 db.save(user);
                 user.setUserName("操作员");
-                user.setPassword("123");
+                user.setPassword("common");
                 user.setType("操作员");
                 db.save(user);
             }

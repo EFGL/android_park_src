@@ -41,7 +41,7 @@ public class DownloadServerMessage {
 	/**
 	 * url
 	 */
-	public static final String url =  MyApplication.settingInfo.getString("serverIp") + "api/v1";
+	public static final String url =  MyApplication.settingInfo.getString("serverIp") + "/api/v1";
 	/**
 	 * 是否打印log
 	 */

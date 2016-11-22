@@ -27,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 /**
@@ -50,7 +52,7 @@ public class SendService extends Service{
 
 	private final long sendtime=10;
 
-	private static  String Myurl="http://221.204.11.69:3002/api/v1/in_out_record_upload"
+	private static  String Myurl=MyApplication.settingInfo.getString("serverIp") + "/api/v1/in_out_record_upload"
 ;
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -73,7 +75,8 @@ public class SendService extends Service{
 							showlog("开始上传记录");
 							String jsonstr=production_jsonstr(table);
 							post_in_out_record_upload(mycontroller_sn, jsonstr, getpicname(table.getOut_image()), getpicname( table.getIn_image()), table.getOut_image(), table.getIn_image(),table);
-							while(true){
+                            int count = 0;
+                            while(true){
 								try {
 									Thread.sleep(20);
 									table=db.selector(TrafficInfoTable.class).where("id", "=", table.getId()).findFirst();
@@ -83,7 +86,11 @@ public class SendService extends Service{
 									}
 									else
 									{
-										Thread.sleep(1000);
+										count++;
+                                        Thread.sleep(1000);
+                                        if(count>5){
+                                            break;
+                                        }
 									}
 								} catch (InterruptedException e) {
 									e.printStackTrace();
@@ -131,7 +138,18 @@ public class SendService extends Service{
 		 */
 		public void showlog(String msg){
 			if(log){
-				Log.i("chenghaosend", msg);
+
+                try {
+                    FileWriter file = new FileWriter("/sdcard/log.txt",true);
+                    file.write(msg);
+                    file.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.i("chenghaosend", msg);
 			}
 		}
 		/**
@@ -279,7 +297,6 @@ public class SendService extends Service{
 			uploadBean.setUpdated_controller_sn(table.getUpdated_controller_sn()+"");
 			uploadBean.setParked_time(table.getStall_time());
 			String str=JSON.toJSONString(uploadBean);
-//			showlog("生产的json为＝"+str);
 			return str;
 		}
 
