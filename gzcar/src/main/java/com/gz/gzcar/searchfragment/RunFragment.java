@@ -258,7 +258,6 @@ public class RunFragment extends BaseFragment {
                     .orderBy("update_time", true)
                     .findAll();
                 sumBottomCarNum(all.size());
-
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
             e.printStackTrace();
