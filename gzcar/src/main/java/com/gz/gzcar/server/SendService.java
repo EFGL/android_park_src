@@ -27,7 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,7 +137,6 @@ public class SendService extends Service{
 		 */
 		public void showlog(String msg){
 			if(log){
-
                 try {
                     FileWriter file = new FileWriter("/sdcard/log.txt",true);
                     file.write(msg);

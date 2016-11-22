@@ -47,13 +47,16 @@ public class SelectPassOut extends BaseActivity {
     ImageView outPhoto;
     @Bind(R.id.out_ph_carnum)
     TextView outPhCarnum;
-    @Bind(R.id.spinner_car_type)
-    MyPullText car_type_select;
+    @Bind(R.id.spinner_selector)
+    MyPullText mType;
+
     private DbManager db = null;
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private int clickItem = -1;
     private MyAdapter myAdapter;
     private Context context;
+    private int TAG_TYPE = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,19 +68,40 @@ public class SelectPassOut extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        TAG_TYPE = 0;// 默认为0,查临时车
         new initData().execute();
+        initSpinner();
+        initViews();
     }
 
-    class initData extends AsyncTask<Void,Void,Integer>{
+    class initData extends AsyncTask<String, Void, Void> {
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected Void doInBackground(String... params) {
+            List<TrafficInfoTable> all = null;
             try {
-                if (db == null)
-                {
+                if (db == null) {
                     db = x.getDb(MyApplication.daoConfig);
                 }
-                List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "无牌").and("status", "=", "已入").orderBy("id", true).findAll();
+                if (TAG_TYPE == 0) {
+
+                    all = db.selector(TrafficInfoTable.class)
+                            .where("status", "=", "已入")
+//                        .and("car_no", "=", "无牌")
+                            .and("car_type", "=", "临时车")
+                            .orderBy("id", true)
+                            .findAll();
+                } else {
+                    all = db.selector(TrafficInfoTable.class)
+                            .where("status", "=", "已入")
+//                        .and("car_no", "=", "无牌")
+                            .and("car_type", "!=", "临时车")
+                            .orderBy("id", true)
+                            .findAll();
+                }
+
                 if (all != null) {
+                    allData.clear();
                     allData.addAll(all);
                 }
 
@@ -86,22 +110,40 @@ public class SelectPassOut extends BaseActivity {
             }
             return null;
         }
+
         @Override
-        protected void onPostExecute(Integer integer) {
-            initViews();
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            myAdapter.notifyDataSetChanged();
         }
 
     }
+
     private void initSpinner() {
         ArrayList<String> popListItem = new ArrayList<String>();
         popListItem.add("临时车");
         popListItem.add("内部车");
-        car_type_select.setTextSize(16);
-        car_type_select.setPopList(popListItem);
-        car_type_select.setText(popListItem.get(0));
+        mType.setTextSize(17);
+        mType.setPopList(popListItem);
+        mType.setText(popListItem.get(0));
+
+        mType.setOnTextChangedListener(new MyPullText.OnTextChangedListener() {
+            @Override
+            public void OnTextChanged() {
+                String type = mType.getText();
+                if ("内部车".equals(type)) {
+                    TAG_TYPE = 1;
+                    new initData().execute();
+                } else {
+                    TAG_TYPE = 0;
+                    new initData().execute();
+                }
+            }
+        });
     }
+
     private void initViews() {
-        initSpinner();
+
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();
@@ -111,6 +153,7 @@ public class SelectPassOut extends BaseActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -119,26 +162,28 @@ public class SelectPassOut extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String carNum = outCarnum.getText().toString().trim();
-                new findCarNumberDatas(carNum).execute();
+                new FindCarNumberDatas().execute(carNum);
             }
         });
     }
+
     //按车号查找数据
-    class  findCarNumberDatas extends AsyncTask<Void,Void,Integer>{
-        private String carNum;
-        public findCarNumberDatas(String carNum){
-            this.carNum = carNum;
-        }
+    class FindCarNumberDatas extends AsyncTask<String, Void, Integer> {
+
         @Override
-        protected Integer doInBackground(Void... params) {
-            if (TextUtils.isEmpty(carNum)) {
+        protected Integer doInBackground(String... params) {
+            L.showlogError("params[0]==="+params[0]);
+            if (TextUtils.isEmpty(params[0])) {
                 try {
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "like", "%"+carNum+"%").and("status", "=", "已入").findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                            .where("status", "=", "已入")
+                            .orderBy("id", true)
+                            .findAll();
                     if (all != null) {
+                        allData.clear();
                         allData.addAll(all);
                         return allData.size();
-                    }else
-                    {
+                    } else {
                         return 0;
                     }
                 } catch (DbException e) {
@@ -147,11 +192,16 @@ public class SelectPassOut extends BaseActivity {
                 }
             } else {
                 try {
-                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class).where("car_no", "=", "%"+carNum+"%").and("status", "=", "已入").findAll();
+                    List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+                            .where("car_no", "like", "%" + params[0] + "%")
+                            .and("status", "=", "已入")
+                            .orderBy("id", true)
+                            .findAll();
                     if (all != null) {
+                        allData.clear();
                         allData.addAll(all);
                         return allData.size();
-                    }else{
+                    } else {
                         return 0;
                     }
                 } catch (DbException e) {
@@ -160,10 +210,10 @@ public class SelectPassOut extends BaseActivity {
                 }
             }
         }
+
         @Override
-        protected void onPostExecute(Integer result){
-            switch (result)
-            {
+        protected void onPostExecute(Integer result) {
+            switch (result) {
                 case 0:
                     T.showShort(context, "未查到相关数据");
                     break;
@@ -177,8 +227,9 @@ public class SelectPassOut extends BaseActivity {
             }
         }
     }
+
     //查询所有示出场车辆
-    class findAllNoPass extends AsyncTask<Void,Void,Integer> {
+    class findAllNoPass extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
@@ -195,10 +246,10 @@ public class SelectPassOut extends BaseActivity {
                 return -1;
             }
         }
+
         @Override
-        protected void onPostExecute(Integer result){
-            switch (result)
-            {
+        protected void onPostExecute(Integer result) {
+            switch (result) {
                 case 0:
                     T.showShort(context, "未查到相关数据");
                     break;
@@ -212,8 +263,9 @@ public class SelectPassOut extends BaseActivity {
             }
         }
     }
+
     //查询无牌车
-    class findNoPlateCar extends AsyncTask<Void,Void,Integer>{
+    class findNoPlateCar extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
@@ -230,9 +282,10 @@ public class SelectPassOut extends BaseActivity {
                 return -1;
             }
         }
+
         @Override
-        protected void onPostExecute(Integer result){
-            switch (result){
+        protected void onPostExecute(Integer result) {
+            switch (result) {
                 case 0:
                     T.showShort(context, "未查到相关数据");
                     break;
@@ -288,13 +341,15 @@ public class SelectPassOut extends BaseActivity {
         }
     }
 
-    class searchWithTime extends AsyncTask<Void,Void,Integer > {
+    class searchWithTime extends AsyncTask<Void, Void, Integer> {
         private int start;
         private int end;
-        public searchWithTime(int start,int end){
+
+        public searchWithTime(int start, int end) {
             this.start = start;
             this.end = end;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             Date befor = DateUtils.string2DateDetail(DateUtils.date2StringDetail(new Date(System.currentTimeMillis() - start * 60 * 60 * 1000)));
@@ -320,9 +375,10 @@ public class SelectPassOut extends BaseActivity {
                 return -1;
             }
         }
+
         @Override
-        protected void onPostExecute(Integer result){
-            switch (result){
+        protected void onPostExecute(Integer result) {
+            switch (result) {
                 case 0:
                     T.showShort(context, "未查到相关数据");
                     break;
@@ -335,6 +391,7 @@ public class SelectPassOut extends BaseActivity {
             }
         }
     }
+
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -364,7 +421,7 @@ public class SelectPassOut extends BaseActivity {
                     String picPath = allData.get(position).getIn_image() + "";
                     if (!TextUtils.isEmpty(picPath)) {
 
-                        if (picPath.length() < 30&&picPath.length()>10) {
+                        if (picPath.length() < 30 && picPath.length() > 10) {
                             // 网络图片
                             String path = picPath.substring(0, 10);
                             String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + picPath;
