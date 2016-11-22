@@ -9,6 +9,7 @@ import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.MainActivity;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.device.camera;
+import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
 
 import org.xutils.DbManager;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 /**
  * Created by Administrator on 2016/9/30.
  */
@@ -29,6 +31,8 @@ public class carInfoProcess {
     private camera inCamera;
     private camera outCamera;
     private MainActivity mainActivity;
+    private com.gz.gzcar.server.FileUtils mFileUtils = new com.gz.gzcar.server.FileUtils();
+
     /**
      * @param db    数据库
      * @param inCamera 入口像机
@@ -256,7 +260,7 @@ public class carInfoProcess {
      * @return 执行状态
      */
     public  boolean processCarInFunc(String carNumber,byte[] picBuffer){
-        Log.i("log","in process:"+carNumber);
+        showlog("in process:"+carNumber);
         if(carNumber.length()<=4){
             //无牌车处理
             return false;
@@ -284,7 +288,7 @@ public class carInfoProcess {
         return false;
     }
     public boolean processCarOutFunc(String carNumber,byte[] picBuffer,int delay) {
-        Log.i("log","out process:"+carNumber);
+        showlog("out process:"+carNumber);
         if(carNumber.length()<=4){
             //无牌车处理
             return false;
@@ -965,5 +969,11 @@ public class carInfoProcess {
         inLog.setActual_money(0.0);
         saveAndUpdateOutLog(inLog,picBuffer,false);
         return true;
+    }
+
+    public void showlog(String msg) {
+            Log.i("carInfoProcess", msg);
+
+            mFileUtils.witefile(msg, DateUtils.date2String(new Date()));
     }
 }

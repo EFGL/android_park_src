@@ -1,7 +1,6 @@
 package com.gz.gzcar;
 
 import android.app.Service;
-import android.app.VoiceInteractor;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.util.ASMClassLoader;
 import com.google.gson.Gson;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -40,7 +37,6 @@ import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.FileUtils;
-import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.PrintBean;
 import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.SPUtils;
@@ -50,7 +46,6 @@ import com.gz.gzcar.weight.MyPullText;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
@@ -62,13 +57,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
+
 public class MainActivity extends BaseActivity {
+
+    private com.gz.gzcar.server.FileUtils mFileUtils = new com.gz.gzcar.server.FileUtils();
     DbManager db = x.getDb(daoConfig);
     public TrafficInfoTable outPortLog = new TrafficInfoTable();
     public String waitEnterCarNumber = "";
@@ -270,7 +270,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 super.run();
-                L.showlogError("------onResume------ ");
                 addMoneyBaseData();
             }
         }.start();
@@ -467,7 +466,7 @@ public class MainActivity extends BaseActivity {
             String[] str = new String[10];
 
             protected Long doInBackground(Void... params) {
-                Log.i("log", "刷新车位显示数据");
+                showLog( "刷新车位显示数据");
                 long emptyCount;    //空闲车位
                 //设定总车位
                 long value = MyApplication.settingInfo.getLong("allCarPlace");
@@ -503,7 +502,7 @@ public class MainActivity extends BaseActivity {
                 str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
                 str[8] = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME);
                 LedModule.udpLedDispaly("192.168.10.16", 5005, str[8] + "\r\n" + str[0] + "\r\n" + str[1] + "\r\n" + "一车一杆，减速慢行");
-                Log.i("log", "刷新车位显示UI");
+               showLog( "刷新车位显示UI");
                 return emptyCount;
             }
 
@@ -599,7 +598,6 @@ public class MainActivity extends BaseActivity {
                 printBean.parkTime = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                 printBean.type = outPortLog.getCar_type();
                 String json = gson.toJson(printBean);
-                // L.showlogError("Json==" + json);
                 PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
             }
 
@@ -832,7 +830,7 @@ public class MainActivity extends BaseActivity {
                 Bitmap bmp = BitmapFactory.decodeByteArray(info.getCarPicdata(), 0, info.getCarPicdata().length);
                 switch (info.msgType) {
                     case PLATE:
-                        Log.i("log", "event:" + info.msgType + info.getPlateNumber());
+                        showLog( "event:" + info.msgType + info.getPlateNumber());
                         //设置显示入口车号和图片
                         if (info.getName().equals("in")) {
                             plateTextIn.setText(info.getPlateNumber());
@@ -860,7 +858,7 @@ public class MainActivity extends BaseActivity {
                         new processPlateEvent(info, bmp).execute();
                         break;
                     case PIC:
-                        Log.i("log", info.getPlateNumber());
+                        showLog(info.getPlateNumber());
                         //手动起杆捕捉图片
                         if (info.getName().equals("in")) {
                             plateTextIn.setText(info.getPlateNumber());
@@ -934,7 +932,10 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        private void ask() {
+
+
+
+    private void ask() {
             View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
 //        final AlertDialog dialog = new AlertDialog.Builder(this).create();
             final AlertDialog dialog = new AlertDialog.Builder(this).create();
@@ -1008,7 +1009,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            Log.i("log", "requestCode:" + requestCode + "   resultCode:" + resultCode);
+            showLog("requestCode:" + requestCode + "   resultCode:" + resultCode);
             switch (resultCode) {
                 case 1:
                     int id = data.getIntExtra("id", -1);
@@ -1018,5 +1019,11 @@ public class MainActivity extends BaseActivity {
                     break;
             }
         }
+
+    public void showLog(String msg) {
+        Log.i("MainActivity", msg);
+
+        mFileUtils.witefile(msg, DateUtils.date2String(new Date()));
+    }
 }
 
