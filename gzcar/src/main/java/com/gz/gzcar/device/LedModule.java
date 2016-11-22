@@ -1,4 +1,6 @@
 package com.gz.gzcar.device;
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -246,6 +248,7 @@ public  class  LedModule {
     public static void udpLedDispaly(String ip, int port, String info) {
         try {
             String sendStr = "!#001%1" + info + "$$";
+            Log.i("log",sendStr);
             //首先创建一个DatagramSocket对象
             DatagramSocket socket = new DatagramSocket(port);
             //创建一个InetAddree
