@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,14 +58,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
-
 
 public class MainActivity extends BaseActivity {
 
@@ -72,13 +70,13 @@ public class MainActivity extends BaseActivity {
     DbManager db = x.getDb(daoConfig);
     public TrafficInfoTable outPortLog = new TrafficInfoTable();
     public String waitEnterCarNumber = "";
-    public FileUtils picFileManage = new FileUtils();
+   // public FileUtils picFileManage = new FileUtils();
     public String loginUserName;
     //摄像机IP
-    camera inCamera = new camera(this, "in", settingInfo.getString("inCameraIp"),true);
-    camera outCamera = new camera(this, "out", settingInfo.getString("outCameraIp"),true);
-    //camera inAssistCamera = new camera(this, "in", settingInfo.getString("outCameraIp"),false);
-    //camera outAssistCamera = new camera(this, "in", settingInfo.getString("outCameraIp"),true);
+    camera inCamera = new camera(this, "in", settingInfo.getString(AppConstants.IN_CAMERA_IP),true);
+    camera outCamera = new camera(this, "out", settingInfo.getString(AppConstants.OUT_CAMERA_IP),true);
+    //camera inAssistCamera = new camera(this, "in", settingInfo.getString(AppConstants.SUPPORT_IN_IP),false);
+    //camera outAssistCamera = new camera(this, "out", settingInfo.getString(AppConstants.SUPPORT_OUT_IP),false);
     //实始化车辆处理模块
     carInfoProcess carProcess = new carInfoProcess(db, inCamera, outCamera);
     TextView plateTextIn; //入口车牌
@@ -500,9 +498,9 @@ public class MainActivity extends BaseActivity {
                 long chargeNum = MyApplication.settingInfo.getLong("chargeCarNumer");
                 str[6] = String.format("收费车辆：%d辆", chargeNum);
                 str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
-                str[8] = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME);
-                LedModule.udpLedDispaly("192.168.10.16", 5005, str[8] + "\r\n" + str[0] + "\r\n" + str[1] + "\r\n" + "一车一杆，减速慢行");
-               showLog( "刷新车位显示UI");
+                String dispIP = MyApplication.settingInfo.getString(AppConstants.DISPLAY_IP);
+                LedModule.udpLedDispaly(dispIP,5005, str[1]);
+                Log.i("log", "刷新车位显示UI");
                 return emptyCount;
             }
 
@@ -598,6 +596,7 @@ public class MainActivity extends BaseActivity {
                 printBean.parkTime = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                 printBean.type = outPortLog.getCar_type();
                 String json = gson.toJson(printBean);
+                // L.showlogError("Json==" + json);
                 PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
             }
 
@@ -712,12 +711,16 @@ public class MainActivity extends BaseActivity {
                 if (ParkTime.indexOf("无入场记录") > 0 || carNumber.length() == 0) {
                     //拍照
                     byte[] picBuffer = outCamera.CapturePic();
+                    if(carNumber.length() == 0)
+                    {
+                        carNumber = "无牌";
+                    }
                     carProcess.saveOutFreeCar(carNumber, picBuffer);
                     outCamera.playAudio(camera.AudioList.get("一路顺风"));
                     outCamera.ledDisplay(2, carNumber + "一路平安,请出场");
                 } else {
                     outPortLog.setReceivable(0.0);
-                    outPortLog.setCar_type("免费车");
+                    //outPortLog.setCar_type("免费车");
                     carProcess.saveOutTempCar(carNumber, outPortPicBuffer, outPortLog.getReceivable(), 0.0, outPortLog.getStall_time());
                     outCamera.playAudio(camera.AudioList.get("一路顺风"));
                     outCamera.ledDisplay(2, carNumber + "一路平安,请出场");
@@ -846,9 +849,9 @@ public class MainActivity extends BaseActivity {
                         if (info.getName().equals("out")) {
                             plateTextOut.setText(info.getPlateNumber());
                             if (info.getPlateColor().equals("黄色")) {
-                                plateTextIn.setBackgroundColor(Color.YELLOW);
+                                plateTextOut.setBackgroundColor(Color.YELLOW);
                             } else {
-                                plateTextIn.setBackgroundColor(Color.BLUE);
+                                plateTextOut.setBackgroundColor(Color.BLUE);
                             }
                             plateImageOut.setImageBitmap(bmp);
                             plateImageOut.invalidate();
@@ -932,10 +935,7 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-
-
-
-    private void ask() {
+        private void ask() {
             View view = LayoutInflater.from(this).inflate(R.layout.ask_diglog, null);
 //        final AlertDialog dialog = new AlertDialog.Builder(this).create();
             final AlertDialog dialog = new AlertDialog.Builder(this).create();
