@@ -172,7 +172,7 @@ public class SelectPassOut extends BaseActivity {
 
         @Override
         protected Integer doInBackground(String... params) {
-            L.showlogError("params[0]==="+params[0]);
+            L.showlogError("params[0]===" + params[0]);
             if (TextUtils.isEmpty(params[0])) {
                 try {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
@@ -190,7 +190,7 @@ public class SelectPassOut extends BaseActivity {
                     e.printStackTrace();
                     return -1;
                 }
-            } else {
+            } else if (params[0].length() >= 2) {
                 try {
                     List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                             .where("car_no", "like", "%" + params[0] + "%")
@@ -208,6 +208,8 @@ public class SelectPassOut extends BaseActivity {
                     e.printStackTrace();
                     return -1;
                 }
+            } else {
+                return -2;
             }
         }
 
@@ -219,6 +221,8 @@ public class SelectPassOut extends BaseActivity {
                     break;
                 case -1:
                     T.showShort(context, "查询异常");
+                    break;
+                case -2:
                     break;
                 default:
                     T.showShort(context, "找到" + allData.size() + "条相关数据");

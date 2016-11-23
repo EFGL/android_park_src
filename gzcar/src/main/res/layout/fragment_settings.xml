@@ -179,6 +179,8 @@
                         android:id="@+id/editText_enter_delay"
                         style="@style/SettingsEditText"
                         android:layout_width="0dp"
+                        android:digits="1234567890"
+                        android:hint="时长范围:1-10"
                         android:layout_weight="1" />
 
                     <TextView
@@ -222,6 +224,7 @@
                         android:text="总车位数：" />
 
                     <EditText
+                        android:digits="1234567890"
                         android:id="@+id/editText_stallNumber"
                         style="@style/SettingsEditText"
                         android:imeOptions="actionDone"/>

@@ -122,39 +122,17 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 TAG = 0;
                 String carNum = mCarNumber.getText().toString().trim();
-                if (TextUtils.isEmpty(carNum)) {
-                    pageIndex = 0;
-                    allData.clear();
-                    initData();
-
-                    new SumTask().execute();
-                } else {
-                    try {
-                        List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
-                        if (all != null) {
-                            allData.clear();
-                            allData.addAll(all);
-                            if (myAdapter != null)
-                                myAdapter.notifyDataSetChanged();
-                            mBottomCarNumber.setText("车辆总数:" + all.size() + " 辆");
-                        } else {
-                            allData.clear();
-                            if (myAdapter != null)
-                                myAdapter.notifyDataSetChanged();
-                            mBottomCarNumber.setText("车辆总数:0 辆");
-                        }
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
-                }
+                search(carNum);
 //晋A8888    临时车
             }
         });
@@ -205,6 +183,34 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             }
         });
 
+    }
+
+    private void search(String carNum) {
+        if (TextUtils.isEmpty(carNum)) {
+            pageIndex = 0;
+            allData.clear();
+            initData();
+
+            new SumTask().execute();
+        } else if (carNum.length() >= 2) {
+            try {
+                List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "like", "%" + carNum + "%").orderBy("id", true).findAll();
+                if (all != null) {
+                    allData.clear();
+                    allData.addAll(all);
+                    if (myAdapter != null)
+                        myAdapter.notifyDataSetChanged();
+                    mBottomCarNumber.setText("车辆总数:" + all.size() + " 辆");
+                } else {
+                    allData.clear();
+                    if (myAdapter != null)
+                        myAdapter.notifyDataSetChanged();
+                    mBottomCarNumber.setText("车辆总数:0 辆");
+                }
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initData() {
@@ -593,7 +599,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 }
                 for (int row = 0; row < csvList.size(); row++) {
                     String number = csvList.get(row)[2]; //取得第row行第2列的数据
-                    L.showlogError("第"+row+"行元素个数=="+csvList.get(row).length+",车牌号==" + number);
+                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
                     CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
                     db.save(carInfoTable);
                 }

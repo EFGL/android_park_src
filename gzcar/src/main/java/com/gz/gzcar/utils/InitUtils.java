@@ -21,7 +21,7 @@ public class InitUtils {
             spUtils.putBoolean(AppConstants.IS_HOURADD, true);
 
             L.showlogError("---收费配置初始化完成,开始初始化系统设置---");
-            spUtils.putString(AppConstants.SERVER_IP, "http://221.204.11.69:3002/");// 服务器地址url
+            spUtils.putString(AppConstants.SERVER_IP, "http://221.204.11.69:3002");// 服务器地址url
             spUtils.putString(AppConstants.IN_CAMERA_IP, "192.168.10.203");// 入口相机地址
             spUtils.putString(AppConstants.OUT_CAMERA_IP, "192.168.10.202");// 出口相机地址
             spUtils.putLong(AppConstants.ALL_CAR_PLACE,500);

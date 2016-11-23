@@ -2,7 +2,6 @@ package com.gz.gzcar;
 
 import android.app.Application;
 
-import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
@@ -41,21 +40,8 @@ public class MyApplication extends Application {
         settingInfo = new SPUtils(this,"config");
         instance = this;
         //发布的时候一定把下面的解开
-        CrashHandler.getInstance().init(getApplicationContext());
-//        if(settingInfo.getString("serverIp") == null) {
-//            settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
-//            settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址
-//            settingInfo.putString("outCameraIp", "192.168.10.202");// 出口相机地址
-//            settingInfo.putString("userName", " ");
-//            settingInfo.putBoolean("loginStatus", false);
-//            settingInfo.putLong("allCarPlace",500);
-//            settingInfo.putLong("inCarCount", 0);
-//            settingInfo.putLong("outCarCount", 0);
-//            settingInfo.putLong("chargeCarNumber", 0);
-//            settingInfo.putString("chargeMoney", "0.00");
-//            settingInfo.putInt("enterDelay",1);
-//            settingInfo.putInt("tempFree",30);
-//        }
+//        CrashHandler.getInstance().init(getApplicationContext());
+
         InitUtils.init();
         x.Ext.init(this);
         daoConfig = new DbManager.DaoConfig()

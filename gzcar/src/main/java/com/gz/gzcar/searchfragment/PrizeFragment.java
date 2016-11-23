@@ -216,7 +216,7 @@ public class PrizeFragment extends BaseFragment {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
                     .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-                    .and("car_number", "like", "%" + searchNumber + "%")
+                    .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)
@@ -264,12 +264,13 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void search2(int pageIndex) {
-        L.showlogError("====车号&时间查询===");
+        L.showlogError("====车号&时间查询===车号:" + searchNumber);
         try {
+
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
                     .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-                    .and("car_number", "like", "%" + searchNumber + "%")
+                    .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .limit(15)
@@ -395,7 +396,7 @@ public class PrizeFragment extends BaseFragment {
                         if (TextUtils.isEmpty(out_time)) {
                             if (traffic.getStatus().equals("已出")) {
                                 out_time = "异常出场";
-                            }else{
+                            } else {
                                 out_time = "未出场";
                             }
                         }
@@ -403,7 +404,7 @@ public class PrizeFragment extends BaseFragment {
                         Double receivable = traffic.getReceivable();
                         Double actual_money = traffic.getActual_money();
                         long timeLong = traffic.getStall_time();
-                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                        String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                         String[] carInfo = new String[]{car_no, car_type, in_time, out_time,
                                 receivable + "元", actual_money + "元", stall_time, in_user, out_user};
 
@@ -483,80 +484,88 @@ public class PrizeFragment extends BaseFragment {
     }
 
     private void sumMoney() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                switch (TAG) {
+        double toteMoney = 0;
+        for (int i = 0; i < allData.size(); i++) {
 
-                    case 0:
+            double money = allData.get(i).getActual_money();
+            toteMoney += money;
+        }
+        mMoney.setText("车辆总数:"+allData.size()+"    合计金额:" + toteMoney + " 元");
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
 
-                        try {
-                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-                                    .and("status", "=", "已出")
-                                    .and("receivable", ">", 0)
-                                    .orderBy("update_time", true)
-                                    .findAll();
-
-                            double toteMoney = 0;
-                            if (all != null) {
-
-                                for (int i = 0; i < all.size(); i++) {
-
-                                    double money = all.get(i).getActual_money();
-                                    toteMoney += money;
-                                }
-                            }
-
-                            Message message = Message.obtain();
-                            message.obj = toteMoney;
-                            handler.sendMessage(message);
-
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        break;
-                    case 2:
-
-                        try {
-                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-                                    .and("car_number", "like", "%" + searchNumber + "%")
-                                    .and("receivable", ">", 0)
-                                    .and("status", "=", "已出")
-                                    .orderBy("update_time", true)
-                                    .findAll();
-                            double toteMoney = 0;
-                            if (all != null) {
-
-                                for (int i = 0; i < all.size(); i++) {
-
-                                    double money = all.get(i).getActual_money();
-                                    toteMoney += money;
-                                }
-                            }
-
-                            Message message = Message.obtain();
-                            message.obj = toteMoney;
-                            handler.sendMessage(message);
-
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                }
-
-            }
-        }.start();
+//                switch (TAG) {
+//
+//                    case 0:
+//
+//                        try {
+//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+//                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+//                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+//                                    .and("status", "=", "已出")
+//                                    .and("receivable", ">", 0)
+//                                    .orderBy("update_time", true)
+//                                    .findAll();
+//
+//                            double toteMoney = 0;
+//                            if (all != null) {
+//
+//                                for (int i = 0; i < all.size(); i++) {
+//
+//                                    double money = all.get(i).getActual_money();
+//                                    toteMoney += money;
+//                                }
+//                            }
+//
+//                            Message message = Message.obtain();
+//                            message.obj = toteMoney;
+//                            handler.sendMessage(message);
+//
+//                        } catch (DbException e) {
+//                            e.printStackTrace();
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                        break;
+//                    case 2:
+//
+//                        try {
+//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
+//                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+//                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+//                                    .and("car_number", "like", "%" + searchNumber + "%")
+//                                    .and("receivable", ">", 0)
+//                                    .and("status", "=", "已出")
+//                                    .orderBy("update_time", true)
+//                                    .findAll();
+//                            double toteMoney = 0;
+//                            if (all != null) {
+//
+//                                for (int i = 0; i < all.size(); i++) {
+//
+//                                    double money = all.get(i).getActual_money();
+//                                    toteMoney += money;
+//                                }
+//                            }
+//
+//                            Message message = Message.obtain();
+//                            message.obj = toteMoney;
+//                            handler.sendMessage(message);
+//
+//                        } catch (DbException e) {
+//                            e.printStackTrace();
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                }
+//
+//            }
+//        }.start();
 
 
     }
@@ -591,16 +600,14 @@ public class PrizeFragment extends BaseFragment {
             holder.mCarNum.setText(free.getCar_no());
             holder.mMoney.setText(free.getActual_money() + "");
             long timeLong = free.getStall_time();
-            if(timeLong == -1){
+            if (timeLong == -1) {
                 holder.mParkingtime.setText("无入场记录");
-            }else if(timeLong == -2){
+            } else if (timeLong == -2) {
                 holder.mParkingtime.setText("系统时间错误");
-            }else if(timeLong == -2) {
+            } else if (timeLong == -2) {
                 holder.mParkingtime.setText("待通行");
-            }
-            else
-            {
-                String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+            } else {
+                String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                 holder.mParkingtime.setText(stall_time);
             }
             holder.mType.setText(free.getCar_type());
@@ -657,25 +664,24 @@ public class PrizeFragment extends BaseFragment {
                         intent.putExtra("out_time", DateUtils.date2StringDetail(free.getOut_time()));
                     //停车时长
                     long timeLong = free.getStall_time();
-                    if(timeLong == -1){
+                    if (timeLong == -1) {
                         intent.putExtra("stall_time", "无入场记录");
-                    }else if(timeLong == -2){
+                    } else if (timeLong == -2) {
                         intent.putExtra("stall_time", "系统时间错误");//停车时长
-                    }else if(timeLong == -2) {
+                    } else if (timeLong == -2) {
                         intent.putExtra("stall_time", "待通行");//停车时长
-                    }
-                    else
-                    {
-                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                    } else {
+                        String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                         intent.putExtra("stall_time", stall_time);//停车时长
                     }
                     intent.putExtra("update_time", DateUtils.date2StringDetail(free.getUpdateTime()));
-                    intent.putExtra("tag",1);
+                    intent.putExtra("tag", 1);
                     startActivity(intent);
                 }
             });
 
         }
+
         @Override
         public int getItemCount() {
             return allData.size();
