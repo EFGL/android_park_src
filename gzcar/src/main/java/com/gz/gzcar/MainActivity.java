@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,13 +73,13 @@ public class MainActivity extends BaseActivity {
     DbManager db = x.getDb(daoConfig);
     public TrafficInfoTable outPortLog = new TrafficInfoTable();
     public String waitEnterCarNumber = "";
-    public FileUtils picFileManage = new FileUtils();
+   // public FileUtils picFileManage = new FileUtils();
     public String loginUserName;
     //摄像机IP
-    camera inCamera = new camera(this, "in", settingInfo.getString("inCameraIp"),true);
-    camera outCamera = new camera(this, "out", settingInfo.getString("outCameraIp"),true);
-    //camera inAssistCamera = new camera(this, "in", settingInfo.getString("outCameraIp"),false);
-    //camera outAssistCamera = new camera(this, "in", settingInfo.getString("outCameraIp"),true);
+    camera inCamera = new camera(this, "in", settingInfo.getString(AppConstants.IN_CAMERA_IP),true);
+    camera outCamera = new camera(this, "out", settingInfo.getString(AppConstants.OUT_CAMERA_IP),true);
+    //camera inAssistCamera = new camera(this, "in", settingInfo.getString(AppConstants.SUPPORT_IN_IP),false);
+    //camera outAssistCamera = new camera(this, "out", settingInfo.getString(AppConstants.SUPPORT_OUT_IP),false);
     //实始化车辆处理模块
     carInfoProcess carProcess = new carInfoProcess(db, inCamera, outCamera);
     TextView plateTextIn; //入口车牌
@@ -502,7 +503,8 @@ public class MainActivity extends BaseActivity {
                 str[6] = String.format("收费车辆：%d辆", chargeNum);
                 str[7] = String.format("收费金额：" + MyApplication.settingInfo.getString("chargeMoney") + "元");
                 str[8] = MyApplication.settingInfo.getString(AppConstants.COMPANY_NAME);
-                LedModule.udpLedDispaly("192.168.10.16", 5005, str[8] + "\r\n" + str[0] + "\r\n" + str[1] + "\r\n" + "一车一杆，减速慢行");
+                String displayIP = MyApplication.settingInfo.getString(AppConstants.DISPLAY_IP);
+                LedModule.udpLedDispaly(displayIP, 5005, str[8] + "\r\n" + str[0] + "\r\n" + str[1] + "\r\n" + "一车一杆，减速慢行");
                 Log.i("log", "刷新车位显示UI");
                 return emptyCount;
             }
