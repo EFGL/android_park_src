@@ -301,7 +301,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
                     SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
                     String current = format.format(System.currentTimeMillis());
-                    String fileName = "/" + current + ".csv";
+                    String fileName = "/车辆信息表_" + current + ".csv";
                     String usbDir = "/storage/uhost";
                     String usbDir1 = "/storage/uhost1";
 
@@ -581,6 +581,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
+            progressBar.setVisibility(View.VISIBLE);
             Uri uri = data.getData();
             String csvFilePath = getRealFilePath(getActivity(), uri);
             L.showlogError("csvFilePath==" + csvFilePath);
@@ -597,12 +598,25 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 while (reader.readRecord()) { //逐行读入除表头的数据
                     csvList.add(reader.getValues());
                 }
+                int ap = 0;
                 for (int row = 0; row < csvList.size(); row++) {
                     String number = csvList.get(row)[2]; //取得第row行第2列的数据
-                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
+//                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
+                    List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", number).findAll();
+                    if (all != null && all.size() > 0) {
+                        for (int i = 0; i < all.size(); i++) {
+                            int id = all.get(i).getId();
+
+                            db.deleteById(CarInfoTable.class, id);
+                            ap++;
+                            L.showlogError("车牌号:" + number + "与第" + row + "行相同,已经删除");
+                        }
+                    }
                     CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
                     db.save(carInfoTable);
                 }
+                progressBar.setVisibility(View.GONE);
+                T.showLong(getContext(),"导入新数据"+(csvList.size()-ap)+"条,覆盖"+ap+"条");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

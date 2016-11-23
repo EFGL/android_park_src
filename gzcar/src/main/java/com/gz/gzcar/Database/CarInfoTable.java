@@ -119,7 +119,7 @@ public class CarInfoTable {
             this.allow_park_time = Integer.parseInt(members[12]);
         L.showlogError("12=="+members[12]);
         if (!members[13].isEmpty())
-            this.created_at = DateUtils.string2DateDetail(members[13]);
+            this.created_at = DateUtils.string2Date(members[13]);
         if (!members[14].isEmpty())
             this.updated_at = members[14];
         if (!members[15].isEmpty())

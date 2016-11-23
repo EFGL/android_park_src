@@ -103,6 +103,7 @@ public class CarAdd extends BaseActivity {
 
         init();
     }
+
     // 初始化
     private void init() {
         initViews();
@@ -209,6 +210,21 @@ public class CarAdd extends BaseActivity {
 
     private void saveData() {
         String carNum = mCarnumber.getText().toString().trim().toUpperCase();
+        if (TextUtils.isEmpty(carNum)) {
+            T.showShort(this, "请输入车号");
+            return;
+        }
+
+        try {
+            List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", carNum).findAll();
+            if (all != null && all.size() > 0) {
+                T.showShort(this, "该车牌已存在,请重启输入");
+                return;
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
         String person = mPerson.getText().toString().trim();
         String vehicle_type = mCarTypeSelector.getText().toString().trim();// 车辆类型
         String address = mAddress.getText().toString().trim();
@@ -223,12 +239,6 @@ public class CarAdd extends BaseActivity {
         String car_type = "";// 固定车类型详细
         String fee_type = "";// 特殊车类型详细
 
-
-
-        if (TextUtils.isEmpty(carNum)) {
-            T.showShort(this, "请输入车号");
-            return;
-        }
 
         if (TextUtils.isEmpty(person)) {
             T.showShort(this, "请输入联系人");
@@ -255,15 +265,15 @@ public class CarAdd extends BaseActivity {
                     mInfo.setStop_date(DateUtils.string2Date(endTime));
                 } else if (rbCount.isChecked()) {
                     String allow_count = etFreeCount.getText().toString().trim();
-                    if (TextUtils.isEmpty(allow_count)){
-                        T.showShort(this,"请输入有效次数");
+                    if (TextUtils.isEmpty(allow_count)) {
+                        T.showShort(this, "请输入有效次数");
                         return;
                     }
                     mInfo.setAllow_count(Integer.parseInt(allow_count));
-                }else if (rbTime.isChecked()){
+                } else if (rbTime.isChecked()) {
                     String freeTime = etFreeTime.getText().toString().trim();
-                    if (TextUtils.isEmpty(freeTime)){
-                        T.showShort(this,"请输入有效时长");
+                    if (TextUtils.isEmpty(freeTime)) {
+                        T.showShort(this, "请输入有效时长");
                         return;
                     }
                     mInfo.setAllow_park_time(Integer.parseInt(freeTime));
@@ -277,7 +287,7 @@ public class CarAdd extends BaseActivity {
             mInfo.setCar_type(car_type);
             mInfo.setFee_type(fee_type);
             db.save(mInfo);
-            Log.e("ende","该车信息:"+mInfo.toString());
+            Log.e("ende", "该车信息:" + mInfo.toString());
 
             //保存车位绑定信息
             CarWeiBindTable carBind = new CarWeiBindTable();
