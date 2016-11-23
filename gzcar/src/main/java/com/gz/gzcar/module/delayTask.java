@@ -3,17 +3,14 @@ package com.gz.gzcar.module;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.device.camera;
+import com.gz.gzcar.utils.DateUtils;
 
-import org.xutils.ex.DbException;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2016/11/3 0003.
@@ -30,6 +27,9 @@ public class delayTask extends Service {
     camera cameraOut;
     String inDispStr1,inDispStr2,inDispStr3,inDispStr4;
     String outDispStr1,outDispStr2,outDispStr3,outDispStr4;
+
+    private com.gz.gzcar.server.FileUtils mFileUtils = new com.gz.gzcar.server.FileUtils();
+
     @Nullable
     @Override
      public IBinder onBind(Intent intent) {
@@ -59,7 +59,7 @@ public class delayTask extends Service {
                     runFlagIn = true;
                 }else{
                     cameraIn.ledDisplay(str1,str2,str3,str4);
-                    cameraIn.ledDisplay(1,str1 + "车牌识别 一车一杆 减速慢行");
+
                 }
             }
             else{
@@ -72,7 +72,7 @@ public class delayTask extends Service {
                     runFlagOut = true;
                 }else{
                     cameraOut.ledDisplay(str1,str2,str3,str4);
-                    cameraOut.ledDisplay(1,str1+ "车牌识别 一车一杆 减速慢行");
+
                 }
             }
         }
@@ -96,16 +96,24 @@ public class delayTask extends Service {
                         countIn = 0;
                         runFlagIn = false;
                         cameraIn.ledDisplay(inDispStr1,inDispStr2,inDispStr3,inDispStr4);
+                        cameraIn.ledDisplay(1,inDispStr1 + "车牌识别 一车一杆 减速慢行");
                     }
                     if (countOut > maxCount) {
                         countOut = 0;
                         runFlagOut = false;
                         cameraOut.ledDisplay(outDispStr1,outDispStr2,outDispStr3,outDispStr4);
+                        cameraOut.ledDisplay(1,outDispStr1 + "车牌识别 一车一杆 减速慢行");
                     }
                 }
             }
         };
         Thread thread=new Thread(runnable);
         thread.start();
+    }
+
+    public void showlog(String msg) {
+        Log.i("delayTask", msg);
+
+        mFileUtils.witefile(msg, DateUtils.date2String(new Date()));
     }
 }

@@ -2,6 +2,7 @@ package com.gz.gzcar;
 
 import android.app.Application;
 
+import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
@@ -14,6 +15,7 @@ import org.xutils.x;
  * Created by Endeavor on 2016/8/18.
  */
 public class MyApplication extends Application {
+    private static MyApplication instance;
 
     public static int app_handler_in_out_record_download=1000*5;//通行记录
     public static int app_handler_down_tempfee=1000*5;//临时车收费
@@ -26,11 +28,20 @@ public class MyApplication extends Application {
     public static DbManager.DaoConfig daoConfig;
     public  DbManager db = null;
     public static SPUtils settingInfo;
+    public static MyApplication getInstance() {
+        if (instance == null) {
+            instance = new MyApplication();
+        }
+        return instance;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         devID = GetImei.getphoneimei(getApplicationContext());
         settingInfo = new SPUtils(this,"config");
+        instance = this;
+        //发布的时候一定把下面的解开
+        CrashHandler.getInstance().init(getApplicationContext());
 //        if(settingInfo.getString("serverIp") == null) {
 //            settingInfo.putString("serverIp", "http://221.204.11.69:3002/");// 服务器地址url
 //            settingInfo.putString("inCameraIp", "192.168.10.203");// 入口相机地址

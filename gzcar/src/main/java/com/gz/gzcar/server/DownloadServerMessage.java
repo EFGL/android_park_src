@@ -10,6 +10,7 @@ import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.MyApplication;
+import com.gz.gzcar.utils.DateUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ import java.util.List;
  * 有2个循环，大循环是控制是否执行方法。小循环是判断是否方法执行完成，如果完成那么跳出小循环，继续执行大循环记好
  */
 public class DownloadServerMessage {
+
+	private FileUtils fileUtils = new FileUtils();
 	/**
 	 * DB
 	 */
@@ -829,6 +833,7 @@ public class DownloadServerMessage {
 	public void showlog(String msg) {
 		if (log) {
 			Log.i("chenghao", msg);
+			fileUtils.witefile(msg, DateUtils.date2String(new Date()));
 		}
 	}
 }

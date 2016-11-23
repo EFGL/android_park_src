@@ -382,6 +382,7 @@ public class camera {
         }
     }
     public void ledDisplay(int dev,String info){
+        Log.i("log",info);
        new syncLedDisplay(dev,info).execute();
     }
     //透传显示屏接口
