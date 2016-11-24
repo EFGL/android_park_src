@@ -257,6 +257,7 @@ public class RunFragment extends BaseFragment {
                     .where("update_time", ">", date)
                     .orderBy("update_time", true)
                     .findAll();
+            if (all != null)
                 sumBottomCarNum(all.size());
         } catch (DbException e) {
             T.showShort(getActivity(), "查询异常");
@@ -374,9 +375,9 @@ public class RunFragment extends BaseFragment {
                         Double actual_money = traffic.getActual_money();
                         long timeLong = traffic.getStall_time();
                         String stall_time;
-                        if(timeLong >0) {
+                        if (timeLong > 0) {
                             stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
-                        }else{
+                        } else {
                             stall_time = "0小时0分";
                         }
                         String[] carInfo = new String[]{car_no, car_type, DateUtils.date2StringDetail(in_time), out_time,
@@ -448,7 +449,8 @@ public class RunFragment extends BaseFragment {
                     .and("car_type", "=", "临时车")
                     .orderBy("update_time", true)
                     .findAll();
-            sumBottomCarNum(all.size());
+            if (all != null)
+                sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
@@ -460,14 +462,14 @@ public class RunFragment extends BaseFragment {
     /*查询所有车*/
     private void searchAll(String start, String end) {
         try {
-           all = db.selector(TrafficInfoTable.class)
+            all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", DateUtils.string2DateDetail(start))
                     .and("update_time", "<=", DateUtils.string2DateDetail(end))
                     .and("car_type", "!=", "临时车")
                     .orderBy("id", true)
                     .findAll();
-
-            sumBottomCarNum(all.size());
+            if (all != null)
+                sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
@@ -484,7 +486,8 @@ public class RunFragment extends BaseFragment {
                     .and("car_no", "like", "%" + number + "%")
                     .orderBy("id", true)
                     .findAll();
-            sumBottomCarNum(all.size());
+            if (all != null)
+                sumBottomCarNum(all.size());
             updaterecycltviewadapter();
 
         } catch (DbException e) {
@@ -573,24 +576,23 @@ public class RunFragment extends BaseFragment {
 
                     //停车时长
                     long timeLong = traffic.getStall_time();
-                    if(timeLong == -1){
+                    if (timeLong == -1) {
                         intent.putExtra("stall_time", "无入场记录");
-                    }else if(timeLong == -2){
+                    } else if (timeLong == -2) {
                         intent.putExtra("stall_time", "系统时间错误");//停车时长
-                    }else if(timeLong == -2) {
+                    } else if (timeLong == -2) {
                         intent.putExtra("stall_time", "待通行");//停车时长
-                    }
-                    else
-                    {
-                        String stall_time = String.format("%d时%d分",timeLong/60,timeLong%60);
+                    } else {
+                        String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                         intent.putExtra("stall_time", stall_time);//停车时长
                     }
                     intent.putExtra("update_time", DateUtils.date2StringDetail(traffic.getUpdateTime()));
-                    intent.putExtra("tag",-1);
+                    intent.putExtra("tag", -1);
                     startActivity(intent);
                 }
             });
         }
+
         @Override
         public int getItemCount() {
             return allData.size();
