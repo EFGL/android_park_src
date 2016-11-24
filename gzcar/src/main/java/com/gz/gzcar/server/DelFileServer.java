@@ -19,7 +19,7 @@ public class DelFileServer extends Service {
     private  boolean showlog=true;
     private FileUtils fileUtils;
     //sd卡的底线
-    private long sdfilesize=800;
+    private long sdfilesize=2048;
     //sd卡的路径
     private String path="/sdcard/capture";
     @Nullable
@@ -38,7 +38,7 @@ public class DelFileServer extends Service {
             public void run() {
                 handler.sendEmptyMessage(1);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000*60);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -56,7 +56,7 @@ public class DelFileServer extends Service {
             showlog("收到消息");
             if(fileUtils.ifdelmyfile(sdfilesize)){
                 showlog("删除数据");
-                fileUtils.delmyfile(path);
+                fileUtils.delmyfile(path,sdfilesize);
             }else {
                 showlog("无需删除");
             }

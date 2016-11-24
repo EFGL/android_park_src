@@ -91,7 +91,7 @@ public class FileUtils {
      * 删除文件
      * @param path
      */
-    public void delmyfile(String path){
+    public void delmyfile(String path,Long filesize){
         File myf=new File(path);
         if (myf.exists()) {//判断文件是否存在
             if (myf.isFile()) {
@@ -99,16 +99,18 @@ public class FileUtils {
             } else if (myf.isDirectory()) {//否则如果它是一个目录
                 File[] files = myf.listFiles();//声明目录下所有的文件 files[];
                 //判断这个files 有几个目录.目前只删除1-2个文件夹
-                int filenum=files.length;
-                if(filenum>=2){
-                    deleteFile(files[0]);
-                    deleteFile(files[1]);
-                }else if(filenum>=1){
-                    deleteFile(files[0]);
+                for (int c=0;c<files.length;c++){
+                    if(ifdelmyfile(filesize)){
+                        deleteFile(files[c]);
+                    }else {
+                        showlog("容量已经满足要求");
+                        return;
+                    }
                 }
             }
         }
     }
+
 
     //递归删除文件夹
     private void deleteFile(File file) {
