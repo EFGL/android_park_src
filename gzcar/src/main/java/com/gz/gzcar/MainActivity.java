@@ -580,31 +580,7 @@ public class MainActivity extends BaseActivity {
             }
             return 0;
         }
-
         @Override
-        protected void onPostExecute(Integer integer) {
-            switch (integer) {
-                case 0:
-                    T.showShort(context, "收费完成");
-                    break;
-                case 1:
-                    T.showShort(context, "无可收费车辆");
-                    break;
-                case 2:
-                    T.showShort(context, "该车无需收费，已放行！");
-                    break;
-                default:
-                    break;
-            }
-            //更新出口收费信息
-            chargeCarNumber.setText("");
-            chargeCarType.setText("");
-            chargeParkTime.setText("");
-            chargeMoney.setText("待通行");
-            new upStatusInfoDisp().execute();
-        }
-    }
-            @Override
             protected void onPostExecute(Integer integer) {
                 switch (integer) {
                     case 0:
@@ -647,7 +623,6 @@ public class MainActivity extends BaseActivity {
                 printBean.parkTime = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                 printBean.type = outPortLog.getCar_type();
                 String json = gson.toJson(printBean);
-                // L.showlogError("Json==" + json);
                 PrintUtils.print(this, json, outPortLog.getOut_user(), MyApplication.settingInfo.getString("companyName"));
             }
 
@@ -690,7 +665,6 @@ public class MainActivity extends BaseActivity {
             T.showShort(context, "入口重新识别中......");
             inCamera.againIdent();
             inCamera.ledDisplay(2, "欢迎光临");
-            playTTS("欢迎光临");
         }
 
         //重新识别出场
@@ -735,13 +709,16 @@ public class MainActivity extends BaseActivity {
             switch (integer) {
                 case 0:
                     plateTextIn.setText("待通行");
+                    playTTS(carNumber+"入场");
                     T.showShort(context, "已完成确认通行");
                     new upStatusInfoDisp().execute();
                     break;
                 case -1:
                     T.showShort(context, "无待通行车辆");
+                    playTTS("无待通行车辆");
                     break;
                 case -2:
+                    playTTS("拍照失败，请重新操作");
                     T.showShort(context, "拍照失败，请重新操作");
                     break;
             }
@@ -787,20 +764,21 @@ public class MainActivity extends BaseActivity {
             chargeCarType.setText("");
             chargeParkTime.setText("");
             chargeMoney.setText("待通行");
+            playTTS("免费出厂");
             new upStatusInfoDisp().execute();
         }
     }
 
     @Override
     public void onBackPressed() {
-        T.showShort(this, "禁止退出应用!");
+        playTTS("该程序禁止退出");
+        T.showShort(this, "该程序禁止退出!");
     }
 
     //处理车牌识别事件
     class processPlateEvent extends AsyncTask<Void, Void, Integer> {
         public camera.PlateInfo info;
         public Bitmap bmp;
-
         public processPlateEvent(camera.PlateInfo info, Bitmap bmp) {
             this.info = info;
             this.bmp = bmp;
@@ -845,11 +823,12 @@ public class MainActivity extends BaseActivity {
                         //显示
                         if (info.getName().equals("in")) {
                             //入口处理
+                            playTTS("入口 同车号多次识别");
                             inCamera.ledDisplay(info.getPlateNumber(),"多次识别","请尽快通行", "如返场请等候");
-                            inCamera.ledDisplay(1,info.getPlateNumber()+" 多次识别"+" 请尽快通行"+ " 如返场请等候");
+                            inCamera.ledDisplay(1,info.getPlateNumber()+" 多次识别 请尽快通行 如返场请等候");
                         } else if (info.getName().equals("out")) {
                             //出口处理
-                            //入口处理
+                            playTTS("出口 同车号多次识别");
                             outCamera.ledDisplay(info.getPlateNumber(),"多次识别","请尽快通行", "如入场时间较短请等候");
                             outCamera.ledDisplay(1,info.getPlateNumber()+" 多次识别"+" 请尽快通行"+ " 如入场时间较短请等候");
                         }
@@ -861,6 +840,7 @@ public class MainActivity extends BaseActivity {
                     case 0:
                         break;
                     case 1:
+                        playTTS(info.getPlateNumber() + "进场");
                         new upStatusInfoDisp().execute();
                         break;
                     case 2:
@@ -871,8 +851,10 @@ public class MainActivity extends BaseActivity {
                         long timeLong = outPortLog.getStall_time();
                         if (timeLong == -1) {
                             chargeParkTime.setText("无入场记录");
+                            playTTS("入口 同车号多次识别");
                         } else if (timeLong == -2) {
                             chargeParkTime.setText("系统时间错误");
+                            playTTS("系统时间错误");
                         } else if (timeLong == -3) {
                             chargeParkTime.setText("待通行");
                         } else {
@@ -881,12 +863,18 @@ public class MainActivity extends BaseActivity {
                         }
                         //收费
                         chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
+
+                        outCamera.ledDisplay(chargeCarNumber.getText().toString(),
+                                chargeCarType.getText().toString(),
+                                chargeParkTime.getText().toString(),
+                                chargeMoney.getText().toString());
+                        outCamera.ledDisplay(2,chargeCarNumber.getText().toString() + " "+ chargeParkTime.getText().toString()+" "+ chargeMoney.getText().toString());
+                        playTTS(info.getPlateNumber() +chargeParkTime.getText() + chargeMoney.getText());
                         new upStatusInfoDisp().execute();
                         break;
                 }
             }
         }
-
     public Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 2) {
@@ -1056,7 +1044,9 @@ public class MainActivity extends BaseActivity {
                 long timeLong = outPortLog.getStall_time();
                 if (timeLong == -1) {
                     chargeParkTime.setText("无入场记录");
+                    playTTS("该车无入场记录");
                 } else if (timeLong == -2) {
+                    playTTS("系统时间错误");
                     chargeParkTime.setText("系统时间错误");
                 } else if (timeLong == -3) {
                     chargeParkTime.setText("待通行");
@@ -1067,6 +1057,12 @@ public class MainActivity extends BaseActivity {
                     String stall_time = String.format("%d时%d分", timeLong / 60, timeLong % 60);
                     chargeParkTime.setText("停车：" + stall_time);
                     chargeMoney.setText(String.format("收费：%.1f元", outPortLog.getReceivable()));
+                    outCamera.ledDisplay(chargeCarNumber.getText().toString(),
+                            chargeCarType.getText().toString(),
+                            chargeParkTime.getText().toString(),
+                            chargeMoney.getText().toString());
+                    outCamera.ledDisplay(2,chargeCarNumber.getText().toString() + " "+ chargeParkTime.getText().toString()+" "+ chargeMoney.getText().toString());
+                    playTTS(chargeCarNumber.getText().toString() +chargeParkTime.getText() + chargeMoney.getText());
                 }
             }
         }

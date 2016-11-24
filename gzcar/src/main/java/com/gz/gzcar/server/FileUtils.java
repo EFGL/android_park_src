@@ -33,7 +33,6 @@ public class FileUtils {
     private boolean createDir(String destDirName) {
         File dir = new File(destDirName);
         if (dir.exists()) {
-            showlog("创建目录" + destDirName + "失败，目标目录已经存在");
             return false;
         }
         if (!destDirName.endsWith(File.separator)) {

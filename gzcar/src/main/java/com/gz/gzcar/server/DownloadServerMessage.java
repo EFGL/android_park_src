@@ -2,6 +2,7 @@ package com.gz.gzcar.server;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.ViewOutlineProvider;
 
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
@@ -825,6 +826,18 @@ public class DownloadServerMessage {
 			}
 		});
 	}
+
+	class execFileWrite extends AsyncTask<Void,Void,String>{
+		String msg;
+		private execFileWrite(String msg){
+			this.msg = msg;
+		}
+		@Override
+		protected String doInBackground(Void... params) {
+			fileUtils.witefile(msg, DateUtils.date2String(new Date()));
+			return null;
+		}
+	}
 	/**
 	 * 打印log
 	 *
@@ -833,7 +846,7 @@ public class DownloadServerMessage {
 	public void showlog(String msg) {
 		if (log) {
 			Log.i("chenghao", msg);
-			fileUtils.witefile(msg, DateUtils.date2String(new Date()));
+			new execFileWrite(msg).execute();
 		}
 	}
 }

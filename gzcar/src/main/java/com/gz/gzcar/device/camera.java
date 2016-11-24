@@ -390,22 +390,22 @@ public class camera {
         if (!line1.isEmpty()){
             byte[] buffer = LedModule.formatData((char) 1, line1, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
-            Log.i("log", "ledDisplay:" + line1);
+           // Log.i("log", "ledDisplay:" + line1);
         }
         if (!line2.isEmpty()){
             byte[] buffer = LedModule.formatData((char) 2, line2, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
-            Log.i("log", "ledDisplay:" + line2);
+          //  Log.i("log", "ledDisplay:" + line2);
         }
         if (!line3.isEmpty()){
             byte[] buffer = LedModule.formatData((char) 3, line3, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
-            Log.i("log", "ledDisplay:" + line3);
+          //  Log.i("log", "ledDisplay:" + line3);
         }
         if (!line4.isEmpty()){
             byte[] buffer = LedModule.formatData((char) 4, line4, "BX_5K1","LEFT_MODE");
             sdk.ICE_IPCSDK_TransSerialPort(buffer);
-            Log.i("log", "ledDisplay:" + line4);
+          //  Log.i("log", "ledDisplay:" + line4);
         }
     }
     // 车牌识别事件(车牌号和颜色为utf-8编码)
