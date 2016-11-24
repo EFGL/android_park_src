@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -107,7 +108,7 @@ public class MainActivity extends BaseActivity {
     TextView textViewLoginTime;      //登录长
     TextView textViewSumCar;         //当前班费车辆
     TextView textViewSumMoney;       //当班收费金额
-
+    TextToSpeech mSpeech = null;
     @Bind(R.id.main_setting)
     Button mainSetting;
 
@@ -119,7 +120,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        playTTS("初始化连接");
         setContentView(R.layout.activity_main);
+        playTTS("正在初始化系统");
         new initLogin().execute();
         context = MainActivity.this;
         if (MyApplication.settingInfo == null) {
@@ -128,7 +131,6 @@ public class MainActivity extends BaseActivity {
         //注册线程通讯
         EventBus.getDefault().register(this);
         ButterKnife.bind(this);
-        String type = getIntent().getStringExtra("type");
         plateTextIn = (TextView) findViewById(R.id.textView_PlateIn);
         plateTextOut = (TextView) findViewById(R.id.textView_PlateOut);
         plateImageIn = (ImageView) findViewById(R.id.imageView_PicPlateIn);
@@ -220,10 +222,25 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }, 3000);
+        playTTS("欢迎使用智能停车场系统");
         //显示登陆
         showLogin();
     }
+    private boolean playTTS(String str)
+    {
+        if(mSpeech == null){
+            mSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    showLog("TTS 初始化");
+                }
+            });
+            return false;
+        }
+        mSpeech.speak(str,TextToSpeech.QUEUE_FLUSH,null);
 
+        return true;
+    }
     ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -561,12 +578,15 @@ public class MainActivity extends BaseActivity {
                 switch (integer) {
                     case 0:
                         T.showShort(context, "收费完成");
+                        playTTS("收费完成");
                         break;
                     case 1:
                         T.showShort(context, "无可收费车辆");
+                        playTTS("无可收费车辆");
                         break;
                     case 2:
                         T.showShort(context, "该车无需收费，已放行！");
+                        playTTS("该车无需收费，已放行！");
                         break;
                     default:
                         break;
@@ -639,6 +659,7 @@ public class MainActivity extends BaseActivity {
             T.showShort(context, "入口重新识别中......");
             inCamera.againIdent();
             inCamera.ledDisplay(2, "欢迎光临");
+            playTTS("欢迎光临");
         }
 
         //重新识别出场
@@ -719,7 +740,7 @@ public class MainActivity extends BaseActivity {
                     outCamera.playAudio(camera.AudioList.get("一路顺风"));
                     outCamera.ledDisplay(2, carNumber + "一路平安,请出场");
                 } else {
-                    outPortLog.setReceivable(0.0);
+                    //outPortLog.setReceivable(0.0);
                     //outPortLog.setCar_type("免费车");
                     carProcess.saveOutTempCar(carNumber, outPortPicBuffer, outPortLog.getReceivable(), 0.0, outPortLog.getStall_time());
                     outCamera.playAudio(camera.AudioList.get("一路顺风"));
@@ -790,6 +811,18 @@ public class MainActivity extends BaseActivity {
                 switch (integer) {
                     case -1:
                         T.showShort(context, "该车出频繁，请稍后通行");
+                        //显示
+                        if (info.getName().equals("in")) {
+                            //入口处理
+                            inCamera.ledDisplay(info.getPlateNumber(),"多次识别","请尽快通行", "如返场请等候");
+                            inCamera.ledDisplay(1,info.getPlateNumber()+" 多次识别"+" 请尽快通行"+ " 如返场请等候");
+                        } else if (info.getName().equals("out")) {
+                            //出口处理
+                            //入口处理
+                            outCamera.ledDisplay(info.getPlateNumber(),"多次识别","请尽快通行", "如入场时间较短请等候");
+                            outCamera.ledDisplay(1,info.getPlateNumber()+" 多次识别"+" 请尽快通行"+ " 如入场时间较短请等候");
+                        }
+                        new upStatusInfoDisp().execute();
                         break;
                     case -2:
                         T.showShort(context, "系统时间错误");
@@ -1022,7 +1055,6 @@ public class MainActivity extends BaseActivity {
 
     public void showLog(String msg) {
         Log.i("MainActivity", msg);
-
         mFileUtils.witefile(msg, DateUtils.date2String(new Date()));
     }
 }

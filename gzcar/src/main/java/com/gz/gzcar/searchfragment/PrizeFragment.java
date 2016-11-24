@@ -350,8 +350,8 @@ public class PrizeFragment extends BaseFragment {
             try {
                 L.showlogError("--- 开始查询数据库 ---");
                 List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                        .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                        .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                         .and("receivable", ">", 0)
                         .orderBy("update_time", true)
                         .findAll();
