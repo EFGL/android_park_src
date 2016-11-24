@@ -263,12 +263,13 @@
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
+
                     <TextView
                         style="@style/SettingsTextView"
-                        android:text="使用读卡器：     " />
+                        android:text="自动清理过期车辆：" />
 
                     <com.nightonke.jellytogglebutton.JellyToggleButton
-                        android:id="@+id/tb_togglebutton4"
+                        android:id="@+id/tb_clear_data"
                         style="@style/JellyToggleButtonStyle" />
                 </LinearLayout>
             </LinearLayout>
@@ -307,7 +308,7 @@
 
                     <TextView
                         style="@style/SettingsTextView"
-                        android:text="是否打印小票：" />
+                        android:text="是否打印小票：        " />
 
                     <com.nightonke.jellytogglebutton.JellyToggleButton
                         android:id="@+id/tb_togglebutton3"
@@ -339,6 +340,22 @@
                         android:id="@+id/tb_togglebutton_carNumber"
                         style="@style/JellyToggleButtonStyle" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/SettingsTextView"
+                        android:text="使用读卡器：            " />
+
+                    <com.nightonke.jellytogglebutton.JellyToggleButton
+                        android:id="@+id/tb_togglebutton4"
+                        style="@style/JellyToggleButtonStyle" />
                 </LinearLayout>
 
             </LinearLayout>

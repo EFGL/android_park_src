@@ -26,7 +26,6 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.server.DownloadTimeBean;
 import com.gz.gzcar.utils.InitUtils;
-import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.T;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
@@ -82,6 +81,8 @@ public class SettingsFragment extends Fragment {
     EditText mSupportOutIp;
     @Bind(R.id.display_ip)
     EditText mDisplayIp;
+    @Bind(R.id.tb_clear_data)
+    JellyToggleButton mClear;
 
     private boolean isTempCarIn;
     private boolean isFree;
@@ -91,6 +92,7 @@ public class SettingsFragment extends Fragment {
     private int enterDelay;
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
+    private boolean isClear;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,12 +137,14 @@ public class SettingsFragment extends Fragment {
         isPrint = MyApplication.settingInfo.getBoolean(AppConstants.IS_PRINT_CARD);
         isCardRead = MyApplication.settingInfo.getBoolean(AppConstants.IS_USE_CARD_HELP);
         isChina = MyApplication.settingInfo.getBoolean(AppConstants.IS_USE_CHINA);
+        isClear = MyApplication.settingInfo.getBoolean(AppConstants.IS_CLEAR_OLD_DATA);
 
         mTogglebutton1.setChecked(isTempCarIn);
         mTogglebutton2.setChecked(isFree);
         mTogglebutton3.setChecked(isPrint);
         mTogglebutton4.setChecked(isCardRead);
         getmTogglebuttonCarNumber.setChecked(isChina);
+        mClear.setChecked(isClear);
 
     }
 
@@ -151,6 +155,7 @@ public class SettingsFragment extends Fragment {
         MyApplication.settingInfo.putBoolean(AppConstants.IS_PRINT_CARD, isPrint);
         MyApplication.settingInfo.putBoolean(AppConstants.IS_USE_CARD_HELP, isCardRead);
         MyApplication.settingInfo.putBoolean(AppConstants.IS_USE_CHINA, isChina);
+        MyApplication.settingInfo.putBoolean(AppConstants.IS_CLEAR_OLD_DATA, isClear);
         String serverAddress = mServerAddress.getText().toString().trim();
         String inCameraIp = mInIp.getText().toString().trim();
         String outCameraIp = mOutIp.getText().toString().trim();
@@ -246,6 +251,19 @@ public class SettingsFragment extends Fragment {
                 //开
                 if (state.equals(State.RIGHT)) {
                     isChina = true;
+                }
+            }
+        });
+        mClear.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
+            @Override
+            public void onStateChange(float process, State state, JellyToggleButton jtb) {
+                // 关
+                if (state.equals(State.LEFT)) {
+                    isClear = false;
+                }
+                //开
+                if (state.equals(State.RIGHT)) {
+                    isClear = true;
                 }
             }
         });

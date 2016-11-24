@@ -19,6 +19,7 @@ public class InitUtils {
             spUtils.putInt(AppConstants.FRIEND_FREE, 180);
             spUtils.putBoolean(AppConstants.IS_FREE, true);
             spUtils.putBoolean(AppConstants.IS_HOURADD, true);
+            spUtils.putBoolean(AppConstants.IS_CLEAR_OLD_DATA, false);
 
             L.showlogError("---收费配置初始化完成,开始初始化系统设置---");
             spUtils.putString(AppConstants.SERVER_IP, "http://221.204.11.69:3002");// 服务器地址url
