@@ -33,6 +33,7 @@ import com.gz.gzcar.device.LedModule;
 import com.gz.gzcar.device.camera;
 import com.gz.gzcar.module.carInfoProcess;
 import com.gz.gzcar.module.delayTask;
+import com.gz.gzcar.server.DelFileServer;
 import com.gz.gzcar.server.DownLoadServer;
 import com.gz.gzcar.server.SendService;
 import com.gz.gzcar.settings.SettingActivity;
@@ -247,6 +248,9 @@ public class MainActivity extends BaseActivity {
      * 启动我的服务
      */
     public void startmyserver() {
+        Intent i = new Intent(MainActivity.this, DelFileServer.class);
+        startService(i);
+
         Intent intent = new Intent(MainActivity.this, SendService.class);
         startService(intent);
         Intent intentDon = new Intent(MainActivity.this, DownLoadServer.class);
