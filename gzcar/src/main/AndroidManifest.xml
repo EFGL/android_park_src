@@ -13,6 +13,8 @@
     <!-- 获取手机的imei -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
     <application
         android:name=".MyApplication"
@@ -49,15 +51,21 @@
         <service android:name=".server.SendService" />
         <service android:name=".server.DownLoadServer" />
         <service android:name=".module.delayTask"/>
-        <activity android:name=".searchfragment.ImageDetailActivity"></activity>
+        <activity android:name=".searchfragment.ImageDetailActivity"/>
 
-        <receiver android:name=".receiver.MyReceiver">
-            <intent-filter android:priority="1000" >
-                <action android:name="android.intent.action." />
+        <receiver android:name="com.gz.gzcar.receiver.MyReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <!--<receiver android:name=".SdcardReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_EJECT" />
 
-
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>-->
     </application>
 
 </manifest>

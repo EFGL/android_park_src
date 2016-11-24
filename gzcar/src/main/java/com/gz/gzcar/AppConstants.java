@@ -53,6 +53,9 @@ public class AppConstants {
     // 当前登录用户名
     public static final String USER_NAME = "userName";
 
+    // 是否清理过期车辆
+    public static final String IS_CLEAR_OLD_DATA = "isClearOldData";
+
 
 
 }
