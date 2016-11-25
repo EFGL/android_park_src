@@ -79,8 +79,6 @@ public class FileUtils {
         }
     }
 
-
-
     public static void showlog(String msg){
         if(show)
             Log.i("chenghao","输出内容："+msg);

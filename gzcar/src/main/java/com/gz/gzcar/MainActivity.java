@@ -814,7 +814,6 @@ public class MainActivity extends BaseActivity {
             }
             return 0;
         }
-
             @Override
             protected void onPostExecute(Integer integer) {
                 switch (integer) {
@@ -838,6 +837,7 @@ public class MainActivity extends BaseActivity {
                         T.showShort(context, "系统时间错误");
                         break;
                     case 0:
+                        playTTS(info.getPlateNumber() + "出场");
                         break;
                     case 1:
                         playTTS(info.getPlateNumber() + "进场");
