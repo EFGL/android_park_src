@@ -305,7 +305,6 @@ public class DownloadServerMessage {
 
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("通行记录返回");
 				new processDownRecordDatas(arg0).execute();
 			}
 		});
@@ -577,7 +576,6 @@ public class DownloadServerMessage {
 
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("车位表返回");
 				new processDownStallDatas(arg0).execute();
 			}
 		});
@@ -706,7 +704,6 @@ public class DownloadServerMessage {
 
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("固定车返回");
 				new processDownCarInfoDatas(arg0).execute();
 			}
 		});
@@ -820,7 +817,6 @@ public class DownloadServerMessage {
 
 			@Override
 			public void onSuccess(String arg0) {
-				showlog("车辆绑定表返回");
 				new processDownStallVehicle(arg0).execute();
 			}
 		});

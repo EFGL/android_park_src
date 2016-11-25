@@ -67,9 +67,9 @@ public class ImageDetailActivity extends BaseActivity {
         super.onResume();
         Intent intent = getIntent();
         int tag = intent.getIntExtra("tag", -1);
-        if (tag>0){
+        if (tag > 0) {
             relativeLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             relativeLayout.setVisibility(View.GONE);
         }
         String in_image = intent.getStringExtra("in_image");
@@ -142,22 +142,26 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     private void loadImage(String in_image, String out_image) {
+        L.showlogError("loadImage 1==" + in_image);
+        L.showlogError("loadImage 2==" + out_image);
+
         if (in_image.length() < 30 && in_image.length() > 10) {
             // 网络图片
             String path = in_image.substring(0, 10);
-            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + in_image;
+            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "/car_images/" + path + "/" + in_image;
             L.showlogError("in_image serverPath==" + serverPath);
             Glide.with(ImageDetailActivity.this).load(serverPath).error(R.drawable.ic_img_car).into(inImage);
 
         } else {
             // 本地图片
+            in_image = checkPath(in_image);
             Glide.with(ImageDetailActivity.this).load(in_image).error(R.drawable.ic_img_car).into(inImage);
         }
 
         if (out_image.length() < 30 && out_image.length() > 10) {
             // 网络图片
             String path = out_image.substring(0, 10);
-            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + out_image;
+            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "/car_images/" + path + "/" + out_image;
             L.showlogError("out_image serverPath==" + serverPath);
             Glide.with(ImageDetailActivity.this).load(serverPath).error(R.drawable.ic_img_car).into(outImage);
 
@@ -165,5 +169,27 @@ public class ImageDetailActivity extends BaseActivity {
             // 本地图片
             Glide.with(ImageDetailActivity.this).load(out_image).error(R.drawable.ic_img_car).into(outImage);
         }
+    }
+
+    private String checkPath(String path) {
+
+//        //  /storage/sdcard/capture/20161125/2016-11-25-10-04-02-955.bmp
+//        File file = new File(path);
+//        if (!file.exists()) {
+//            String[] captures = path.split("capture");
+//            // capture/2016
+////           http://221.204.11.69:3002/car_images/2016-10-24/2016-10-24-10-04-25-224.bmp
+////          d = /20161125/2016-11-25-10-04-02-955.bmp
+//            String d = captures[1];
+//            d = d.substring(10, d.length());//
+//            String folder = d.substring(0, 10);
+//            String url = MyApplication.settingInfo.getString("serverIp", "") + "/car_images" + ;
+//            L.showlogError("checkPath url===="+url);
+//            return url;
+//        } else {
+//            L.showlogError("checkPath path===="+path);
+//            return path;
+//        }
+        return path;
     }
 }

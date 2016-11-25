@@ -16,7 +16,7 @@ import android.util.Log;
 public class DelFileServer extends Service {
 
     //是否打印log
-    private  boolean showlog=true;
+    private  boolean showlog=false;
     private FileUtils fileUtils;
     //sd卡的底线
     private long sdfilesize=500;
@@ -53,12 +53,8 @@ public class DelFileServer extends Service {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            showlog("收到消息");
             if(fileUtils.ifdelmyfile(sdfilesize)){
-                showlog("删除数据");
                 fileUtils.delmyfile(path,sdfilesize);
-            }else {
-                showlog("无需删除");
             }
         }
     };

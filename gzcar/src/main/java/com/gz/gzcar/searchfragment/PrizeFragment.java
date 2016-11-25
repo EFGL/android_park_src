@@ -599,6 +599,7 @@ public class PrizeFragment extends BaseFragment {
             holder.mId.setText(position + 1 + "");
             holder.mCarNum.setText(free.getCar_no());
             holder.mMoney.setText(free.getActual_money() + "");
+            holder.mReceivable.setText(free.getReceivable()+"");
             long timeLong = free.getStall_time();
             if (timeLong == -1) {
                 holder.mParkingtime.setText("无入场记录");
@@ -705,6 +706,8 @@ public class PrizeFragment extends BaseFragment {
         TextView mParkingtime;
         @Bind(R.id.item_free_money)
         TextView mMoney;
+        @Bind(R.id.item_free_receivable)
+        TextView mReceivable;
 
         public MyHolder(View itemView) {
             super(itemView);

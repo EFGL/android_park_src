@@ -15,7 +15,7 @@ import java.io.IOException;
  * 修改备注：
  */
 public class FileUtils {
-    public static boolean show=true;
+    public static boolean show=false;
 
     public  void witefile(String msg,String sendtime){
         //创建文件夹

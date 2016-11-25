@@ -176,7 +176,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="收费金额"
+                android:text="应收金额"
+                android:textSize="18sp" />
+            <include layout="@layout/linear_vertical" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="实收金额"
                 android:textSize="18sp" />
         </LinearLayout>
 
