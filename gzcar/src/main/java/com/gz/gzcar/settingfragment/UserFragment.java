@@ -100,10 +100,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
-
             holder.mName.setText(allData.get(position).getUserName());
-            holder.mType.setText(allData.get(position).getType());
-
+            if(allData.get(position).getType().equals("system")) {
+                holder.mType.setText("管理员");
+            }else{
+                holder.mType.setText("操作员");
+            }
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

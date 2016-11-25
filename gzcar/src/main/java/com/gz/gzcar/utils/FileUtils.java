@@ -79,7 +79,7 @@ public class FileUtils {
     public String savePicture(byte[] bytes)
     {
         Date date= new Date();
-        String dateStr=new SimpleDateFormat("yyyyMMdd").format(date);
+        String dateStr=new SimpleDateFormat("yyyy-MM-dd").format(date);
         String fileName=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS").format(date)+".bmp";
         String path="capture/"+dateStr+"/";
         try {

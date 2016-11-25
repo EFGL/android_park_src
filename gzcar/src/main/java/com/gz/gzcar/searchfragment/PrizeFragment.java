@@ -215,7 +215,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
                     .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -242,7 +242,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)
@@ -269,7 +269,7 @@ public class PrizeFragment extends BaseFragment {
 
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
                     .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -295,7 +295,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
                     .and("status", "=", "已出")
                     .and("receivable", ">", 0)
                     .limit(15)
@@ -350,8 +350,8 @@ public class PrizeFragment extends BaseFragment {
             try {
                 L.showlogError("--- 开始查询数据库 ---");
                 List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                        .where("update_time", ">", dateFormatDetail.parse(searchStart))
-                        .and("update_time", "<", dateFormatDetail.parse(searchEnd))
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
                         .and("receivable", ">", 0)
                         .orderBy("update_time", true)
                         .findAll();
