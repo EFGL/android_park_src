@@ -451,6 +451,9 @@ public class SelectPassOut extends BaseActivity {
     }
 
     private String checkPath(String path) {
+        if (TextUtils.isEmpty(path)||!path.contains("capture")){
+            return "";
+        }
         File file = new File(path);
         if (!file.exists()) {
             String[] captures = path.split("capture");

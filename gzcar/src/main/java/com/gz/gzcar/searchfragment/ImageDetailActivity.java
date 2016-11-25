@@ -2,6 +2,7 @@ package com.gz.gzcar.searchfragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -168,6 +169,7 @@ public class ImageDetailActivity extends BaseActivity {
             Glide.with(ImageDetailActivity.this).load(serverPath).error(R.drawable.ic_img_car).into(outImage);
 
         } else {
+            L.showlogError("11111111111---"+out_image);
             // 本地图片
             out_image = checkPath(out_image);
             Glide.with(ImageDetailActivity.this).load(out_image).error(R.drawable.ic_img_car).into(outImage);
@@ -175,6 +177,9 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     private String checkPath(String path) {
+        if (TextUtils.isEmpty(path)||!path.contains("capture")){
+            return "";
+        }
         File file = new File(path);
         if (!file.exists()) {
             String[] captures = path.split("capture");
