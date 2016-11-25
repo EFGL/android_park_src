@@ -338,8 +338,8 @@ public class MainActivity extends BaseActivity {
                 user.setType("system");
                 db.save(user);
                 user.setUserName("操作员");
-                user.setPassword("common");
-                user.setType("操作员");
+                user.setPassword("1");
+                user.setType("common");
                 db.save(user);
             }
         } catch (DbException e) {
