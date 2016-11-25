@@ -29,6 +29,7 @@ import org.xutils.DbManager;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -428,12 +429,13 @@ public class SelectPassOut extends BaseActivity {
                         if (picPath.length() < 30 && picPath.length() > 10) {
                             // 网络图片
                             String path = picPath.substring(0, 10);
-                            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "car_images/" + path + "/" + picPath;
+                            String serverPath = MyApplication.settingInfo.getString("serverIp", "") + "/car_images/" + path + "/" + picPath;
                             L.showlogError("serverPath==" + serverPath);
                             Glide.with(SelectPassOut.this).load(serverPath).error(R.drawable.ic_img_car).into(outPhoto);
 
                         } else {
                             // 本地图片
+                            picPath = checkPath(picPath);
                             Glide.with(SelectPassOut.this).load(picPath).error(R.drawable.ic_img_car).into(outPhoto);
                         }
                     }
@@ -445,6 +447,19 @@ public class SelectPassOut extends BaseActivity {
         @Override
         public int getItemCount() {
             return allData.size();
+        }
+    }
+
+    private String checkPath(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            String[] captures = path.split("capture");
+            L.showlogError("captures[0]===" + captures[0] + ",captures[1]==" + captures[1]);
+            String serverIp = MyApplication.settingInfo.getString("serverIp", "") + "/car_images" + captures[1];
+            L.showlogError("checkPath  serverIp=="+serverIp);
+            return serverIp;
+        } else {
+            return path;
         }
     }
 

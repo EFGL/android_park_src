@@ -18,6 +18,8 @@ import com.gz.gzcar.utils.PrintBean;
 import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.T;
 
+import java.io.File;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -167,29 +169,21 @@ public class ImageDetailActivity extends BaseActivity {
 
         } else {
             // 本地图片
+            out_image = checkPath(out_image);
             Glide.with(ImageDetailActivity.this).load(out_image).error(R.drawable.ic_img_car).into(outImage);
         }
     }
 
     private String checkPath(String path) {
-
-//        //  /storage/sdcard/capture/20161125/2016-11-25-10-04-02-955.bmp
-//        File file = new File(path);
-//        if (!file.exists()) {
-//            String[] captures = path.split("capture");
-//            // capture/2016
-////           http://221.204.11.69:3002/car_images/2016-10-24/2016-10-24-10-04-25-224.bmp
-////          d = /20161125/2016-11-25-10-04-02-955.bmp
-//            String d = captures[1];
-//            d = d.substring(10, d.length());//
-//            String folder = d.substring(0, 10);
-//            String url = MyApplication.settingInfo.getString("serverIp", "") + "/car_images" + ;
-//            L.showlogError("checkPath url===="+url);
-//            return url;
-//        } else {
-//            L.showlogError("checkPath path===="+path);
-//            return path;
-//        }
-        return path;
+        File file = new File(path);
+        if (!file.exists()) {
+            String[] captures = path.split("capture");
+            L.showlogError("captures[0]===" + captures[0] + ",captures[1]==" + captures[1]);
+            String serverIp = MyApplication.settingInfo.getString("serverIp", "") + "/car_images" + captures[1];
+            L.showlogError("checkPath  serverIp=="+serverIp);
+            return serverIp;
+        } else {
+            return path;
+        }
     }
 }

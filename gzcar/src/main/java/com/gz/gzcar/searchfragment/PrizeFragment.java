@@ -64,10 +64,16 @@ public class PrizeFragment extends BaseFragment {
     RecyclerView rcy;
     @Bind(R.id.tv_money)
     TextView mMoney;
+    @Bind(R.id.tv_count)
+    TextView mCount;
+    @Bind(R.id.tv_receivable)
+    TextView mReceivable;
+
     @Bind(R.id.seach_money_progerssbar)
     ProgressBar progerssbar;
     @Bind(R.id.search_money_spinner)
     MyPullText mSpinner;
+
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
@@ -215,7 +221,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
                     .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -242,7 +248,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)
@@ -269,7 +275,7 @@ public class PrizeFragment extends BaseFragment {
 
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
                     .and("car_no", "like", "%" + searchNumber + "%")
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
@@ -295,7 +301,7 @@ public class PrizeFragment extends BaseFragment {
         try {
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60*1000))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
                     .and("status", "=", "已出")
                     .and("receivable", ">", 0)
                     .limit(15)
@@ -490,7 +496,14 @@ public class PrizeFragment extends BaseFragment {
             double money = allData.get(i).getActual_money();
             toteMoney += money;
         }
-        mMoney.setText("车辆总数:"+allData.size()+"    合计金额:" + toteMoney + " 元");
+        double reMoney = 0;
+        for (int i = 0; i < allData.size(); i++) {
+            double re = allData.get(i).getReceivable();
+            reMoney +=re;
+        }
+        mCount.setText("车辆总数:" + allData.size()+" 辆" );
+        mReceivable.setText("应收总计:" + reMoney + " 元");
+        mMoney.setText("实收总计:" + toteMoney + " 元");
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -599,7 +612,7 @@ public class PrizeFragment extends BaseFragment {
             holder.mId.setText(position + 1 + "");
             holder.mCarNum.setText(free.getCar_no());
             holder.mMoney.setText(free.getActual_money() + "");
-            holder.mReceivable.setText(free.getReceivable()+"");
+            holder.mReceivable.setText(free.getReceivable() + "");
             long timeLong = free.getStall_time();
             if (timeLong == -1) {
                 holder.mParkingtime.setText("无入场记录");

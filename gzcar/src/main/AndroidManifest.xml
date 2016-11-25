@@ -52,6 +52,7 @@
         <service android:name=".server.DownLoadServer" />
         <service android:name=".server.DelFileServer" />
         <service android:name=".module.delayTask"/>
+
         <activity android:name=".searchfragment.ImageDetailActivity"/>
 
         <receiver android:name="com.gz.gzcar.receiver.MyReceiver">

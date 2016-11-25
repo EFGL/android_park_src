@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,9 +60,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import static com.gz.gzcar.MyApplication.daoConfig;
 import static com.gz.gzcar.MyApplication.settingInfo;
 
@@ -264,6 +265,8 @@ public class MainActivity extends BaseActivity {
      * 启动我的服务
      */
     public void startmyserver() {
+
+
         Intent i = new Intent(MainActivity.this, DelFileServer.class);
         startService(i);
 
