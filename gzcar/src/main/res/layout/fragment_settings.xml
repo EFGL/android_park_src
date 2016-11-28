@@ -179,9 +179,9 @@
                         android:id="@+id/editText_enter_delay"
                         style="@style/SettingsEditText"
                         android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:digits="1234567890"
-                        android:hint="时长范围:1-10"
-                        android:layout_weight="1" />
+                        android:hint="时长范围:1-10" />
 
                     <TextView
                         style="@style/SettingsTextView"
@@ -209,7 +209,14 @@
 
                     <EditText
                         android:id="@+id/company"
-                        style="@style/SettingsEditText" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_white"
+                        android:imeOptions="actionNext"
+                        android:padding="3dp"
+                        android:singleLine="true"
+                        android:textColor="#666"
+                        android:textSize="17sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -224,10 +231,10 @@
                         android:text="总车位数：" />
 
                     <EditText
-                        android:digits="1234567890"
                         android:id="@+id/editText_stallNumber"
                         style="@style/SettingsEditText"
-                        android:imeOptions="actionDone"/>
+                        android:digits="1234567890"
+                        android:imeOptions="actionDone" />
                 </LinearLayout>
 
             </LinearLayout>

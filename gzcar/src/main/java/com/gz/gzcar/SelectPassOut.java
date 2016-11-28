@@ -416,8 +416,11 @@ public class SelectPassOut extends BaseActivity {
                     holder.root.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 }
             }
-            holder.mCarNum.setText(allData.get(position).getCar_no());
-            holder.mInTime.setText(DateUtils.date2StringDetail(allData.get(position).getIn_time()));
+            if (allData.size()>0){
+
+                holder.mCarNum.setText(allData.get(position).getCar_no());
+                holder.mInTime.setText(DateUtils.date2StringDetail(allData.get(position).getIn_time()));
+            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
