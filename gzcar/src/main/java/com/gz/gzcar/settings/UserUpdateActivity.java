@@ -39,8 +39,6 @@ public class UserUpdateActivity extends BaseActivity {
         typelist.add("操作员");
         typelist.add("管理员");
         mType.setPopList(typelist);
-
-
         init();
     }
 
@@ -48,10 +46,15 @@ public class UserUpdateActivity extends BaseActivity {
         String userName = getIntent().getStringExtra("userName");
         String password = getIntent().getStringExtra("password");
         String type = getIntent().getStringExtra("type");
-
         mName.setText(userName);
         mPwd.setText(password);
-        mType.setText(type);
+        if(type.equals("system")){
+            mType.setText("管理员");
+        }
+        else{
+            mType.setText("操作员");
+        }
+
     }
 
     @OnClick({R.id.user_up_cancle, R.id.user_up_update})
@@ -80,7 +83,11 @@ public class UserUpdateActivity extends BaseActivity {
 
         try {
             UserTable user = db.findById(UserTable.class, id);
-            user.setType(newType);
+            if(newType.equals("管理员")) {
+                user.setType("system");
+            }else{
+                user.setType("common");
+            }
             user.setUserName(newName);
             user.setPassword(newPwd);
 

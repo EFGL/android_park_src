@@ -82,7 +82,11 @@ public class UserAddActivity extends BaseActivity {
             UserTable userTable = new UserTable();
             userTable.setUserName(name);
             userTable.setPassword(pwd);
-            userTable.setType(type);
+            if(type.equals("管理员")) {
+                userTable.setType("system");
+            }else{
+                userTable.setType("common");
+            }
             db.save(userTable);
             T.showShort(this, "增加成功");
             finish();

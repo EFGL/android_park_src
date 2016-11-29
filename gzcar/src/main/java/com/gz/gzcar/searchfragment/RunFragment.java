@@ -186,7 +186,6 @@ public class RunFragment extends BaseFragment {
             }
             //走更新方法
             myAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -519,14 +518,12 @@ public class RunFragment extends BaseFragment {
             }
             if (traffic.getOut_time() != null) {
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-                holder.Endtime.setTextColor(Color.BLACK);
             } else {
                 if (traffic.getStatus().equals("已出")) {
                     holder.Endtime.setText("异常出场");
                     holder.Endtime.setTextColor(Color.RED);
                 } else {
                     holder.Endtime.setText("未出场");
-                    holder.Endtime.setTextColor(Color.BLACK);
                 }
             }
 

@@ -257,7 +257,7 @@ public class PrizeFragment extends BaseFragment {
 
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
                     .where("update_time", ">=", DateUtils.string2DateDetail(searchStart))
-                    .and("update_time", "<=", DateUtils.string2DateDetail(searchEnd))
+                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)

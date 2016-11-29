@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity {
 
     private AlertDialog dialog;
     private byte[] outPortPicBuffer;
+    private byte[] inPortPicBuffer;
 
     private delayTask delayServer;  //显示屏延时服务
 
@@ -455,8 +456,10 @@ public class MainActivity extends BaseActivity {
                         MyApplication.settingInfo.putLong("outCarCount", 0);
                         MyApplication.settingInfo.putLong("chargeCarNumer", 0);
                         MyApplication.settingInfo.putString("chargeMoney", "0.00");
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                        MyApplication.settingInfo.putString("loginTime", format.format(new Date()));
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        Date nowDate = new Date();
+                        String nowDateStr = format.format(nowDate);
+                        MyApplication.settingInfo.putString("loginTime", nowDateStr);
                     }
                     return type;
                 }
@@ -510,12 +513,17 @@ public class MainActivity extends BaseActivity {
             value = MyApplication.settingInfo.getLong("outCarCount");
             str[3] = String.format("当班出场：%d车次", value);
             str[4] = "操作员：" + MyApplication.settingInfo.getString("userName");
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             try {
                 if (MyApplication.settingInfo.getString("loginTime") != null) {
-                    Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
-                    long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
-                    str[5] = String.format("登陆：%d天%d小时%d分钟", loginTimeMinute / (24 * 60), (loginTimeMinute % 24) / 60, loginTimeMinute % 60);
+                    String loginTimeStr = MyApplication.settingInfo.getString("loginTime");
+                    Date loginTime = format.parse(loginTimeStr);
+                    Date nowDate = new Date();
+                    long loginTimeMinute = (nowDate.getTime() - loginTime.getTime()) / 60 / 1000;
+                    long day = loginTimeMinute / (24 * 60);
+                    long hour = (loginTimeMinute % (24 * 60))/60;
+                    long minute = loginTimeMinute % 60;
+                    str[5] = String.format("登陆：%d天%d小时%d分钟",day, hour, minute);
                 } else {
                     str[5] = String.format("登陆：%d天%d小时%d分钟", 0, 0, 0);
                 }
@@ -681,7 +689,6 @@ public class MainActivity extends BaseActivity {
     //入口确认起杆
     class manualInOpenFunc extends AsyncTask<Void, Void, Integer> {
         String carNumber;
-
         public manualInOpenFunc(String carNumber) {
             this.carNumber = carNumber;
         }
@@ -691,19 +698,19 @@ public class MainActivity extends BaseActivity {
             if (waitEnterCarNumber.length() < 1) {
                 return -1;
             }
-            byte[] picBuffer = inCamera.CapturePic();
-            if (picBuffer == null) {
-                return -2;
-            } else {
+            //byte[] picBuffer = inCamera.CapturePic();
+            //if (picBuffer == null) {
+            //    return -2;
+           // } else {
                 try {
                     inCamera.playAudio(camera.AudioList.get("欢迎光临"));
                     inCamera.ledDisplay(2, "欢迎光临 " + carNumber + " 请入场");
-                    carProcess.saveInTempCar(carNumber, picBuffer);
+                    carProcess.saveInTempCar(carNumber, inPortPicBuffer);
                     return 0;
                 } catch (DbException e) {
                     e.printStackTrace();
                 }
-            }
+            //}
             return null;
         }
 
@@ -904,6 +911,8 @@ public class MainActivity extends BaseActivity {
                         }
                         plateImageIn.setImageBitmap(bmp);
                         plateImageIn.invalidate();
+                        //缓存入口图处片
+                        inPortPicBuffer = info.getCarPicdata();
                     }
                     //设置显示出口车号和图片
                     if (info.getName().equals("out")) {
