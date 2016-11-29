@@ -103,7 +103,7 @@ public class PrizeFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String end = DateUtils.getCurrentDataDetailStr();
-        String start = DateUtils.date2StringDetail(new Date(new Date().getTime() - 24*60*60*1000));
+        String start = DateUtils.date2StringDetail(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
         mStartTime.setText(start);
         mEndTime.setText(end);
     }
@@ -149,8 +149,7 @@ public class PrizeFragment extends BaseFragment {
             TAG = 3;
             pageIndex = 0;
             allData.clear();
-            if (myAdapter != null)
-                myAdapter.notifyDataSetChanged();
+            myAdapter.notifyDataSetChanged();
             searchUser = mSpinner.getText();
             initViews();
             initdata();
@@ -242,8 +241,7 @@ public class PrizeFragment extends BaseFragment {
                     .findAll();
             if (all != null && all.size() > 0) {
                 allData.addAll(all);
-                if (myAdapter != null)
-                    myAdapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
             } else {
                 T.showShort(getContext(), "没有更多数据了");
             }
@@ -255,9 +253,6 @@ public class PrizeFragment extends BaseFragment {
 
     private void search3(int pageIndex) {
         L.showlogError("====时间&用户查===");
-        L.showlogError("sssssssssss User==="+searchUser);
-        L.showlogError("sssssssssss start"+DateUtils.string2DateDetail(searchStart));
-        L.showlogError("sssssssssss end"+DateUtils.string2DateDetail(searchEnd));
         try {
 
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
@@ -271,10 +266,8 @@ public class PrizeFragment extends BaseFragment {
                     .orderBy("update_time", true)
                     .findAll();
             if (all != null && all.size() > 0) {
-                L.showlogError("ssssssssss all.size()=="+all.size());
                 allData.addAll(all);
-                if (myAdapter != null)
-                    myAdapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
             } else {
                 T.showShort(getContext(), "没有更多数据了");
             }
@@ -300,8 +293,7 @@ public class PrizeFragment extends BaseFragment {
                     .findAll();
             if (all != null && all.size() > 0) {
                 allData.addAll(all);
-                if (myAdapter != null)
-                    myAdapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
             } else {
                 T.showShort(getContext(), "没有更多数据了");
             }
@@ -325,8 +317,7 @@ public class PrizeFragment extends BaseFragment {
                     .findAll();
             if (all != null && all.size() > 0) {
                 allData.addAll(all);
-                if (myAdapter != null)
-                    myAdapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
             } else {
                 T.showShort(getContext(), "没有更多数据了");
             }
@@ -424,7 +415,6 @@ public class PrizeFragment extends BaseFragment {
             long stall_time = sumAll.get(i).getStall_time();
             time += stall_time;
         }
-        L.showlogError("分钟==="+time);
 
         String user = mSpinner.getText();
         String start = mStartTime.getText().toString().trim();
@@ -433,7 +423,7 @@ public class PrizeFragment extends BaseFragment {
         printAllBean.operator = user;
         printAllBean.starttime = start;
         printAllBean.endtime = end;
-        printAllBean.stoptime = String.format("%d时%d分",time/60,time%60);
+        printAllBean.stoptime = String.format("%d时%d分", time / 60, time % 60);
         printAllBean.carallnum = String.valueOf(sumAll.size());
         printAllBean.receivable = String.valueOf(reMoney);
         printAllBean.RealPrice = String.valueOf(toteMoney);
@@ -606,7 +596,7 @@ public class PrizeFragment extends BaseFragment {
                     break;
             }
 
-            if (sumAll==null){
+            if (sumAll == null) {
                 return null;
             }
 
@@ -629,7 +619,7 @@ public class PrizeFragment extends BaseFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            if (sumAll!=null){
+            if (sumAll != null) {
 
                 mCount.setText("车辆总数:" + sumAll.size() + " 辆");
                 mReceivable.setText("应收总计:" + reMoney + " 元");
@@ -699,7 +689,6 @@ public class PrizeFragment extends BaseFragment {
             }
         }
     }
-
 
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
