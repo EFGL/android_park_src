@@ -186,7 +186,6 @@ public class RunFragment extends BaseFragment {
             }
             //走更新方法
             myAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -526,7 +525,6 @@ public class RunFragment extends BaseFragment {
                     holder.Endtime.setTextColor(Color.RED);
                 } else {
                     holder.Endtime.setText("未出场");
-                    holder.Endtime.setTextColor(Color.BLACK);
                 }
             }
 

@@ -456,8 +456,10 @@ public class MainActivity extends BaseActivity {
                         MyApplication.settingInfo.putLong("outCarCount", 0);
                         MyApplication.settingInfo.putLong("chargeCarNumer", 0);
                         MyApplication.settingInfo.putString("chargeMoney", "0.00");
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                        MyApplication.settingInfo.putString("loginTime", format.format(new Date()));
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        Date nowDate = new Date();
+                        String nowDateStr = format.format(nowDate);
+                        MyApplication.settingInfo.putString("loginTime", nowDateStr);
                     }
                     return type;
                 }
@@ -511,11 +513,13 @@ public class MainActivity extends BaseActivity {
             value = MyApplication.settingInfo.getLong("outCarCount");
             str[3] = String.format("当班出场：%d车次", value);
             str[4] = "操作员：" + MyApplication.settingInfo.getString("userName");
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             try {
                 if (MyApplication.settingInfo.getString("loginTime") != null) {
-                    Date loginTime = format.parse(MyApplication.settingInfo.getString("loginTime"));
-                    long loginTimeMinute = (new Date().getTime() - loginTime.getTime()) / 60 / 1000;
+                    String loginTimeStr = MyApplication.settingInfo.getString("loginTime");
+                    Date loginTime = format.parse(loginTimeStr);
+                    Date nowDate = new Date();
+                    long loginTimeMinute = (nowDate.getTime() - loginTime.getTime()) / 60 / 1000;
                     long day = loginTimeMinute / (24 * 60);
                     long hour = (loginTimeMinute % (24 * 60))/60;
                     long minute = loginTimeMinute % 60;
