@@ -518,7 +518,6 @@ public class RunFragment extends BaseFragment {
             }
             if (traffic.getOut_time() != null) {
                 holder.Endtime.setText(dateFormatDetail.format(traffic.getOut_time()));
-                holder.Endtime.setTextColor(Color.BLACK);
             } else {
                 if (traffic.getStatus().equals("已出")) {
                     holder.Endtime.setText("异常出场");
