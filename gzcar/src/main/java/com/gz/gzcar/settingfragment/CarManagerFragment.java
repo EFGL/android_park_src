@@ -654,6 +654,9 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
+                        if (myAdapter!=null){
+                            myAdapter.notifyDataSetChanged();
+                        }
                         dialog2.dismiss();
                         if (reader != null)
                             reader.close();
