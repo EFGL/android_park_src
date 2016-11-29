@@ -6,17 +6,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.gz.gzcar.AppConstants;
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -26,6 +29,8 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
+import com.gz.gzcar.utils.PrintBean;
+import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
@@ -75,8 +80,10 @@ public class PrizeFragment extends BaseFragment {
     @Bind(R.id.search_money_spinner)
     MyPullText mSpinner;
 
+
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
+    private List<TrafficInfoTable> sumAll;
     private MyAdapter myAdapter;
     private int pageIndex = 0;
     private int TAG = 3;
@@ -326,7 +333,7 @@ public class PrizeFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search, R.id.search_money_export})
+    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search, R.id.prize_print, R.id.search_money_export})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_money_starttime:
@@ -348,7 +355,76 @@ public class PrizeFragment extends BaseFragment {
                 searchEnd = mEndTime.getText().toString().trim();
                 new ExportTask().execute();
                 break;
+
+            case R.id.prize_print:
+                requestPrint();
+                break;
         }
+    }
+
+    private void requestPrint() {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_request_print, null);
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+        dialog.show();
+
+        Button cancle = (Button) view.findViewById(R.id.requset_cencle);
+        Button ok = (Button) view.findViewById(R.id.requset_ok);
+
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                print();
+            }
+        });
+    }
+
+    private void print() {
+        boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
+        L.showlogError("是否打印:" + isPrint);
+        if (!isPrint) {
+            T.showShort(getActivity(), "请到系统设置中打开打印权限");
+            return;
+        }
+        if (sumAll == null || sumAll.size() < 1) {
+            T.showShort(getActivity(), "暂无数据");
+            return;
+        }
+        Gson gson;
+        PrintBean printBean;
+        TrafficInfoTable info;
+        String json;
+        for (int i = 0; i < sumAll.size(); i++) {
+            gson = new Gson();
+            printBean = new PrintBean();
+            info = sumAll.get(i);
+            printBean.carNumber = info.getCar_no() + "";
+            printBean.inTime = DateUtils.date2StringDetail(info.getIn_time()) + "";
+            printBean.outTime = DateUtils.date2StringDetail(info.getOut_time()) + "";
+            printBean.type = info.getCar_type() + "";
+            printBean.money = info.getActual_money();
+            printBean.parkTime = info.getStall_time() + "";
+
+            json = gson.toJson(printBean);
+            L.showlogError("Json==" + json);
+
+            PrintUtils.print(getActivity(), json, info.getOut_user() + "", MyApplication.settingInfo.getString("companyName"));
+
+        }
+
     }
 
     class ExportTask extends AsyncTask<Void, Void, Integer> {
@@ -493,7 +569,6 @@ public class PrizeFragment extends BaseFragment {
 
     class SumMoney extends AsyncTask<Void, Void, Void> {
 
-        private List<TrafficInfoTable> sumAll;
         private double toteMoney = 0;
         private double reMoney = 0;
 
