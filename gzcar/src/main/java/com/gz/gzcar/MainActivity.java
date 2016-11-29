@@ -871,8 +871,13 @@ public class MainActivity extends BaseActivity {
                                 chargeCarType.getText().toString(),
                                 chargeParkTime.getText().toString(),
                                 chargeMoney.getText().toString());
-                        outCamera.ledDisplay(2,chargeCarNumber.getText().toString() + " "+ chargeParkTime.getText().toString()+" "+ chargeMoney.getText().toString());
-                        playTTS(info.getPlateNumber() +chargeParkTime.getText() + chargeMoney.getText());
+                        if(outPortLog.getReceivable() >0) {
+                            outCamera.ledDisplay(2, chargeCarNumber.getText().toString() + " " + chargeParkTime.getText().toString() + " " + chargeMoney.getText().toString());
+                            playTTS(info.getPlateNumber() +chargeParkTime.getText() + chargeMoney.getText());
+                        }else{
+                            outCamera.ledDisplay(2, chargeCarNumber.getText().toString() + " " + chargeParkTime.getText().toString());
+                            playTTS(info.getPlateNumber() +chargeParkTime.getText());
+                        }
                         new upStatusInfoDisp().execute();
                         break;
                 }
