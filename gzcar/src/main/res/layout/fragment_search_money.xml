@@ -217,36 +217,50 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/tv_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_margin="10dp"
+                android:layout_centerVertical="true"
                 android:text="车辆总数:0"
-                android:textSize="22sp" />
-
-
-            <TextView
-                android:id="@+id/tv_money"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:text="实收总计：0.00元"
                 android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/tv_receivable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@id/tv_money"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:layout_toRightOf="@id/tv_count"
                 android:text="应收总计:0.00"
                 android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:layout_toRightOf="@id/tv_receivable"
+                android:text="实收总计：0.00元"
+                android:textSize="22sp" />
+
+
+            <Button
+                android:id="@+id/prize_print"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:background="@drawable/shape_green"
+                android:text="打印"
+                android:textColor="#fff"
+                android:textSize="18sp" />
         </RelativeLayout>
     </LinearLayout>
 
