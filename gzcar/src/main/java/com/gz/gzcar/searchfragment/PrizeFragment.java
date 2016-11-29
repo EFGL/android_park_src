@@ -29,7 +29,7 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
-import com.gz.gzcar.utils.PrintBean;
+import com.gz.gzcar.utils.PrintAllBean;
 import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
@@ -104,8 +104,8 @@ public class PrizeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
+        String start = DateUtils.date2StringDetail(new Date(new Date().getTime() - 24*60*60*1000));
         mStartTime.setText(start);
         mEndTime.setText(end);
     }
@@ -403,28 +403,39 @@ public class PrizeFragment extends BaseFragment {
             T.showShort(getActivity(), "暂无数据");
             return;
         }
-        Gson gson;
-        PrintBean printBean;
-        TrafficInfoTable info;
-        String json;
+        double toteMoney = 0;
+        double reMoney = 0;
+        long time = 0;
         for (int i = 0; i < sumAll.size(); i++) {
-            gson = new Gson();
-            printBean = new PrintBean();
-            info = sumAll.get(i);
-            printBean.carNumber = info.getCar_no() + "";
-            printBean.inTime = DateUtils.date2StringDetail(info.getIn_time()) + "";
-            printBean.outTime = DateUtils.date2StringDetail(info.getOut_time()) + "";
-            printBean.type = info.getCar_type() + "";
-            printBean.money = info.getActual_money();
-            printBean.parkTime = info.getStall_time() + "";
 
-            json = gson.toJson(printBean);
-            L.showlogError("Json==" + json);
-
-            PrintUtils.print(getActivity(), json, info.getOut_user() + "", MyApplication.settingInfo.getString("companyName"));
-
+            double money = sumAll.get(i).getActual_money();
+            toteMoney += money;
         }
+        for (int i = 0; i < sumAll.size(); i++) {
+            double re = sumAll.get(i).getReceivable();
+            reMoney += re;
+        }
+        for (int i = 0; i < sumAll.size(); i++) {
+            long stall_time = sumAll.get(i).getStall_time();
+            time += stall_time;
+        }
+        L.showlogError("分钟==="+time);
 
+        String user = mSpinner.getText();
+        String start = mStartTime.getText().toString().trim();
+        String end = mEndTime.getText().toString().trim();
+        PrintAllBean printAllBean = new PrintAllBean();
+        printAllBean.operator = user;
+        printAllBean.starttime = start;
+        printAllBean.endtime = end;
+        printAllBean.stoptime = String.format("%d时%d分",time/60,time%60);
+        printAllBean.carallnum = String.valueOf(sumAll.size());
+        printAllBean.receivable = String.valueOf(reMoney);
+        printAllBean.RealPrice = String.valueOf(toteMoney);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(printAllBean);
+        PrintUtils.printAll(getActivity(), json);
     }
 
     class ExportTask extends AsyncTask<Void, Void, Integer> {
@@ -590,6 +601,9 @@ public class PrizeFragment extends BaseFragment {
                     break;
             }
 
+            if (sumAll==null){
+                return null;
+            }
 
             for (int i = 0; i < sumAll.size(); i++) {
 
@@ -610,9 +624,13 @@ public class PrizeFragment extends BaseFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            mCount.setText("车辆总数:" + sumAll.size() + " 辆");
-            mReceivable.setText("应收总计:" + reMoney + " 元");
-            mMoney.setText("实收总计:" + toteMoney + " 元");
+            if (sumAll!=null){
+
+                mCount.setText("车辆总数:" + sumAll.size() + " 辆");
+                mReceivable.setText("应收总计:" + reMoney + " 元");
+                mMoney.setText("实收总计:" + toteMoney + " 元");
+            }
+
         }
 
         private void sumSearch0() {
