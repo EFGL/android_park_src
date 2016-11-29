@@ -4,8 +4,6 @@ package com.gz.gzcar.searchfragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,7 +82,7 @@ public class PrizeFragment extends BaseFragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private List<TrafficInfoTable> sumAll;
-    private MyAdapter myAdapter;
+    private MyAdapter myAdapter = new MyAdapter();
     private int pageIndex = 0;
     private int TAG = 3;
     private String searchNumber;
@@ -113,19 +111,11 @@ public class PrizeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+
         new UserTask().execute();
 
         L.showlogError("收费记录 :  onResume()执行了....");
 
-        TAG = 3;
-        pageIndex = 0;
-        allData.clear();
-        if (myAdapter != null)
-            myAdapter.notifyDataSetChanged();
-
-        searchUser = mSpinner.getText();
-        initdata();
-        initViews();
     }
 
     class UserTask extends AsyncTask<Void, Void, ArrayList<String>> {
@@ -155,6 +145,15 @@ public class PrizeFragment extends BaseFragment {
             String userName = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
             mSpinner.setText(userName);
 
+
+            TAG = 3;
+            pageIndex = 0;
+            allData.clear();
+            if (myAdapter != null)
+                myAdapter.notifyDataSetChanged();
+            searchUser = mSpinner.getText();
+            initViews();
+            initdata();
         }
     }
 
@@ -165,7 +164,7 @@ public class PrizeFragment extends BaseFragment {
 
         final LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
-        myAdapter = new MyAdapter();
+
         rcy.setAdapter(myAdapter);
         rcy.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -201,6 +200,7 @@ public class PrizeFragment extends BaseFragment {
         }
         searchStart = mStartTime.getText().toString().trim();
         searchEnd = mEndTime.getText().toString().trim();
+        searchUser = mSpinner.getText();
         loadMore(pageIndex);
         new SumMoney().execute();
 
@@ -255,10 +255,14 @@ public class PrizeFragment extends BaseFragment {
 
     private void search3(int pageIndex) {
         L.showlogError("====时间&用户查===");
+        L.showlogError("sssssssssss User==="+searchUser);
+        L.showlogError("sssssssssss start"+DateUtils.string2DateDetail(searchStart));
+        L.showlogError("sssssssssss end"+DateUtils.string2DateDetail(searchEnd));
         try {
+
             List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-                    .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
+                    .where("update_time", ">=", DateUtils.string2DateDetail(searchStart))
+                    .and("update_time", "<=", DateUtils.string2DateDetail(searchEnd))
                     .and("receivable", ">", 0)
                     .and("status", "=", "已出")
                     .and("out_user", "=", searchUser)
@@ -267,6 +271,7 @@ public class PrizeFragment extends BaseFragment {
                     .orderBy("update_time", true)
                     .findAll();
             if (all != null && all.size() > 0) {
+                L.showlogError("ssssssssss all.size()=="+all.size());
                 allData.addAll(all);
                 if (myAdapter != null)
                     myAdapter.notifyDataSetChanged();
@@ -695,17 +700,6 @@ public class PrizeFragment extends BaseFragment {
         }
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-            double toteMoney = (double) msg.obj;
-
-            mMoney.setText("合计金额:" + toteMoney + " 元");
-
-        }
-    };
 
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
