@@ -1,6 +1,7 @@
 package com.gz.gzcar.settingfragment;
 
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -29,6 +31,7 @@ import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
+import com.gz.gzcar.SdFile;
 import com.gz.gzcar.settings.CarAdd;
 import com.gz.gzcar.settings.CarUpdate;
 import com.gz.gzcar.utils.CsvReader;
@@ -54,7 +57,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStorageDirectory;
 
 /**
@@ -82,7 +84,8 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<CarInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
-    private AlertDialog dialog;
+    private AlertDialog dialog2;
+    private List<String> small = new ArrayList<>();
 
 
     @Override
@@ -397,7 +400,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = View.inflate(getActivity(), R.layout.search_car_info, false);
             View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_setting_carmanager, parent, false);
             MyHolder myHolder = new MyHolder(itemView);
             return myHolder;
@@ -524,9 +526,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                             db.deleteById(CarInfoTable.class, id);
                             allData.clear();
                             myAdapter.notifyDataSetChanged();
-//                            allData.addAll(db.selector(CarInfoTable.class).orderBy("id", true).findAll());
-//                            myAdapter.notifyDataSetChanged();
-
                             TAG = 0;
                             pageIndex = 0;
                             initData();
@@ -550,10 +549,10 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), CarAdd.class));
                 break;
             case R.id.car_import:
-                myImport();
+//                myImport();
+                startImport();
                 break;
             case R.id.car_export:
-//                showExport();
                 progressBar.setVisibility(View.VISIBLE);
                 new ExportTask().execute();
 //                File file = new File("/storage/uhost");
@@ -562,12 +561,130 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    private void startImport() {
+        List<String> allCsv = new SdFile().getallfilemessage("/storage/uhost1/", ".csv");
+        if (allCsv == null) {
+            allCsv = new SdFile().getallfilemessage("/storage/uhost/", ".csv");
+        }
+        if (allCsv == null) {
+            T.showShort(getActivity(), "请先插入U盘");
+            return;
+        }
+
+        small.clear();
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.import_dialog, null);
+        dialog2 = new AlertDialog.Builder(getActivity()).create();
+        dialog2.setView(view, 0, 0, 0, 0);
+        dialog2.setCancelable(true);
+        dialog2.show();
+
+        WindowManager.LayoutParams params = dialog2.getWindow().getAttributes();
+        params.width = 900;
+        params.height = 600;
+        dialog2.getWindow().setAttributes(params);
+
+        L.showlogError("allCsv.size()==" + allCsv.size());
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rcy_import);
+        LinearLayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(lm);
+        ImportAdapter importAdapter = new ImportAdapter(allCsv);
+        recyclerView.setAdapter(importAdapter);
+
+
+    }
+
+    private class ImportAdapter extends RecyclerView.Adapter<ImportHolder> {
+
+        private List<String> data;
+
+        public ImportAdapter(List<String> data) {
+            this.data = data;
+            for (String fileName : data) {
+                String[] s = fileName.split("/");
+                small.add(s[3]);
+            }
+        }
+
+        @Override
+        public ImportHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(getActivity()).inflate(R.layout.itme_import, parent,false);
+            ImportHolder itemView = new ImportHolder(v);
+            return itemView;
+        }
+
+        @Override
+        public void onBindViewHolder(ImportHolder holder, final int position) {
+
+            holder.t.setText(small.get(position));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String csvFilePath = data.get(position);
+                    ArrayList<String[]> csvList = new ArrayList<String[]>(); // 保存数据
+                    CsvReader reader = null;
+//                    String csvFilePath = "/storage/uhost1/车辆信息表_2016年11月28日 14时09分37秒.csv";
+                    try {
+
+                        reader = new CsvReader(csvFilePath, ',', Charset.forName("GBK"));
+                        reader.readHeaders(); // 跳过表头   如果需要表头的话，不要写这句。
+                        while (reader.readRecord()) { //逐行读入除表头的数据
+                            csvList.add(reader.getValues());
+                        }
+                        int ap = 0;
+                        for (int row = 0; row < csvList.size(); row++) {
+                            String number = csvList.get(row)[2]; //取得第row行第2列的数据
+//                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
+                            List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", number).findAll();
+                            if (all != null && all.size() > 0) {
+                                for (int i = 0; i < all.size(); i++) {
+                                    int id = all.get(i).getId();
+
+                                    db.deleteById(CarInfoTable.class, id);
+                                    ap++;
+                                    L.showlogError("车牌号:" + number + "与第" + row + "行相同,已经删除");
+                                }
+                            }
+                            CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
+                            db.save(carInfoTable);
+                        }
+                        progressBar.setVisibility(View.GONE);
+                        T.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        dialog2.dismiss();
+                        if (reader != null)
+                            reader.close();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return small.size();
+        }
+    }
+
+    class ImportHolder extends RecyclerView.ViewHolder {
+
+        private TextView t;
+
+        public ImportHolder(View itemView) {
+            super(itemView);
+            t = (TextView) itemView.findViewById(R.id.text1);
+        }
+    }
+
     /*导入*/
     private void myImport() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, "请选择一个要上传的文件"), 1);
+        startActivityForResult(Intent.createChooser(intent, "请选择一个要上传的文件"), Activity.RESULT_FIRST_USER);
+//        startActivityForResult(intent, Activity.RESULT_FIRST_USER);
     }
 
     /*
@@ -579,54 +696,57 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            progressBar.setVisibility(View.VISIBLE);
-            Uri uri = data.getData();
-            String csvFilePath = getRealFilePath(getActivity(), uri);
-            L.showlogError("csvFilePath==" + csvFilePath);
-            String fileName = csvFilePath.substring(csvFilePath.lastIndexOf(".") + 1);
-            if (!fileName.equalsIgnoreCase("csv") || csvFilePath == null) {
-                T.showLong(getActivity(), "文件类型错误，导入失败！！！");
-                return;
-            }
-            ArrayList<String[]> csvList = new ArrayList<String[]>(); // 保存数据
-            CsvReader reader = null;
-            try {
-                reader = new CsvReader(csvFilePath, ',', Charset.forName("GBK"));
-                reader.readHeaders(); // 跳过表头   如果需要表头的话，不要写这句。
-                while (reader.readRecord()) { //逐行读入除表头的数据
-                    csvList.add(reader.getValues());
-                }
-                int ap = 0;
-                for (int row = 0; row < csvList.size(); row++) {
-                    String number = csvList.get(row)[2]; //取得第row行第2列的数据
-//                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
-                    List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", number).findAll();
-                    if (all != null && all.size() > 0) {
-                        for (int i = 0; i < all.size(); i++) {
-                            int id = all.get(i).getId();
-
-                            db.deleteById(CarInfoTable.class, id);
-                            ap++;
-                            L.showlogError("车牌号:" + number + "与第" + row + "行相同,已经删除");
-                        }
-                    }
-                    CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
-                    db.save(carInfoTable);
-                }
-                progressBar.setVisibility(View.GONE);
-                T.showLong(getContext(),"导入新数据"+(csvList.size()-ap)+"条,覆盖"+ap+"条");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null)
-                    reader.close();
-            }
-
-        }
+//        Log.i("chenghao", "requestCode=" + requestCode);
+//        Log.i("chenghao", "resultCode=" + resultCode);
+//
+//        if (resultCode == RESULT_OK) {
+//            progressBar.setVisibility(View.VISIBLE);
+//            Uri uri = data.getData();
+//            String csvFilePath = getRealFilePath(getActivity(), uri);
+//            L.showlogError("csvFilePath==" + csvFilePath);
+//            String fileName = csvFilePath.substring(csvFilePath.lastIndexOf(".") + 1);
+//            if (!fileName.equalsIgnoreCase("csv") || csvFilePath == null) {
+//                T.showLong(getActivity(), "文件类型错误，导入失败！！！");
+//                progressBar.setVisibility(View.GONE);
+//                return;
+//            }
+//            ArrayList<String[]> csvList = new ArrayList<String[]>(); // 保存数据
+//            CsvReader reader = null;
+//            try {
+//                reader = new CsvReader(csvFilePath, ',', Charset.forName("GBK"));
+//                reader.readHeaders(); // 跳过表头   如果需要表头的话，不要写这句。
+//                while (reader.readRecord()) { //逐行读入除表头的数据
+//                    csvList.add(reader.getValues());
+//                }
+//                int ap = 0;
+//                for (int row = 0; row < csvList.size(); row++) {
+//                    String number = csvList.get(row)[2]; //取得第row行第2列的数据
+////                    L.showlogError("第" + row + "行元素个数==" + csvList.get(row).length + ",车牌号==" + number);
+//                    List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", number).findAll();
+//                    if (all != null && all.size() > 0) {
+//                        for (int i = 0; i < all.size(); i++) {
+//                            int id = all.get(i).getId();
+//
+//                            db.deleteById(CarInfoTable.class, id);
+//                            ap++;
+//                            L.showlogError("车牌号:" + number + "与第" + row + "行相同,已经删除");
+//                        }
+//                    }
+//                    CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
+//                    db.save(carInfoTable);
+//                }
+//                progressBar.setVisibility(View.GONE);
+//                T.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                if (reader != null)
+//                    reader.close();
+//            }
+//
+//        }
     }
 
     private String getRealFilePath(final Context context, final Uri uri) {

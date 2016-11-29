@@ -71,9 +71,9 @@ public class RunFragment extends BaseFragment {
     private View view;
     private DbManager db = null;
     private MyAdapter myAdapter;
-    private List<TrafficInfoTable> allData;
     private MyPullText myPullText;
     private RecyclerView.LayoutManager lm;
+    private List<TrafficInfoTable> allData = new ArrayList<>();
     private List<TrafficInfoTable> all = new ArrayList<>();
     private String exportStart;
     private String exportEnd;
@@ -114,7 +114,6 @@ public class RunFragment extends BaseFragment {
 
                 LinearLayoutManager manager = (LinearLayoutManager) lm;
                 int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
-                Log.e("ende", "lastVisibleItemPosition....." + lastVisibleItemPosition);
                 if (newState == 0 && lastVisibleItemPosition == (allData.size() - 1)) {
                     setallmessage();
                 }
@@ -154,7 +153,7 @@ public class RunFragment extends BaseFragment {
 
     public void setallmessage() {
 
-        if (allData != null && all != null && all.size() != 0) {
+        if (all.size() != 0) {
             if (allData.size() == all.size()) {
                 T.showShort(getContext(), "已经全部加载完");
                 return;
@@ -254,7 +253,8 @@ public class RunFragment extends BaseFragment {
         Date date = DateUtils.string2DateDetail(today);
         try {
             all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">", date)
+                    .where("update_time", ">=", date)
+                    .and("car_type", "=", "临时车")
                     .orderBy("update_time", true)
                     .findAll();
             if (all != null)

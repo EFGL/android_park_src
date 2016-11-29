@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.gz.gzcar.AppConstants;
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.Database.UserTable;
@@ -78,7 +79,7 @@ public class PrizeFragment extends BaseFragment {
     private List<TrafficInfoTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
     private int pageIndex = 0;
-    private int TAG = 0;
+    private int TAG = 3;
     private String searchNumber;
     private String searchStart;
     private String searchEnd;
@@ -109,12 +110,13 @@ public class PrizeFragment extends BaseFragment {
 
         L.showlogError("收费记录 :  onResume()执行了....");
 
-        TAG = 0;
+        TAG = 3;
         pageIndex = 0;
         allData.clear();
         if (myAdapter != null)
             myAdapter.notifyDataSetChanged();
 
+        searchUser = mSpinner.getText();
         initdata();
         initViews();
     }
@@ -123,7 +125,6 @@ public class PrizeFragment extends BaseFragment {
         @Override
         protected ArrayList<String> doInBackground(Void... params) {
             ArrayList<String> userList = new ArrayList<>();
-            userList.add("全部");
             try {
                 List<UserTable> all = db.selector(UserTable.class).orderBy("id", true).findAll();
                 for (int i = 0; i < all.size(); i++) {
@@ -133,6 +134,7 @@ public class PrizeFragment extends BaseFragment {
                 e.printStackTrace();
                 T.showShort(getContext(), "操作员初始化异常");
             }
+            userList.add("全部");
             return userList;
 
         }
@@ -142,8 +144,9 @@ public class PrizeFragment extends BaseFragment {
             super.onPostExecute(userList);
 
             mSpinner.setPopList(userList);
-            mSpinner.setText(userList.get(0));
             mSpinner.setTextSize(15);
+            String userName = MyApplication.settingInfo.getString(AppConstants.USER_NAME, "");
+            mSpinner.setText(userName);
 
         }
     }
@@ -192,7 +195,7 @@ public class PrizeFragment extends BaseFragment {
         searchStart = mStartTime.getText().toString().trim();
         searchEnd = mEndTime.getText().toString().trim();
         loadMore(pageIndex);
-        sumMoney();
+        new SumMoney().execute();
 
     }
 
@@ -465,122 +468,138 @@ public class PrizeFragment extends BaseFragment {
             if (TextUtils.isEmpty(searchNumber)) {
                 TAG = 0;// 时间查
                 loadMore(pageIndex);
-                sumMoney();
+                new SumMoney().execute();
 
             } else {
                 TAG = 2;// 车牌&时间查
                 loadMore(pageIndex);
-                sumMoney();
+                new SumMoney().execute();
 
             }
         } else {
             if (TextUtils.isEmpty(searchNumber)) {
                 TAG = 3;// 时间&用户查
                 loadMore(pageIndex);
-                sumMoney();
+                new SumMoney().execute();
 
             } else {
                 TAG = 4;// 车牌&时间&用户查
                 loadMore(pageIndex);
-                sumMoney();
-
+                new SumMoney().execute();
             }
         }
 
     }
 
-    private void sumMoney() {
-        double toteMoney = 0;
-        for (int i = 0; i < allData.size(); i++) {
+    class SumMoney extends AsyncTask<Void, Void, Void> {
 
-            double money = allData.get(i).getActual_money();
-            toteMoney += money;
+        private List<TrafficInfoTable> sumAll;
+        private double toteMoney = 0;
+        private double reMoney = 0;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            switch (TAG) {
+                case 0:
+                    sumSearch0();// 时间查
+                    break;
+                case 2:
+                    sumSearch2();// 车号&时间查询
+                    break;
+                case 3:
+                    sumSearch3();// 时间&用户查
+                    break;
+                case 4:
+                    sumSearch4();// 车牌&时间&用户查
+                    break;
+            }
+
+
+            for (int i = 0; i < sumAll.size(); i++) {
+
+                double money = sumAll.get(i).getActual_money();
+                toteMoney += money;
+            }
+            for (int i = 0; i < sumAll.size(); i++) {
+                double re = sumAll.get(i).getReceivable();
+                reMoney += re;
+            }
+
+
+            return null;
+
         }
-        double reMoney = 0;
-        for (int i = 0; i < allData.size(); i++) {
-            double re = allData.get(i).getReceivable();
-            reMoney +=re;
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            mCount.setText("车辆总数:" + sumAll.size() + " 辆");
+            mReceivable.setText("应收总计:" + reMoney + " 元");
+            mMoney.setText("实收总计:" + toteMoney + " 元");
         }
-        mCount.setText("车辆总数:" + allData.size()+" 辆" );
-        mReceivable.setText("应收总计:" + reMoney + " 元");
-        mMoney.setText("实收总计:" + toteMoney + " 元");
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                super.run();
 
-//                switch (TAG) {
-//
-//                    case 0:
-//
-//                        try {
-//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-//                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-//                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-//                                    .and("status", "=", "已出")
-//                                    .and("receivable", ">", 0)
-//                                    .orderBy("update_time", true)
-//                                    .findAll();
-//
-//                            double toteMoney = 0;
-//                            if (all != null) {
-//
-//                                for (int i = 0; i < all.size(); i++) {
-//
-//                                    double money = all.get(i).getActual_money();
-//                                    toteMoney += money;
-//                                }
-//                            }
-//
-//                            Message message = Message.obtain();
-//                            message.obj = toteMoney;
-//                            handler.sendMessage(message);
-//
-//                        } catch (DbException e) {
-//                            e.printStackTrace();
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                        break;
-//                    case 2:
-//
-//                        try {
-//                            List<TrafficInfoTable> all = db.selector(TrafficInfoTable.class)
-//                                    .where("update_time", ">=", dateFormatDetail.parse(searchStart))
-//                                    .and("update_time", "<=", dateFormatDetail.parse(searchEnd))
-//                                    .and("car_number", "like", "%" + searchNumber + "%")
-//                                    .and("receivable", ">", 0)
-//                                    .and("status", "=", "已出")
-//                                    .orderBy("update_time", true)
-//                                    .findAll();
-//                            double toteMoney = 0;
-//                            if (all != null) {
-//
-//                                for (int i = 0; i < all.size(); i++) {
-//
-//                                    double money = all.get(i).getActual_money();
-//                                    toteMoney += money;
-//                                }
-//                            }
-//
-//                            Message message = Message.obtain();
-//                            message.obj = toteMoney;
-//                            handler.sendMessage(message);
-//
-//                        } catch (DbException e) {
-//                            e.printStackTrace();
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//                        break;
-//                }
-//
-//            }
-//        }.start();
+        private void sumSearch0() {
+            try {
+                sumAll = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
+                        .and("status", "=", "已出")
+                        .and("receivable", ">", 0)
+                        .findAll();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+        private void sumSearch2() {
+            L.showlogError("====车号&时间查询===车号:" + searchNumber);
+            try {
+                sumAll = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
+                        .and("car_no", "like", "%" + searchNumber + "%")
+                        .and("receivable", ">", 0)
+                        .and("status", "=", "已出")
+                        .findAll();
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void sumSearch3() {
+            L.showlogError("====时间&用户查===");
+            try {
+                sumAll = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
+                        .and("receivable", ">", 0)
+                        .and("status", "=", "已出")
+                        .and("out_user", "=", searchUser)
+                        .findAll();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void sumSearch4() {
+            L.showlogError("====车牌&时间&用户查===");
+            try {
+                sumAll = db.selector(TrafficInfoTable.class)
+                        .where("update_time", ">=", dateFormatDetail.parse(searchStart))
+                        .and("update_time", "<", new Date(dateFormatDetail.parse(searchEnd).getTime() + 60 * 1000))
+                        .and("car_no", "like", "%" + searchNumber + "%")
+                        .and("receivable", ">", 0)
+                        .and("status", "=", "已出")
+                        .and("out_user", "=", searchUser)
+                        .findAll();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Handler handler = new Handler() {
