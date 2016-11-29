@@ -41,7 +41,6 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 star.setText(DateUtils.date2String(date));
-                Log.e("a", "--------");
             }
         });
 
@@ -63,15 +62,7 @@ public class BaseFragment extends Fragment {
     protected void initDetailTime(Context context, final TextView star, final TextView end) {
         //时间选择器
         pvTime = new TimePickerView(context, TimePickerView.Type.ALL);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        int year = calendar.get(Calendar.YEAR);
-//        int month = calendar.get(Calendar.MONTH)+1;
-//        int day = calendar.get(Calendar.DAY_OF_MONTH);
-//        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-//        int minute = calendar.get(Calendar.MINUTE);
-//        Log.e("11111111111111111", "month==" + month);
-        pvTime.setTime(DateUtils.string2DateDetail(DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00"));
+        pvTime.setTime(new Date(new Date().getTime()-24*60*60*1000));
         pvTime.setCyclic(true);
         pvTime.setCancelable(true);
         //时间选择后回调
@@ -80,7 +71,6 @@ public class BaseFragment extends Fragment {
             @Override
             public void onTimeSelect(Date date) {
                 star.setText(DateUtils.date2StringDetail(date));
-                Log.e("a", "--------");
             }
         });
 

@@ -24,8 +24,16 @@ public class PrintUtils {
     public static void print(Context context, String msg, String operatename, String company) {
         Intent intent = new Intent("cartprint");
         intent.putExtra("msg", msg);
+        intent.putExtra("type","1");
         intent.putExtra("operatename", operatename);
         intent.putExtra("company", company);
+        context.sendBroadcast(intent);
+    }
+
+    public static void printAll(Context context, String msg){
+        Intent intent = new Intent("cartprint");
+        intent.putExtra("msg", msg);
+        intent.putExtra("type","2");
         context.sendBroadcast(intent);
     }
 }

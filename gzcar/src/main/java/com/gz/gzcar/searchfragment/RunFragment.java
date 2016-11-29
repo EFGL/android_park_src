@@ -99,8 +99,8 @@ public class RunFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
+        String start = DateUtils.date2StringDetail(new Date(new Date().getTime() - 24*60*60*1000));
         mStartTime.setText(start);
         mEndTime.setText(end);
         lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

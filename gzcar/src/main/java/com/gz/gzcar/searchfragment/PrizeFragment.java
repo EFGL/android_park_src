@@ -6,17 +6,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.gz.gzcar.AppConstants;
 import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.TrafficInfoTable;
@@ -26,6 +29,8 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
+import com.gz.gzcar.utils.PrintAllBean;
+import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
@@ -75,8 +80,10 @@ public class PrizeFragment extends BaseFragment {
     @Bind(R.id.search_money_spinner)
     MyPullText mSpinner;
 
+
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<TrafficInfoTable> allData = new ArrayList<>();
+    private List<TrafficInfoTable> sumAll;
     private MyAdapter myAdapter;
     private int pageIndex = 0;
     private int TAG = 3;
@@ -97,8 +104,8 @@ public class PrizeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String start = DateUtils.getCurrentYear() + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay() + " 00:00";
         String end = DateUtils.getCurrentDataDetailStr();
+        String start = DateUtils.date2StringDetail(new Date(new Date().getTime() - 24*60*60*1000));
         mStartTime.setText(start);
         mEndTime.setText(end);
     }
@@ -326,7 +333,7 @@ public class PrizeFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search, R.id.search_money_export})
+    @OnClick({R.id.et_money_starttime, R.id.et_money_endtime, R.id.btn_money_search, R.id.prize_print, R.id.search_money_export})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_money_starttime:
@@ -348,7 +355,87 @@ public class PrizeFragment extends BaseFragment {
                 searchEnd = mEndTime.getText().toString().trim();
                 new ExportTask().execute();
                 break;
+
+            case R.id.prize_print:
+                requestPrint();
+                break;
         }
+    }
+
+    private void requestPrint() {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_request_print, null);
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = 500;
+        params.height = 400;
+        dialog.getWindow().setAttributes(params);
+        dialog.show();
+
+        Button cancle = (Button) view.findViewById(R.id.requset_cencle);
+        Button ok = (Button) view.findViewById(R.id.requset_ok);
+
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                print();
+            }
+        });
+    }
+
+    private void print() {
+        boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
+        L.showlogError("是否打印:" + isPrint);
+        if (!isPrint) {
+            T.showShort(getActivity(), "请到系统设置中打开打印权限");
+            return;
+        }
+        if (sumAll == null || sumAll.size() < 1) {
+            T.showShort(getActivity(), "暂无数据");
+            return;
+        }
+        double toteMoney = 0;
+        double reMoney = 0;
+        long time = 0;
+        for (int i = 0; i < sumAll.size(); i++) {
+
+            double money = sumAll.get(i).getActual_money();
+            toteMoney += money;
+        }
+        for (int i = 0; i < sumAll.size(); i++) {
+            double re = sumAll.get(i).getReceivable();
+            reMoney += re;
+        }
+        for (int i = 0; i < sumAll.size(); i++) {
+            long stall_time = sumAll.get(i).getStall_time();
+            time += stall_time;
+        }
+        L.showlogError("分钟==="+time);
+
+        String user = mSpinner.getText();
+        String start = mStartTime.getText().toString().trim();
+        String end = mEndTime.getText().toString().trim();
+        PrintAllBean printAllBean = new PrintAllBean();
+        printAllBean.operator = user;
+        printAllBean.starttime = start;
+        printAllBean.endtime = end;
+        printAllBean.stoptime = String.format("%d时%d分",time/60,time%60);
+        printAllBean.carallnum = String.valueOf(sumAll.size());
+        printAllBean.receivable = String.valueOf(reMoney);
+        printAllBean.RealPrice = String.valueOf(toteMoney);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(printAllBean);
+        PrintUtils.printAll(getActivity(), json);
     }
 
     class ExportTask extends AsyncTask<Void, Void, Integer> {
@@ -493,7 +580,6 @@ public class PrizeFragment extends BaseFragment {
 
     class SumMoney extends AsyncTask<Void, Void, Void> {
 
-        private List<TrafficInfoTable> sumAll;
         private double toteMoney = 0;
         private double reMoney = 0;
 
@@ -515,6 +601,9 @@ public class PrizeFragment extends BaseFragment {
                     break;
             }
 
+            if (sumAll==null){
+                return null;
+            }
 
             for (int i = 0; i < sumAll.size(); i++) {
 
@@ -535,9 +624,13 @@ public class PrizeFragment extends BaseFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            mCount.setText("车辆总数:" + sumAll.size() + " 辆");
-            mReceivable.setText("应收总计:" + reMoney + " 元");
-            mMoney.setText("实收总计:" + toteMoney + " 元");
+            if (sumAll!=null){
+
+                mCount.setText("车辆总数:" + sumAll.size() + " 辆");
+                mReceivable.setText("应收总计:" + reMoney + " 元");
+                mMoney.setText("实收总计:" + toteMoney + " 元");
+            }
+
         }
 
         private void sumSearch0() {
