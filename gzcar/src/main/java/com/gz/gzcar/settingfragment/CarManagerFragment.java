@@ -646,6 +646,11 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                             }
                             CarInfoTable carInfoTable = new CarInfoTable(csvList.get(row));
                             db.save(carInfoTable);
+
+                            pageIndex = 0;
+                            allData.clear();
+                            loadMore(pageIndex);
+                            new SumTask().execute();
                         }
                         progressBar.setVisibility(View.GONE);
                         T.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
@@ -654,9 +659,6 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
-                        if (myAdapter!=null){
-                            myAdapter.notifyDataSetChanged();
-                        }
                         dialog2.dismiss();
                         if (reader != null)
                             reader.close();
