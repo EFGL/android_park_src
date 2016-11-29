@@ -153,14 +153,13 @@ public class RunFragment extends BaseFragment {
 
     public void setallmessage() {
 
-        if (all.size() != 0) {
+        if (all!=null&&all.size() != 0) {
             if (allData.size() == all.size()) {
                 T.showShort(getContext(), "已经全部加载完");
                 return;
             }
             int alldatesize = allData.size();
             int myallsize = all.size();
-            Log.e("ende", "setallmessage:chufa alldatesize=" + alldatesize);
             if (alldatesize == 0) {
                 if ((alldatesize + 100) > myallsize) {
                     int index = myallsize - alldatesize;
