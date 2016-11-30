@@ -109,10 +109,23 @@ public class CarInfoTable {
             this.person_tel = members[7];
         if (!members[8].isEmpty())
             this.person_address = members[8];
-        if (!members[9].isEmpty())
-            this.start_date =DateUtils.string2Date(members[9]);
-        if (!members[10].isEmpty())
-            this.stop_date =DateUtils.string2Date(members[10]);
+        if (!members[9].isEmpty()){
+         /*   try {
+                this.start_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[9]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }*/
+            this.start_date = DateUtils.string2Date(members[9]);
+        }
+        if (!members[10].isEmpty()){
+
+           /* try {
+                this.stop_date = new SimpleDateFormat("yyyy/MM/dd").parse(members[10]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }*/
+            this.stop_date = DateUtils.string2Date(members[10]);
+        }
         if (!members[11].isEmpty())
             this.allow_count = Integer.parseInt(members[11]);
         if (!members[12].isEmpty())

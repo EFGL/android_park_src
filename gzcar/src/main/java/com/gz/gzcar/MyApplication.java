@@ -2,6 +2,7 @@ package com.gz.gzcar;
 
 import android.app.Application;
 
+import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
@@ -40,7 +41,7 @@ public class MyApplication extends Application {
         settingInfo = new SPUtils(this,"config");
         instance = this;
         //发布的时候一定把下面的解开
-//        CrashHandler.getInstance().init(getApplicationContext());
+        CrashHandler.getInstance().init(getApplicationContext());
 
         InitUtils.init();
         x.Ext.init(this);

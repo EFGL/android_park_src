@@ -55,7 +55,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
         pvTime2 = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH_DAY);
-        pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear() + 1) + "-" + DateUtils.getCurrentMonth() + "-" + DateUtils.getCurrentDay()));
+        pvTime2.setTime(DateUtils.string2Date((DateUtils.getCurrentYear() + 1) + "/" + DateUtils.getCurrentMonth() + "/" + DateUtils.getCurrentDay()));
         pvTime2.setCyclic(true);
         pvTime2.setCancelable(true);
 

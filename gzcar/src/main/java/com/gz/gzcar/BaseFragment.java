@@ -2,7 +2,6 @@ package com.gz.gzcar;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.TimePickerView;
@@ -17,7 +16,7 @@ import java.util.Date;
 
 public class BaseFragment extends Fragment {
     //    protected  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    protected SimpleDateFormat dateFormatDetail = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    protected SimpleDateFormat dateFormatDetail = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
 
