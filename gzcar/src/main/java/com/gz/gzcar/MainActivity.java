@@ -433,7 +433,7 @@ public class MainActivity extends BaseActivity {
                 List<UserTable> all = db.selector(UserTable.class).where("userName", "=", userName).and("password", "=", password).findAll();
                 if (all.size() > 0) {
                     String type = all.get(0).getType();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                     String dateStr = dateFormat.format(new Date());
                     try {
                         Date nowStartDate = dateFormat.parse(dateStr);
@@ -456,7 +456,7 @@ public class MainActivity extends BaseActivity {
                         MyApplication.settingInfo.putLong("outCarCount", 0);
                         MyApplication.settingInfo.putLong("chargeCarNumer", 0);
                         MyApplication.settingInfo.putString("chargeMoney", "0.00");
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                         Date nowDate = new Date();
                         String nowDateStr = format.format(nowDate);
                         MyApplication.settingInfo.putString("loginTime", nowDateStr);
@@ -513,7 +513,7 @@ public class MainActivity extends BaseActivity {
             value = MyApplication.settingInfo.getLong("outCarCount");
             str[3] = String.format("当班出场：%d车次", value);
             str[4] = "操作员：" + MyApplication.settingInfo.getString("userName");
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             try {
                 if (MyApplication.settingInfo.getString("loginTime") != null) {
                     String loginTimeStr = MyApplication.settingInfo.getString("loginTime");
