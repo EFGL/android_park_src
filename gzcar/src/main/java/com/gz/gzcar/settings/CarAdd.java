@@ -115,7 +115,7 @@ public class CarAdd extends BaseActivity {
         String current = DateUtils.date2String(new Date());
         mStarttiem.setText(current);
         String monthday = current.substring(5, 10);
-        mEndtime.setText((DateUtils.getCurrentYear() + 1) + "-" + monthday);
+        mEndtime.setText((DateUtils.getCurrentYear() + 1) + "/" + monthday);
 
 
         ArrayList<String> typeList = new ArrayList<>();

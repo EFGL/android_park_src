@@ -112,7 +112,7 @@ public class CarUpdate extends BaseActivity {
         String current = DateUtils.date2String(new Date());
         mStart.setText(current);
         String monthday = current.substring(5, 10);
-        mEnd.setText((DateUtils.getCurrentYear() + 1) + "-" + monthday);
+        mEnd.setText((DateUtils.getCurrentYear() + 1) + "/" + monthday);
 
         mType.setOnTextChangedListener(new MyPullText.OnTextChangedListener() {
             @Override
