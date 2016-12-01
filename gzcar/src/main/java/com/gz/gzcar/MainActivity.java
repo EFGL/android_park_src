@@ -507,6 +507,9 @@ public class MainActivity extends BaseActivity {
             } catch (DbException e) {
                 e.printStackTrace();
             }
+            if(emptyCount<0){
+                emptyCount = 0;
+            }
             str[1] = String.format("空闲车位：%d个", emptyCount);
             value = MyApplication.settingInfo.getLong("inCarCount");
             str[2] = String.format("当班入场：%d车次", value);
