@@ -6,6 +6,7 @@ import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
+import com.tencent.bugly.Bugly;
 
 import org.xutils.DbManager;
 import org.xutils.db.table.TableEntity;
@@ -26,6 +27,7 @@ public class MyApplication extends Application {
 //    public static String Baseurl="http://221.204.11.69:3002/api/v1/";
     public static String mDBName = "tenement_passing_manager.db";
     public static DbManager.DaoConfig daoConfig;
+//    public String carchLogId = "14ed7a7d64";
     public  DbManager db = null;
     public static SPUtils settingInfo;
     public static MyApplication getInstance() {
@@ -42,7 +44,7 @@ public class MyApplication extends Application {
         instance = this;
         //发布的时候一定把下面的解开
         CrashHandler.getInstance().init(getApplicationContext());
-
+        Bugly.init(getApplicationContext(), "a3890485f9", false);
         InitUtils.init();
         x.Ext.init(this);
         daoConfig = new DbManager.DaoConfig()
