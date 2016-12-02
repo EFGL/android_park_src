@@ -105,6 +105,10 @@ public class carInfoProcess {
     private long checkEffectiveDate(final camera myCamera, CarInfoTable carInfo){
         //判断有限期
         Date nowDate = new Date();
+        if(carInfo.getStart_date() == null || carInfo.getStop_date() == null)
+        {
+            return -1;
+        }
         long userDate = (carInfo.getStop_date().getTime() - nowDate.getTime())/(24*60*60*1000);
         long startDate = (nowDate.getTime() - carInfo.getStart_date().getTime())/(24*60*60*1000);
         if(userDate < 0)
