@@ -430,7 +430,8 @@ public class PrizeFragment extends BaseFragment {
 
         Gson gson = new Gson();
         String json = gson.toJson(printAllBean);
-        PrintUtils.printAll(getActivity(), json);
+        PrintUtils.printonduty(getActivity(),MyApplication.mGpService,json);
+//        PrintUtils.printAll(getActivity(), json);
     }
 
     class ExportTask extends AsyncTask<Void, Void, Integer> {

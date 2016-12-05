@@ -132,8 +132,9 @@ public class ImageDetailActivity extends BaseActivity {
 
                     String json = gson.toJson(printBean);
                     L.showlogError("Json==" + json);
+                    PrintUtils.printParkfee(ImageDetailActivity.this,MyApplication.mGpService, json, out_user, MyApplication.settingInfo.getString("companyName"));
 
-                    PrintUtils.print(ImageDetailActivity.this, json, out_user, MyApplication.settingInfo.getString("companyName"));
+//                    PrintUtils.print(ImageDetailActivity.this, json, out_user, MyApplication.settingInfo.getString("companyName"));
 
                 } else {
                     T.showShort(ImageDetailActivity.this, "请到系统设置中打开打印权限");

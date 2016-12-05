@@ -2,6 +2,7 @@ package com.gz.gzcar;
 
 import android.app.Application;
 
+import com.gprinter.aidl.GpService;
 import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
@@ -17,6 +18,10 @@ import org.xutils.x;
  */
 public class MyApplication extends Application {
     private static MyApplication instance;
+
+    public static GpService mGpService= null;
+
+
 
     public static int app_handler_in_out_record_download=1000*5;//通行记录
     public static int app_handler_down_tempfee=1000*5;//临时车收费

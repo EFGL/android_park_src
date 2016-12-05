@@ -69,7 +69,7 @@ public class RunFragment extends BaseFragment {
     ProgressBar progressbar;
 
     private View view;
-    private DbManager db = null;
+    private DbManager db = x.getDb(MyApplication.daoConfig);
     private MyAdapter myAdapter;
     private MyPullText myPullText;
     private RecyclerView.LayoutManager lm;
@@ -85,6 +85,21 @@ public class RunFragment extends BaseFragment {
             view = inflater.inflate(R.layout.fragment_search_run, container, false);
         }
         ButterKnife.bind(this, view);
+
+        try {
+
+            List<TrafficInfoTable> all = db.findAll(TrafficInfoTable.class);
+            L.showlogError("all.size==============="+all.size());
+            for (int i = 0; i < all.size(); i++) {
+                String car_no = all.get(i).getCar_no();
+                long stall_time = all.get(i).getStall_time();
+
+                L.showlogError("车号==="+car_no+",停车时长==="+stall_time);
+
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         return view;
     }
 
@@ -201,9 +216,7 @@ public class RunFragment extends BaseFragment {
 
     private void initViews() {
         allData = new ArrayList<TrafficInfoTable>();
-        if (db == null) {
-            db = x.getDb(MyApplication.daoConfig);
-        }
+
         //时间选择器
         initDetailTime(getContext(), mStartTime, mEndTime);
 
@@ -247,11 +260,11 @@ public class RunFragment extends BaseFragment {
     }
 
     private void initData() {
-        String today = DateUtils.date2String(DateUtils.getCurrentData()) + " 00:00";
-        Date date = DateUtils.string2DateDetail(today);
+        Date current = DateUtils.getCurrentDataDetail();
+        long befor = current.getTime() - (24 * 60 * 60 * 1000);
         try {
             all = db.selector(TrafficInfoTable.class)
-                    .where("update_time", ">=", date)
+                    .where("update_time", ">=",  new Date(befor))
                     .and("car_type", "=", "临时车")
                     .orderBy("update_time", true)
                     .findAll();
