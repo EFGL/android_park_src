@@ -16,13 +16,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gz.gzcar.Database.TrafficInfoTable;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
@@ -50,6 +50,8 @@ public class SelectPassOut extends BaseActivity {
     TextView outPhCarnum;
     @Bind(R.id.spinner_selector)
     MyPullText mType;
+    @Bind(R.id.select_progress)
+    ProgressBar mProgress;
 
     private DbManager db = null;
     private List<TrafficInfoTable> allData = new ArrayList<>();
@@ -71,6 +73,7 @@ public class SelectPassOut extends BaseActivity {
         super.onResume();
 
         TAG_TYPE = 0;// 默认为0,查临时车
+        mProgress.setVisibility(View.VISIBLE);
         new initData().execute();
         initSpinner();
         initViews();
@@ -116,6 +119,7 @@ public class SelectPassOut extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             myAdapter.notifyDataSetChanged();
+            mProgress.setVisibility(View.GONE);
         }
 
     }
@@ -218,15 +222,15 @@ public class SelectPassOut extends BaseActivity {
         protected void onPostExecute(Integer result) {
             switch (result) {
                 case 0:
-                    T.showShort(context, "未查到相关数据");
+                    t.showShort(context, "未查到相关数据");
                     break;
                 case -1:
-                    T.showShort(context, "查询异常");
+                    t.showShort(context, "查询异常");
                     break;
                 case -2:
                     break;
                 default:
-                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    t.showShort(context, "找到" + allData.size() + "条相关数据");
                     myAdapter.notifyDataSetChanged();
                     break;
             }
@@ -256,13 +260,13 @@ public class SelectPassOut extends BaseActivity {
         protected void onPostExecute(Integer result) {
             switch (result) {
                 case 0:
-                    T.showShort(context, "未查到相关数据");
+                    t.showShort(context, "未查到相关数据");
                     break;
                 case -1:
-                    T.showShort(context, "查询异常");
+                    t.showShort(context, "查询异常");
                     break;
                 default:
-                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    t.showShort(context, "找到" + allData.size() + "条相关数据");
                     myAdapter.notifyDataSetChanged();
                     break;
             }
@@ -292,12 +296,12 @@ public class SelectPassOut extends BaseActivity {
         protected void onPostExecute(Integer result) {
             switch (result) {
                 case 0:
-                    T.showShort(context, "未查到相关数据");
+                    t.showShort(context, "未查到相关数据");
                     break;
                 case -1:
-                    T.showShort(context, "查询异常");
+                    t.showShort(context, "查询异常");
                 default:
-                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    t.showShort(context, "找到" + allData.size() + "条相关数据");
                     myAdapter.notifyDataSetChanged();
                     break;
             }
@@ -332,7 +336,7 @@ public class SelectPassOut extends BaseActivity {
                 break;
             case R.id.out_ok:
                 if (clickItem == -1) {
-                    T.showShort(this, "未选择车辆");
+                    t.showShort(this, "未选择车辆");
                     return;
                 } else {
                     id = allData.get(clickItem).getId();
@@ -385,12 +389,12 @@ public class SelectPassOut extends BaseActivity {
         protected void onPostExecute(Integer result) {
             switch (result) {
                 case 0:
-                    T.showShort(context, "未查到相关数据");
+                    t.showShort(context, "未查到相关数据");
                     break;
                 case -1:
-                    T.showShort(context, "查询异常");
+                    t.showShort(context, "查询异常");
                 default:
-                    T.showShort(context, "找到" + allData.size() + "条相关数据");
+                    t.showShort(context, "找到" + allData.size() + "条相关数据");
                     myAdapter.notifyDataSetChanged();
                     break;
             }

@@ -53,7 +53,7 @@ public class ParkingAddActivity extends BaseActivity {
         String count = mCount.getText().toString().trim();
         String start = mStart.getText().toString().trim();
         if (TextUtils.isEmpty(info) || TextUtils.isEmpty(count) || TextUtils.isEmpty(start)) {
-            T.showShort(this, "信息不完整");
+            t.showShort(this, "信息不完整");
             return;
         }
 
@@ -62,10 +62,10 @@ public class ParkingAddActivity extends BaseActivity {
                 CarWeiTable cw = new CarWeiTable();
                 cw.setPrint_code(info);
                 db.save(cw);
-                T.showShort(this, "增加成功");
+                t.showShort(this, "增加成功");
                 finish();
             } catch (DbException e) {
-                T.showShort(this, "增加异常");
+                t.showShort(this, "增加异常");
                 e.printStackTrace();
             }
         }

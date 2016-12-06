@@ -131,11 +131,24 @@
                 android:layout_height="1dp"
                 android:background="#e4e4e4" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/select_out_car_rcy"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#fff" />
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/select_out_car_rcy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff" />
+
+                <ProgressBar
+                    android:id="@+id/select_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
         </LinearLayout>
 
 

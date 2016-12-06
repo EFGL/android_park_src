@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.CarWeiTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.ParkingAddActivity;
-import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
@@ -38,7 +37,7 @@ import butterknife.OnClick;
  * <p/>
  * 车位管理
  */
-public class ParkingManagerFragment extends Fragment implements View.OnClickListener {
+public class ParkingManagerFragment extends BaseFragment implements View.OnClickListener {
     @Bind(R.id.parking_add)
     Button mAdd;
     @Bind(R.id.recyclerview)
@@ -63,7 +62,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
     private void initViews() {
 
-        final RecyclerView.LayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
 
         myAdapter = new MyAdapter();
@@ -119,7 +118,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
             } else {
                 mProgressBar.setVisibility(View.GONE);
 
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -213,7 +212,7 @@ public class ParkingManagerFragment extends Fragment implements View.OnClickList
 
     public void showDelete(final int id) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("确认删除该条信息?")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override

@@ -8,7 +8,6 @@ import com.gz.gzcar.BaseActivity;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
@@ -93,10 +92,10 @@ public class UserUpdateActivity extends BaseActivity {
 
             db.update(user, "userName", "password", "type");
 
-            T.showShort(this, "保存成功");
+            t.showShort(this, "保存成功");
             finish();
         } catch (DbException e) {
-            T.showShort(this, "保存异常");
+            t.showShort(this, "保存异常");
             e.printStackTrace();
         }
     }

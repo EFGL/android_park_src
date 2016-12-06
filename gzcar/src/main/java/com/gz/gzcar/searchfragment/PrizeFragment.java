@@ -29,7 +29,6 @@ import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.PrintAllBean;
 import com.gz.gzcar.utils.PrintUtils;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
@@ -129,7 +128,7 @@ public class PrizeFragment extends BaseFragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                T.showShort(getContext(), "操作员初始化异常");
+                t.showShort(getActivity(), "操作员初始化异常");
             }
             userList.add("全部");
             return userList;
@@ -159,7 +158,7 @@ public class PrizeFragment extends BaseFragment {
     private void initViews() {
 
         //时间选择器
-        initDetailTime(getContext(), mStartTime, mEndTime);
+        initDetailTime(getActivity(), mStartTime, mEndTime);
 
         final LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
@@ -243,7 +242,7 @@ public class PrizeFragment extends BaseFragment {
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
 
         } catch (Exception e) {
@@ -269,7 +268,7 @@ public class PrizeFragment extends BaseFragment {
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
 
         } catch (Exception e) {
@@ -295,7 +294,7 @@ public class PrizeFragment extends BaseFragment {
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
 
         } catch (Exception e) {
@@ -319,7 +318,7 @@ public class PrizeFragment extends BaseFragment {
                 allData.addAll(all);
                 myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
 
         } catch (DbException e) {
@@ -392,11 +391,11 @@ public class PrizeFragment extends BaseFragment {
         boolean isPrint = MyApplication.settingInfo.getBoolean("isPrintCard");
         L.showlogError("是否打印:" + isPrint);
         if (!isPrint) {
-            T.showShort(getActivity(), "请到系统设置中打开打印权限");
+            t.showShort(getActivity(), "请到系统设置中打开打印权限");
             return;
         }
         if (sumAll == null || sumAll.size() < 1) {
-            T.showShort(getActivity(), "暂无数据");
+            t.showShort(getActivity(), "暂无数据");
             return;
         }
         double toteMoney = 0;
@@ -523,15 +522,15 @@ public class PrizeFragment extends BaseFragment {
             super.onPostExecute(integer);
             int i = integer.intValue();
             if (i == -1) {
-                T.showShort(getContext(), "导出失败");
+                t.showShort(getActivity(), "导出失败");
             } else if (i == -2) {
-                T.showShort(getContext(), "请先插入U盘");
+                t.showShort(getActivity(), "请先插入U盘");
 
             } else if (i == 0) {
-                T.showShort(getContext(), "当前时间段内无数据");
+                t.showShort(getActivity(), "当前时间段内无数据");
             } else {
 
-                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+                t.showShort(getActivity(), "导出完成,共" + integer.toString() + "条");
             }
 
             progerssbar.setVisibility(View.GONE);
@@ -733,7 +732,7 @@ public class PrizeFragment extends BaseFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ImageDetailActivity.class);
+                    Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
                     intent.putExtra("in_image", free.getIn_image() + "");
                     intent.putExtra("out_image", free.getOut_image() + "");
 

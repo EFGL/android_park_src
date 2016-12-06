@@ -170,7 +170,7 @@ public class RunFragment extends BaseFragment {
 
         if (all!=null&&all.size() != 0) {
             if (allData.size() == all.size()) {
-                T.showShort(getContext(), "已经全部加载完");
+                t.showShort(getActivity(), "已经全部加载完");
                 return;
             }
             int alldatesize = allData.size();
@@ -218,7 +218,7 @@ public class RunFragment extends BaseFragment {
         allData = new ArrayList<TrafficInfoTable>();
 
         //时间选择器
-        initDetailTime(getContext(), mStartTime, mEndTime);
+        initDetailTime(getActivity(), mStartTime, mEndTime);
 
         mCarNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -247,7 +247,7 @@ public class RunFragment extends BaseFragment {
                             myAdapter.notifyDataSetChanged();
                             sumBottomCarNum(allData.size());
                         } else {
-                            T.showShort(getContext(), "未查到相关数据");
+                            t.showShort(getActivity(), "未查到相关数据");
                         }
 
                     } catch (DbException e) {
@@ -271,7 +271,7 @@ public class RunFragment extends BaseFragment {
             if (all != null)
                 sumBottomCarNum(all.size());
         } catch (DbException e) {
-            T.showShort(getActivity(), "查询异常");
+            t.showShort(getActivity(), "查询异常");
             e.printStackTrace();
         }
     }
@@ -285,7 +285,7 @@ public class RunFragment extends BaseFragment {
             allData.clear();
             myAdapter.notifyDataSetChanged();
             sumBottomCarNum(0);
-            T.showShort(getContext(), "未查到相关数据");
+            t.showShort(getActivity(), "未查到相关数据");
         }
     }
 
@@ -415,15 +415,15 @@ public class RunFragment extends BaseFragment {
             super.onPostExecute(integer);
             int i = integer.intValue();
             if (i == -1) {
-                T.showShort(getContext(), "导出失败");
+                t.showShort(getActivity(), "导出失败");
             } else if (i == -2) {
-                T.showShort(getContext(), "请先插入U盘");
+                t.showShort(getActivity(), "请先插入U盘");
 
             } else if (i == 0) {
-                T.showShort(getContext(), "当前时间段内无数据");
+                t.showShort(getActivity(), "当前时间段内无数据");
             } else {
 
-                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+                t.showShort(getActivity(), "导出完成,共" + integer.toString() + "条");
             }
             progressbar.setVisibility(View.GONE);
         }
@@ -466,7 +466,7 @@ public class RunFragment extends BaseFragment {
 
         } catch (DbException e) {
             e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
+            t.showShort(getActivity(), "查询异常");
         }
     }
 
@@ -485,7 +485,7 @@ public class RunFragment extends BaseFragment {
 
         } catch (DbException e) {
             e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
+            t.showShort(getActivity(), "查询异常");
         }
     }
 
@@ -503,7 +503,7 @@ public class RunFragment extends BaseFragment {
 
         } catch (DbException e) {
             e.printStackTrace();
-            T.showShort(getContext(), "查询异常");
+            t.showShort(getActivity(), "查询异常");
         }
     }
 
@@ -543,7 +543,7 @@ public class RunFragment extends BaseFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ImageDetailActivity.class);
+                    Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
                     intent.putExtra("in_image", traffic.getIn_image() + "");
                     intent.putExtra("out_image", traffic.getOut_image() + "");
 

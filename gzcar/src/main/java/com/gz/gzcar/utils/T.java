@@ -8,12 +8,12 @@ import android.widget.Toast;
  *  Created by Endeavor on 2016/8/11.
  */
 public class T {
-    private static Toast toast;
+    private  Toast toast;
 
     /**
      * 短时间显示Toast
      */
-    public static void showShort(Context context, CharSequence message) {
+    public  void showShort(Context context, CharSequence message) {
         if (null == toast) {
             toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -26,7 +26,7 @@ public class T {
     /**
      * 短时间显示Toast
      */
-    public static void showShort(Context context, int message) {
+    public  void showShort(Context context, int message) {
         if (null == toast) {
             toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -39,7 +39,7 @@ public class T {
     /**
      * 长时间显示Toast
      */
-    public static void showLong(Context context, CharSequence message) {
+    public  void showLong(Context context, CharSequence message) {
         if (null == toast) {
             toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -52,7 +52,7 @@ public class T {
     /**
      * 长时间显示Toast
      */
-    public static void showLong(Context context, int message) {
+    public  void showLong(Context context, int message) {
         if (null == toast) {
             toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -65,7 +65,7 @@ public class T {
     /**
      * 自定义显示Toast时间
      */
-    public static void show(Context context, CharSequence message, int duration) {
+    public  void show(Context context, CharSequence message, int duration) {
         if (null == toast) {
             toast = Toast.makeText(context, message, duration);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -78,7 +78,7 @@ public class T {
     /**
      * 自定义显示Toast时间
      */
-    public static void show(Context context, int message, int duration) {
+    public  void show(Context context, int message, int duration) {
         if (null == toast) {
             toast = Toast.makeText(context, message, duration);
             // toast.setGravity(Gravity.CENTER, 0, 0);
@@ -89,7 +89,7 @@ public class T {
     }
 
     /** Hide the toast, if any. */
-    public static void hideToast() {
+    public  void hideToast() {
         if (null != toast) {
             toast.cancel();
         }

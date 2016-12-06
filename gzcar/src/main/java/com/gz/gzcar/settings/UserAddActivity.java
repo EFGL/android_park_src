@@ -68,14 +68,14 @@ public class UserAddActivity extends BaseActivity {
         String pwd = password.getText().toString().trim();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(type) || TextUtils.isEmpty(pwd)) {
-            T.showShort(this, "信息不完整");
+            t.showShort(this, "信息不完整");
             return;
         }
         DbManager db = x.getDb(MyApplication.daoConfig);
         try {
             List<UserTable> user = db.selector(UserTable.class).where("userName", "=", name).findAll();
             if (user.size()>0){
-                T.showShort(this,"用户名已存在,请重新输入");
+                t.showShort(this,"用户名已存在,请重新输入");
                 return;
             }
 
@@ -88,10 +88,10 @@ public class UserAddActivity extends BaseActivity {
                 userTable.setType("common");
             }
             db.save(userTable);
-            T.showShort(this, "增加成功");
+            t.showShort(this, "增加成功");
             finish();
         } catch (DbException e) {
-            T.showShort(this, "增加异常");
+            t.showShort(this, "增加异常");
             e.printStackTrace();
         }
     }

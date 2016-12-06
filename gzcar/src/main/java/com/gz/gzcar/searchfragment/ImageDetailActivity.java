@@ -17,7 +17,6 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.PrintBean;
 import com.gz.gzcar.utils.PrintUtils;
-import com.gz.gzcar.utils.T;
 
 import java.io.File;
 
@@ -137,7 +136,7 @@ public class ImageDetailActivity extends BaseActivity {
 //                    PrintUtils.print(ImageDetailActivity.this, json, out_user, MyApplication.settingInfo.getString("companyName"));
 
                 } else {
-                    T.showShort(ImageDetailActivity.this, "请到系统设置中打开打印权限");
+                    t.showShort(ImageDetailActivity.this, "请到系统设置中打开打印权限");
                 }
 
             }

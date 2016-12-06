@@ -86,13 +86,14 @@ public class CarAdd extends BaseActivity {
     EditText etFreeTime;
 
     private DbManager db = x.getDb(MyApplication.daoConfig);
+    private T t = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         ButterKnife.bind(this);
-
+        t = new T();
         initTime(mStarttiem, mEndtime);
 
     }
@@ -204,21 +205,21 @@ public class CarAdd extends BaseActivity {
             mCarwei4.setPopList(strings);
             mCarwei5.setPopList(strings);
             mCarwei6.setPopList(strings);
-//            T.showShort(CarAdd.this,"车位检索完成,共"+strings.size()+"个");
+//            t.showShort(CarAdd.this,"车位检索完成,共"+strings.size()+"个");
         }
     }
 
     private void saveData() {
         String carNum = mCarnumber.getText().toString().trim().toUpperCase();
         if (TextUtils.isEmpty(carNum)) {
-            T.showShort(this, "请输入车号");
+            t.showShort(this, "请输入车号");
             return;
         }
 
         try {
             List<CarInfoTable> all = db.selector(CarInfoTable.class).where("car_no", "=", carNum).findAll();
             if (all != null && all.size() > 0) {
-                T.showShort(this, "该车牌已存在,请重启输入");
+                t.showShort(this, "该车牌已存在,请重启输入");
                 return;
             }
         } catch (DbException e) {
@@ -226,13 +227,13 @@ public class CarAdd extends BaseActivity {
         }
 
         String person = mPerson.getText().toString().trim();
-        String vehicle_type = mCarTypeSelector.getText().toString().trim();// 车辆类型
+        String vehicle_type = mCarTypeSelector.getText();// 车辆类型
         String address = mAddress.getText().toString().trim();
         String phone = mPhone.getText().toString().trim();
 
         String typeDetail = etTypeDetail.getText().toString().trim();
         if (TextUtils.isEmpty(typeDetail)) {
-            T.showShort(this, "请输入详细类型");
+            t.showShort(this, "请输入详细类型");
             return;
         }
 
@@ -241,7 +242,7 @@ public class CarAdd extends BaseActivity {
 
 
         if (TextUtils.isEmpty(person)) {
-            T.showShort(this, "请输入联系人");
+            t.showShort(this, "请输入联系人");
             return;
         }
 
@@ -266,14 +267,14 @@ public class CarAdd extends BaseActivity {
                 } else if (rbCount.isChecked()) {
                     String allow_count = etFreeCount.getText().toString().trim();
                     if (TextUtils.isEmpty(allow_count)) {
-                        T.showShort(this, "请输入有效次数");
+                        t.showShort(this, "请输入有效次数");
                         return;
                     }
                     mInfo.setAllow_count(Integer.parseInt(allow_count));
                 } else if (rbTime.isChecked()) {
                     String freeTime = etFreeTime.getText().toString().trim();
                     if (TextUtils.isEmpty(freeTime)) {
-                        T.showShort(this, "请输入有效时长");
+                        t.showShort(this, "请输入有效时长");
                         return;
                     }
                     mInfo.setAllow_park_time(Integer.parseInt(freeTime));
@@ -292,40 +293,40 @@ public class CarAdd extends BaseActivity {
             //保存车位绑定信息
             CarWeiBindTable carBind = new CarWeiBindTable();
             carBind.setCar_no(carNum);
-            String carWei = mCarwei.getText().toString().trim();
+            String carWei = mCarwei.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            carWei = mCarwei2.getText().toString().trim();
+            carWei = mCarwei2.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            carWei = mCarwei3.getText().toString().trim();
+            carWei = mCarwei3.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            carWei = mCarwei4.getText().toString().trim();
+            carWei = mCarwei4.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            carWei = mCarwei5.getText().toString().trim();
+            carWei = mCarwei5.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            carWei = mCarwei6.getText().toString().trim();
+            carWei = mCarwei6.getText();
             if (!TextUtils.isEmpty(carWei)) {
                 carBind.setStall_code(carWei);
                 db.save(carBind);
             }
-            T.showShort(this, "增加成功");
+            t.showShort(this, "增加成功");
             finish();
         } catch (DbException e) {
-            T.showShort(this, "新增异常");
+            t.showShort(this, "新增异常");
             e.printStackTrace();
         }
     }

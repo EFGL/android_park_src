@@ -48,7 +48,6 @@ import com.gz.gzcar.utils.L;
 import com.gz.gzcar.utils.PrintBean;
 import com.gz.gzcar.utils.PrintUtils;
 import com.gz.gzcar.utils.SPUtils;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.greenrobot.eventbus.EventBus;
@@ -430,11 +429,11 @@ public class MainActivity extends BaseActivity {
                 String user = mUser.getText().toString();
                 String password = mPasswordView.getText().toString();
                 if (TextUtils.isEmpty(user)) {
-                    T.showShort(MainActivity.this, "请选择用户名");
+                    t.showShort(MainActivity.this, "请选择用户名");
                     return;
                 }
                 if (TextUtils.isEmpty(password)) {
-                    T.showShort(MainActivity.this, "密码不能为空");
+                    t.showShort(MainActivity.this, "密码不能为空");
                     return;
                 }
                 new match(user, password).execute();
@@ -498,7 +497,7 @@ public class MainActivity extends BaseActivity {
             {
                 //进入主页面
                 if (type.isEmpty()) {
-                    T.showShort(context, "用户名或密码错误");
+                    t.showShort(context, "用户名或密码错误");
                     return;
                 } else if (type.equals("system")) {
                     mainSetting.setVisibility(View.VISIBLE);
@@ -623,15 +622,15 @@ public class MainActivity extends BaseActivity {
         protected void onPostExecute(Integer integer) {
             switch (integer) {
                 case 0:
-                    T.showShort(context, "收费完成");
+                    t.showShort(context, "收费完成");
                     playTTS("收费完成");
                     break;
                 case 1:
-                    T.showShort(context, "无可收费车辆");
+                    t.showShort(context, "无可收费车辆");
                     playTTS("无可收费车辆");
                     break;
                 case 2:
-                    T.showShort(context, "该车无需收费，已放行！");
+                    t.showShort(context, "该车无需收费，已放行！");
                     playTTS("该车无需收费，已放行！");
                     break;
                 default:
@@ -695,11 +694,11 @@ public class MainActivity extends BaseActivity {
         protected void onPostExecute(Integer integer) {
             switch (integer) {
                 case 0:
-                    T.showShort(context, "已完成无牌入场!");
+                    t.showShort(context, "已完成无牌入场!");
                     new upStatusInfoDisp().execute();
                     break;
                 case -1:
-                    T.showShort(context, "拍照失败，请重新操作");
+                    t.showShort(context, "拍照失败，请重新操作");
                     break;
             }
         }
@@ -707,14 +706,14 @@ public class MainActivity extends BaseActivity {
 
     //重新识别入场
     private void againIdentInFunc() {
-        T.showShort(context, "入口重新识别中......");
+        t.showShort(context, "入口重新识别中......");
         inCamera.againIdent();
         inCamera.ledDisplay(2, "欢迎光临");
     }
 
     //重新识别出场
     private void againIdentOutFunc() {
-        T.showShort(context, "出口重新识别中......");
+        t.showShort(context, "出口重新识别中......");
         outCamera.againIdent();
         outCamera.ledDisplay(2, "欢迎光临");
 
@@ -755,16 +754,16 @@ public class MainActivity extends BaseActivity {
                 case 0:
                     plateTextIn.setText("待通行");
                     playTTS(carNumber + "入场");
-                    T.showShort(context, "已完成确认通行");
+                    t.showShort(context, "已完成确认通行");
                     new upStatusInfoDisp().execute();
                     break;
                 case -1:
-                    T.showShort(context, "无待通行车辆");
+                    t.showShort(context, "无待通行车辆");
                     playTTS("无待通行车辆");
                     break;
                 case -2:
                     playTTS("拍照失败，请重新操作");
-                    T.showShort(context, "拍照失败，请重新操作");
+                    t.showShort(context, "拍照失败，请重新操作");
                     break;
             }
         }
@@ -816,7 +815,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         playTTS("该程序禁止退出");
-        T.showShort(this, "该程序禁止退出!");
+        t.showShort(this, "该程序禁止退出!");
     }
 
     //处理车牌识别事件
@@ -864,7 +863,7 @@ public class MainActivity extends BaseActivity {
         protected void onPostExecute(Integer integer) {
             switch (integer) {
                 case -1:
-                    T.showShort(context, "该车出频繁，请稍后通行");
+                    t.showShort(context, "该车出频繁，请稍后通行");
                     //显示
                     if (info.getName().equals("in")) {
                         //入口处理
@@ -880,7 +879,7 @@ public class MainActivity extends BaseActivity {
                     new upStatusInfoDisp().execute();
                     break;
                 case -2:
-                    T.showShort(context, "系统时间错误");
+                    t.showShort(context, "系统时间错误");
                     break;
                 case 0:
                     playTTS(info.getPlateNumber() + "出场");
@@ -1011,7 +1010,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }

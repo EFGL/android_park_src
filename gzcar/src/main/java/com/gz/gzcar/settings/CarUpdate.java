@@ -19,7 +19,6 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
@@ -292,12 +291,12 @@ public class CarUpdate extends BaseActivity {
 
             String carNum = mCarnum.getText().toString().trim().toUpperCase();
             String person = mPerson.getText().toString().trim();
-            String vehicle_type = mType.getText().toString().trim();// 车辆类型
+            String vehicle_type = mType.getText();// 车辆类型
             String phone = mPhone.getText().toString().trim();
             String address = mAddress.getText().toString().trim();
             String typeDetail = etTypeDetail.getText().toString().trim();
             if (TextUtils.isEmpty(typeDetail)) {
-                T.showShort(this, "请输入详细类型");
+                t.showShort(this, "请输入详细类型");
                 return;
             }
 
@@ -308,12 +307,12 @@ public class CarUpdate extends BaseActivity {
             String allow_count = "0";
 
             if (TextUtils.isEmpty(carNum)) {
-                T.showShort(this, "请输入车号");
+                t.showShort(this, "请输入车号");
                 return;
             }
 
             if (TextUtils.isEmpty(person)) {
-                T.showShort(this, "请输入联系人");
+                t.showShort(this, "请输入联系人");
                 return;
             }
 
@@ -343,7 +342,7 @@ public class CarUpdate extends BaseActivity {
                     } else if (rbCount.isChecked()) {
                         allow_count = etFreeCount.getText().toString().trim();
                         if (TextUtils.isEmpty(allow_count)) {
-                            T.showShort(this, "请输入有效次数");
+                            t.showShort(this, "请输入有效次数");
                             return;
                         }
                         mInfo.setAllow_count(Integer.parseInt(allow_count));
@@ -353,7 +352,7 @@ public class CarUpdate extends BaseActivity {
                     } else if (rbTime.isChecked()) {
                         allow_park_time = etFreeTime.getText().toString().trim();
                         if (TextUtils.isEmpty(allow_park_time)) {
-                            T.showShort(this, "请输入有效时长");
+                            t.showShort(this, "请输入有效时长");
                             return;
                         }
                         mInfo.setAllow_park_time(Integer.parseInt(allow_park_time));
@@ -376,12 +375,12 @@ public class CarUpdate extends BaseActivity {
                 db.update(mInfo, "car_no", "vehicle_type", "car_type", "fee_type", "allow_count", "allow_park_time", "person_name", "person_tel", "person_address", "start_date", "stop_date");
 
                 L.showlogError("当前车辆信息       " + mInfo.toString());
-                String carWei1 = mCarwei1.getText().toString().trim();
-                String carWei2 = mCarwei2.getText().toString().trim();
-                String carWei3 = mCarwei3.getText().toString().trim();
-                String carWei4 = mCarwei4.getText().toString().trim();
-                String carWei5 = mCarwei5.getText().toString().trim();
-                String carWei6 = mCarwei6.getText().toString().trim();
+                String carWei1 = mCarwei1.getText();
+                String carWei2 = mCarwei2.getText();
+                String carWei3 = mCarwei3.getText();
+                String carWei4 = mCarwei4.getText();
+                String carWei5 = mCarwei5.getText();
+                String carWei6 = mCarwei6.getText();
 
                 for (int i = 0; i < 6; i++) {
                     if (i == 0)
@@ -401,10 +400,10 @@ public class CarUpdate extends BaseActivity {
 
                 Log.i("ende", "update");
 
-                T.showShort(this, "修改成功");
+                t.showShort(this, "修改成功");
                 finish();
             } catch (DbException e) {
-                T.showShort(this, "修改异常");
+                t.showShort(this, "修改异常");
                 e.printStackTrace();
             }
         }
@@ -477,7 +476,7 @@ public class CarUpdate extends BaseActivity {
             mCarwei4.setPopList(strings);
             mCarwei5.setPopList(strings);
             mCarwei6.setPopList(strings);
-//            T.showShort(CarAdd.this,"车位检索完成,共"+strings.size()+"个");
+//            t.showShort(CarAdd.this,"车位检索完成,共"+strings.size()+"个");
         }
     }
 

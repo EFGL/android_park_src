@@ -78,12 +78,6 @@
 
         <activity android:name=".searchfragment.ImageDetailActivity" />
 
-        <receiver android:name=".receiver.MyReceiver">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name="com.gprinter.service.GpPrintService"
             android:enabled="true"

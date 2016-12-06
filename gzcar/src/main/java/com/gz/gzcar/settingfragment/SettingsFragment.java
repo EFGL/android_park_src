@@ -2,7 +2,6 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gz.gzcar.AppConstants;
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.Database.CarWeiTable;
@@ -26,7 +26,6 @@ import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.server.DownloadTimeBean;
 import com.gz.gzcar.utils.InitUtils;
-import com.gz.gzcar.utils.T;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
 
@@ -47,7 +46,7 @@ import butterknife.OnClick;
  * <p/>
  * 系统设置
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends BaseFragment {
 
     @Bind(R.id.et_server_address)
     EditText mServerAddress;
@@ -177,7 +176,7 @@ public class SettingsFragment extends Fragment {
         MyApplication.settingInfo.putString(AppConstants.DISPLAY_IP,displayIp);
         MyApplication.settingInfo.putLong(AppConstants.ALL_CAR_PLACE, stallNum);
         MyApplication.settingInfo.putString(AppConstants.COMPANY_NAME, companyName);
-        T.showShort(getContext(), "保存成功");
+        t.showShort(getActivity(), "保存成功");
     }
 
     @Override
@@ -302,19 +301,19 @@ public class SettingsFragment extends Fragment {
             MyApplication.settingInfo.clear();
             InitUtils.init();
             MyApplication.settingInfo.putString("userName",userName);
-            T.showShort(getContext(),"初始化成功,数据已全部删除");
-            startActivity(new Intent(getContext(),MainActivity.class));
+            t.showShort(getActivity(),"初始化成功,数据已全部删除");
+            startActivity(new Intent(getActivity(),MainActivity.class));
 
 
         } catch (DbException e) {
             e.printStackTrace();
-            T.showShort(getContext(),"初始化失败");
+            t.showShort(getActivity(),"初始化失败");
         }
     }
 
     private void request() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.clear_all_diglog, null);
-        final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.clear_all_diglog, null);
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
         dialog.setView(view, 0, 0, 0, 0);
         dialog.setCancelable(true);
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
@@ -341,7 +340,7 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 String password = pwd.getText().toString().trim();
                 if (TextUtils.isEmpty(password)) {
-                    T.showShort(getContext(), "请输入密码");
+                    t.showShort(getActivity(), "请输入密码");
                     return;
                 }
 
@@ -353,7 +352,7 @@ public class SettingsFragment extends Fragment {
                     }
                     else{
 
-                        T.showShort(getContext(),"您输入的密码有误!");
+                        t.showShort(getActivity(),"您输入的密码有误!");
                     }
 
                 } catch (DbException e) {

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.UserTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.settings.UserAddActivity;
 import com.gz.gzcar.settings.UserUpdateActivity;
-import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
@@ -36,7 +35,7 @@ import butterknife.OnClick;
  * Created by Endeavor on 2016/8/8.
  * 用户管理
  */
-public class UserFragment extends Fragment implements View.OnClickListener {
+public class UserFragment extends BaseFragment implements View.OnClickListener {
 
     @Bind(R.id.user_add)
     Button mBtnAdd;
@@ -63,7 +62,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     private void initViews() {
 
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcy.setLayoutManager(lm);
 
 
@@ -81,7 +80,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             allData = db.selector(UserTable.class).orderBy("id", true).findAll();
         } catch (DbException e) {
             e.printStackTrace();
-            T.showShort(getContext(), "查询全部异常");
+            t.showShort(getActivity(), "查询全部异常");
         }
     }
 
@@ -91,7 +90,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_user, parent, false);
+            View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_user, parent, false);
 
             MyViewHolder myViewHolder = new MyViewHolder(itemView);
 
@@ -119,7 +118,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), UserUpdateActivity.class);
+                    Intent intent = new Intent(getActivity(), UserUpdateActivity.class);
                     intent.putExtra("userName", allData.get(position).getUserName());
                     intent.putExtra("type", allData.get(position).getType());
                     intent.putExtra("password", allData.get(position).getPassword());
@@ -202,7 +201,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     public void showDelete(final int id) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("确认删除该条信息?")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override

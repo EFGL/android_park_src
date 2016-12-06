@@ -10,8 +10,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.MyApplication;
@@ -38,7 +39,6 @@ import com.gz.gzcar.utils.CsvReader;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 
 import org.xutils.DbManager;
@@ -57,14 +57,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.os.Environment.getExternalStorageDirectory;
 
 /**
  * Created by Endeavor on 2016/8/8.
  * <p/>
  * 车辆管理
  */
-public class CarManagerFragment extends Fragment implements View.OnClickListener {
+public class CarManagerFragment extends BaseFragment implements View.OnClickListener {
 
 
     @Bind(R.id.carnumber)
@@ -233,7 +232,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     if (myAdapter != null)
                         myAdapter.notifyDataSetChanged();
                 } else {
-                    T.showShort(getContext(), "没有更多数据了");
+                    t.showShort(getActivity(), "没有更多数据了");
                 }
             } catch (DbException e) {
                 e.printStackTrace();
@@ -311,7 +310,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                     L.showlogError("fileName===" + fileName);
 
 
-                    L.showlogError("path===" + getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
+                    L.showlogError("path===" + Environment.getExternalStorageDirectory().getCanonicalPath() + "/" + current + ".csv");
 
                     String[] title = new String[]{"id", "组键", "车号", "固定车类型", "车辆类型", "收费类型", "联系人", "电话", "地址", "有效开始时间",
                             "有效结束时间", "有效次数", "免费时长（分钟）", "创建时间", "更新时间", "状态"};
@@ -378,15 +377,15 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             super.onPostExecute(integer);
             int i = integer.intValue();
             if (i == -1) {
-                T.showShort(getContext(), "导出失败");
+                t.showShort(getActivity(), "导出失败");
             } else if (i == -2) {
-                T.showShort(getContext(), "请先插入U盘");
+                t.showShort(getActivity(), "请先插入U盘");
 
             } else if (i == 0) {
-                T.showShort(getContext(), "暂无数据");
+                t.showShort(getActivity(), "暂无数据");
             } else {
 
-                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+                t.showShort(getActivity(), "导出完成,共" + integer.toString() + "条");
             }
 
             progressBar.setVisibility(View.GONE);
@@ -441,7 +440,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(getContext(), CarUpdate.class);
+                    Intent i = new Intent(getActivity(), CarUpdate.class);
                     i.putExtra("carNumber", carInfo.getCar_no());
 
                     i.putExtra("vehicle_type", carInfo.getVehicle_type());// 固定车 特殊车
@@ -516,7 +515,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
     public void showDelete(final int id) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("确认删除该条信息?")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -567,7 +566,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
             allCsv = new SdFile().getallfilemessage("/storage/uhost/", ".csv");
         }
         if (allCsv == null) {
-            T.showShort(getActivity(), "请先插入U盘");
+            t.showShort(getActivity(), "请先插入U盘");
             return;
         }
 
@@ -585,7 +584,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 
         L.showlogError("allCsv.size()==" + allCsv.size());
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rcy_import);
-        LinearLayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
         ImportAdapter importAdapter = new ImportAdapter(allCsv);
         recyclerView.setAdapter(importAdapter);
@@ -653,7 +652,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
                             new SumTask().execute();
                         }
                         progressBar.setVisibility(View.GONE);
-                        T.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
+                        t.showLong(getActivity(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -711,7 +710,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 //            L.showlogError("csvFilePath==" + csvFilePath);
 //            String fileName = csvFilePath.substring(csvFilePath.lastIndexOf(".") + 1);
 //            if (!fileName.equalsIgnoreCase("csv") || csvFilePath == null) {
-//                T.showLong(getActivity(), "文件类型错误，导入失败！！！");
+//                t.showLong(getActivity(), "文件类型错误，导入失败！！！");
 //                progressBar.setVisibility(View.GONE);
 //                return;
 //            }
@@ -741,7 +740,7 @@ public class CarManagerFragment extends Fragment implements View.OnClickListener
 //                    db.save(carInfoTable);
 //                }
 //                progressBar.setVisibility(View.GONE);
-//                T.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
+//                t.showLong(getContext(), "导入新数据" + (csvList.size() - ap) + "条,覆盖" + ap + "条");
 //            } catch (FileNotFoundException e) {
 //                e.printStackTrace();
 //            } catch (IOException e) {

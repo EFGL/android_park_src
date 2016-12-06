@@ -3,7 +3,6 @@ package com.gz.gzcar.searchfragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.CarInfoTable;
 import com.gz.gzcar.Database.CarWeiBindTable;
 import com.gz.gzcar.MyApplication;
@@ -25,7 +25,6 @@ import com.gz.gzcar.R;
 import com.gz.gzcar.utils.CsvWriter;
 import com.gz.gzcar.utils.DateUtils;
 import com.gz.gzcar.utils.L;
-import com.gz.gzcar.utils.T;
 
 import org.xutils.DbManager;
 import org.xutils.ex.DbException;
@@ -42,14 +41,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.os.Environment.getExternalStorageDirectory;
-
 /**
  * Created by Endeavor on 2016/8/8.
  * <p>
  * 车辆信息查询
  */
-public class CarInfoFragment extends Fragment {
+public class CarInfoFragment extends BaseFragment {
     @Bind(R.id.et_search_car)
     EditText mCarNumber;
     @Bind(R.id.btn_search_car)
@@ -162,15 +159,15 @@ public class CarInfoFragment extends Fragment {
             super.onPostExecute(integer);
             int i = integer.intValue();
             if (i == -1) {
-                T.showShort(getContext(), "导出失败");
+                t.showShort(getActivity(), "导出失败");
             } else if (i == -2) {
-                T.showShort(getContext(), "请先插入U盘");
+                t.showShort(getActivity(), "请先插入U盘");
 
             }  else if (i == 0) {
-                T.showShort(getContext(), "暂无数据");
+                t.showShort(getActivity(), "暂无数据");
             }else {
 
-                T.showShort(getContext(), "导出完成,共" + integer.toString() + "条");
+                t.showShort(getActivity(), "导出完成,共" + integer.toString() + "条");
             }
 
             mProgressbar.setVisibility(View.GONE);
@@ -190,11 +187,11 @@ public class CarInfoFragment extends Fragment {
                     myAdapter.notifyDataSetChanged();
                 }
             } catch (DbException e) {
-                T.showShort(getActivity(), "查询异常");
+                t.showShort(getActivity(), "查询异常");
                 e.printStackTrace();
             }
         } else {
-            T.showShort(getActivity(), "请输入正确的车牌号码");
+            t.showShort(getActivity(), "请输入正确的车牌号码");
         }
     }
 
@@ -212,7 +209,7 @@ public class CarInfoFragment extends Fragment {
                 if (myAdapter != null)
                     myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
         } catch (DbException e) {
             e.printStackTrace();

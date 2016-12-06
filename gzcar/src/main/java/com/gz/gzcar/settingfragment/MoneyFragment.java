@@ -2,7 +2,6 @@ package com.gz.gzcar.settingfragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,11 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gz.gzcar.AppConstants;
+import com.gz.gzcar.BaseFragment;
 import com.gz.gzcar.Database.MoneyTable;
 import com.gz.gzcar.MyApplication;
 import com.gz.gzcar.R;
 import com.gz.gzcar.utils.SPUtils;
-import com.gz.gzcar.utils.T;
 import com.gz.gzcar.weight.MyPullText;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.nightonke.jellytogglebutton.State;
@@ -40,7 +39,7 @@ import butterknife.OnClick;
  * <p>
  * 收费规则
  */
-public class MoneyFragment extends Fragment {
+public class MoneyFragment extends BaseFragment {
     @Bind(R.id.moneyrcy_rcy)
     RecyclerView mRcy;
     @Bind(R.id.money_tv_time)
@@ -58,7 +57,7 @@ public class MoneyFragment extends Fragment {
     private DbManager db = x.getDb(MyApplication.daoConfig);
     private List<MoneyTable> allData = new ArrayList<>();
     private MyAdapter myAdapter;
-    private static int id = -1;
+    private  int id = -1;
     private SPUtils spUtils = MyApplication.settingInfo;;
     private boolean isFreeTemp = false;
     private boolean isHourAddTemp = false;
@@ -100,7 +99,7 @@ public class MoneyFragment extends Fragment {
         spUtils.putInt(AppConstants.FRIEND_FREE,Integer.valueOf(friend));
         spUtils.putBoolean(AppConstants.IS_FREE, isFreeTemp);
         spUtils.putBoolean(AppConstants.IS_HOURADD, isHourAddTemp);
-        T.showShort(getContext(), "保存成功");
+        t.showShort(getActivity(), "保存成功");
     }
     private void readConfiig() {
         final int tempFree = spUtils.getInt(AppConstants.TEMP_FREE);// 临时车免费时长
@@ -144,7 +143,7 @@ public class MoneyFragment extends Fragment {
 
     private void initViews() {
 
-        final LinearLayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager lm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRcy.setLayoutManager(lm);
         myAdapter = new MyAdapter();
         mRcy.setAdapter(myAdapter);
@@ -169,7 +168,7 @@ public class MoneyFragment extends Fragment {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View itemview = LayoutInflater.from(getContext()).inflate(R.layout.item_money, parent, false);
+            View itemview = LayoutInflater.from(getActivity()).inflate(R.layout.item_money, parent, false);
             MyViewHolder myViewHolder = new MyViewHolder(itemview);
 
             return myViewHolder;
@@ -261,7 +260,7 @@ public class MoneyFragment extends Fragment {
                 if (myAdapter != null)
                     myAdapter.notifyDataSetChanged();
             } else {
-                T.showShort(getContext(), "没有更多数据了");
+                t.showShort(getActivity(), "没有更多数据了");
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -292,7 +291,7 @@ public class MoneyFragment extends Fragment {
 
         String newMoney = mNewMoney.getText().toString().trim();
         if (TextUtils.isEmpty(newMoney)) {
-            T.showShort(getContext(), "请输入新的金额");
+            t.showShort(getActivity(), "请输入新的金额");
             return;
         }
         double d = Double.parseDouble(newMoney);
@@ -303,12 +302,12 @@ public class MoneyFragment extends Fragment {
                 MoneyTable m = db.findById(MoneyTable.class, id);
                 m.setMoney(d);
                 db.update(m, "money");
-                T.showShort(getContext(), "更新成功");
+                t.showShort(getActivity(), "更新成功");
                 allData.clear();
                 allData.addAll(db.findAll(MoneyTable.class));
                 myAdapter.notifyDataSetChanged();
             } catch (DbException e) {
-                T.showShort(getContext(), "更新失败");
+                t.showShort(getActivity(), "更新失败");
                 e.printStackTrace();
             }
         }

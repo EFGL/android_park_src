@@ -11,6 +11,7 @@ import com.flyco.animation.BaseAnimatorSet;
 import com.flyco.animation.BounceEnter.BounceTopEnter;
 import com.flyco.animation.SlideExit.SlideBottomExit;
 import com.gz.gzcar.utils.DateUtils;
+import com.gz.gzcar.utils.T;
 
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public class BaseActivity extends AppCompatActivity {
     protected BaseAnimatorSet mBasOut;
     protected TimePickerView pvTime;
     protected TimePickerView pvTime2;
+    protected T t = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_beas);
         mBasIn = new BounceTopEnter();
         mBasOut = new SlideBottomExit();
+        t = new T();
 
     }
 
@@ -76,5 +79,6 @@ public class BaseActivity extends AppCompatActivity {
     public void setBasOut(BaseAnimatorSet bas_out) {
         this.mBasOut = bas_out;
     }
+
 
 }

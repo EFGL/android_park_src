@@ -7,6 +7,7 @@ import com.gz.gzcar.server.CrashHandler;
 import com.gz.gzcar.utils.GetImei;
 import com.gz.gzcar.utils.InitUtils;
 import com.gz.gzcar.utils.SPUtils;
+import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.Bugly;
 
 import org.xutils.DbManager;
@@ -35,15 +36,23 @@ public class MyApplication extends Application {
 //    public String carchLogId = "14ed7a7d64";
     public  DbManager db = null;
     public static SPUtils settingInfo;
+
     public static MyApplication getInstance() {
         if (instance == null) {
             instance = new MyApplication();
         }
         return instance;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
+
         devID = GetImei.getphoneimei(getApplicationContext());
         settingInfo = new SPUtils(this,"config");
         instance = this;
